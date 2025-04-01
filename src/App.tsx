@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { loadMiniPCData } from './utils/dataLoader';
@@ -349,11 +349,12 @@ function App() {
               onClick={handleDrawerToggle}
               sx={{ 
                 mr: 2,
-                transform: drawerOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                transition: 'transform 0.3s ease-in-out'
+                opacity: drawerOpen ? 0.8 : 1,
+                transform: drawerOpen ? 'translateX(2px)' : 'translateX(0)',
+                transition: 'all 0.2s ease-in-out'
               }}
             >
-              <FilterListIcon />
+              <MenuIcon />
             </IconButton>
             <Typography variant="h5" component="h1" sx={{ 
               flexGrow: 1, 
