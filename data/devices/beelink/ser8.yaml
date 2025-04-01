@@ -1,0 +1,36 @@
+id: beelink-ser8
+brand: Beelink
+model: SER8
+release_date: "2024"
+cpu:
+  brand: AMD
+  model: Ryzen 7 8845HS
+  cores: 8
+  threads: 16
+  base_clock: 3.1
+  boost_clock: 5.1
+  tdp: 45
+memory:
+  max_capacity: 96
+  slots: 2
+  type: DDR5
+  speed: 5200
+storage:
+  - type: M.2
+    form_factor: "2280"
+    interface: PCIe 4.0 x4
+    max_capacity: 4000
+networking:
+  ethernet:
+    - chipset: Realtek RTL8125BG
+      speed: 2.5GbE
+      ports: 2
+  wifi:
+    chipset: Intel AX210
+    standard: WiFi 6E
+    bluetooth: "5.3"
+ports:
+  usb_a: 4
+  usb_c: 1
+  hdmi: 1
+  displayport: 1 

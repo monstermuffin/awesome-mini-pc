@@ -1,0 +1,31 @@
+id: asrock-4x4-6000u
+brand: ASRock
+model: 4X4 6000U
+release_date: "2023"
+cpu:
+  brand: AMD
+  model: Ryzen 5 6600U
+  cores: 6
+  threads: 12
+  base_clock: 2.9
+  boost_clock: 4.5
+  tdp: 28
+memory:
+  max_capacity: 64
+  slots: 2
+  type: DDR5
+  speed: 4800
+storage:
+  - type: M.2
+    form_factor: 2280
+    interface: PCIe 4.0 x4
+    max_capacity: 2000
+networking:
+  ethernet:
+    - chipset: Realtek RTL8125BG
+      speed: 2.5GbE
+      ports: 2
+  wifi:
+    chipset: MediaTek RZ608
+    standard: WiFi 6E
+    bluetooth: "5.2" 

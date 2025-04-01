@@ -1,0 +1,157 @@
+.table-container {
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 1rem;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.filter-group input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.filter-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+.range-inputs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.range-inputs input {
+  width: 50%;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background: white;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+th.sortable:hover {
+  background: #edf2f7;
+}
+
+tr:hover {
+  background: #f8fafc;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .filters {
+    background: #1a1a1a;
+  }
+
+  .filter-group label {
+    color: #9ca3af;
+  }
+
+  .filter-group input {
+    background: #262626;
+    border-color: #404040;
+    color: #e5e7eb;
+  }
+
+  .filter-group input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+  }
+
+  .table-wrapper {
+    border-color: #404040;
+  }
+
+  table {
+    background: #1a1a1a;
+  }
+
+  th, td {
+    border-color: #404040;
+  }
+
+  th {
+    background: #262626;
+    color: #e5e7eb;
+  }
+
+  th.sortable:hover {
+    background: #333;
+  }
+
+  tr:hover {
+    background: #262626;
+  }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .table-wrapper {
+    margin: 0 -1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  th, td {
+    padding: 0.5rem;
+  }
+} 

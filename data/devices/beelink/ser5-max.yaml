@@ -1,0 +1,31 @@
+id: beelink-ser5-max
+brand: Beelink
+model: SER5 Max
+release_date: "2023"
+cpu:
+  brand: AMD
+  model: Ryzen 7 5800H
+  cores: 8
+  threads: 16
+  base_clock: 3.2
+  boost_clock: 4.4
+  tdp: 45
+memory:
+  max_capacity: 64
+  slots: 2
+  type: DDR4
+  speed: 3200
+storage:
+  - type: M.2
+    form_factor: "2280"
+    interface: PCIe 3.0 x4
+    max_capacity: 2000
+networking:
+  ethernet:
+    - chipset: Realtek RTL8125
+      speed: 2.5GbE
+      ports: 1
+  wifi:
+    chipset: Intel AX200
+    standard: WiFi 6
+    bluetooth: "5.2" 
