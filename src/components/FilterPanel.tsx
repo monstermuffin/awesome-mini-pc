@@ -10,6 +10,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Divider,
+  useTheme,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FilterOptions } from '../utils/dataLoader';
@@ -30,6 +31,8 @@ type FilterState = {
   storageTypes: Set<string>;
   storageInterfaces: Set<string>;
   releaseYears: Set<string>;
+  pcieSlotTypes: Set<string>;
+  hasExpansionSlots: boolean;
   deviceAge: { min: number; max: number } | null;
   tdp: { min: number; max: number } | null;
   cores: { min: number; max: number } | null;
@@ -136,6 +139,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   selectedFilters,
   onFilterChange,
 }) => {
+  const theme = useTheme();
+
   // Helper function to count matching devices for a filter option
   const getFilterCount = (category: keyof FilterOptions | string, value: string) => {
     return devices.filter(device => {
@@ -165,6 +170,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             
             const age = currentYear - deviceYear;
             return age >= range.min && age <= range.max;
+          }
+        }
+        
+        if (filterCat === 'hasExpansionSlots') {
+          // If "Has PCIe expansion slots" filter is active
+          if (selected && !device.expansion?.pcie_slots?.length) {
+            return false;
           }
         }
         
@@ -200,6 +212,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             return device.storage.some(s => selectedSet.has(s.interface));
           case 'releaseYears':
             return selectedSet.has(device.release_date);
+          case 'pcieSlotTypes':
+            return !device.expansion?.pcie_slots || device.expansion.pcie_slots.some(
+              slot => selectedSet.has(slot.type)
+            );
           default:
             return true;
         }
@@ -237,6 +253,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           break;
         case 'releaseYears':
           matchesCurrentFilter = device.release_date === value;
+          break;
+        case 'pcieSlotTypes':
+          matchesCurrentFilter = device.expansion?.pcie_slots?.some(
+            slot => slot.type === value
+          ) || false;
           break;
         default:
           matchesCurrentFilter = false;
@@ -322,6 +343,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     min: 0,
     max: currentYear - oldestDeviceYear
   };
+
+  // Extract all available PCIe slot types from devices
+  const pcieSlotTypes = new Set<string>();
+  const hasExpansionDevices = devices.some(device => 
+    device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0
+  );
+  
+  devices.forEach(device => {
+    if (device.expansion?.pcie_slots) {
+      device.expansion.pcie_slots.forEach(slot => {
+        if (slot.type) pcieSlotTypes.add(slot.type);
+      });
+    }
+  });
 
   return (
     <Paper
@@ -493,6 +528,61 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         getCount={(option) => getFilterCount('ethernetChipsets', option)}
       />
 
+      {/* PCIe Expansion Filters - only show if any device has expansion slots */}
+      {hasExpansionDevices && (
+        <>
+          <Typography 
+            variant="subtitle1" 
+            sx={{ 
+              px: 2, 
+              pt: 2, 
+              pb: 1, 
+              fontWeight: 500,
+              borderTop: `1px solid ${theme.palette.divider}` 
+            }}
+          >
+            Expansion
+          </Typography>
+          
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={selectedFilters.hasExpansionSlots}
+                onChange={(e) => onFilterChange('hasExpansionSlots', null, e.target.checked)}
+                size="small"
+              />
+            }
+            label={<Typography variant="body2">Has PCIe expansion slots</Typography>}
+            sx={{ px: 2, py: 1 }}
+          />
+          
+          {pcieSlotTypes.size > 0 && (
+            <FilterGroup
+              title="PCIe Slot Types"
+              options={pcieSlotTypes}
+              selected={selectedFilters.pcieSlotTypes}
+              devices={devices}
+              onSelect={(value, checked) => onFilterChange('pcieSlotTypes', value, checked)}
+              getCount={(option) => getFilterCount('pcieSlotTypes', option)}
+            />
+          )}
+        </>
+      )}
+
+      {/* Storage-related filters */}
+      <Typography 
+        variant="subtitle1" 
+        sx={{ 
+          px: 2, 
+          pt: 2, 
+          pb: 1, 
+          fontWeight: 500,
+          borderTop: `1px solid ${theme.palette.divider}` 
+        }}
+      >
+        Storage
+      </Typography>
+      
       <FilterGroup
         title="Storage Type"
         options={new Set(filterOptions.storageTypes)}

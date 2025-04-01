@@ -40,6 +40,8 @@ type FilterState = {
   storageTypes: Set<string>;
   storageInterfaces: Set<string>;
   releaseYears: Set<string>;
+  pcieSlotTypes: Set<string>;
+  hasExpansionSlots: boolean;
   deviceAge: { min: number; max: number } | null;
   tdp: { min: number; max: number } | null;
   cores: { min: number; max: number } | null;
@@ -101,6 +103,8 @@ function App() {
     storageTypes: new Set<string>(),
     storageInterfaces: new Set<string>(),
     releaseYears: new Set<string>(),
+    pcieSlotTypes: new Set<string>(),
+    hasExpansionSlots: false,
     deviceAge: null,
     tdp: null,
     cores: null,
@@ -134,6 +138,8 @@ function App() {
       if (category === 'tdp' || category === 'cores' || category === 'memorySpeed' || 
           category === 'memoryCapacity' || category === 'deviceAge') {
         newFilters[category] = value as { min: number; max: number } | null;
+      } else if (category === 'hasExpansionSlots') {
+        newFilters[category] = checked as boolean;
       } else {
         const filterSet = new Set(prev[category] as Set<string>);
         if (checked) {
@@ -193,6 +199,21 @@ function App() {
     }
     if (selectedFilters.releaseYears.size > 0 && !selectedFilters.releaseYears.has(device.release_date)) {
       return false;
+    }
+
+    // PCIe expansion filters
+    if (selectedFilters.hasExpansionSlots && 
+        (!device.expansion?.pcie_slots || device.expansion.pcie_slots.length === 0)) {
+      return false;
+    }
+
+    if (selectedFilters.pcieSlotTypes.size > 0) {
+      // If we're filtering by PCIe slot types, device must have matching slots
+      if (!device.expansion?.pcie_slots || 
+          !device.expansion.pcie_slots.some(slot => 
+            selectedFilters.pcieSlotTypes.has(slot.type))) {
+        return false;
+      }
     }
 
     if (selectedFilters.deviceAge) {

@@ -18,16 +18,18 @@ import {
   Grid,
   DialogActions,
   Button,
+  Badge,
 } from '@mui/material';
 import { useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
+import ExpandIcon from '@mui/icons-material/ExpandMore';
 import type { MiniPC } from '../types/minipc';
 
 interface MiniPCTableProps {
   devices: MiniPC[];
 }
 
-type SortKey = keyof MiniPC | 'cpu.cores' | 'cpu.tdp' | 'memory.speed' | 'cpu.model' | 'memory.type' | 'memory.module_type' | 'cpu.chipset' | 'release_date';
+type SortKey = keyof MiniPC | 'cpu.cores' | 'cpu.tdp' | 'memory.speed' | 'cpu.model' | 'memory.type' | 'memory.module_type' | 'cpu.chipset' | 'release_date' | 'has_expansion';
 
 type SortConfig = {
   key: SortKey;
@@ -41,7 +43,12 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
   });
   const [detailDevice, setDetailDevice] = useState<MiniPC | null>(null);
 
-  const getSortValue = (device: MiniPC, key: SortKey): string | number => {
+  // Check if any device has PCIe expansion slots
+  const hasAnyExpansionSlots = devices.some(device => 
+    device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0
+  );
+
+  const getSortValue = (device: MiniPC, key: SortKey): string | number | boolean => {
     switch (key) {
       case 'cpu.cores':
         return device.cpu.cores;
@@ -59,6 +66,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
         return device.cpu.chipset || '';
       case 'release_date':
         return device.release_date || '';
+      case 'has_expansion':
+        return !!device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0;
       default:
         return device[key] as string;
     }
@@ -112,6 +121,32 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
     return `${age} years old`;
   };
 
+  // Function to render expansion slots indicator
+  const renderExpansionIndicator = (device: MiniPC) => {
+    if (!device.expansion?.pcie_slots || device.expansion.pcie_slots.length === 0) {
+      return null;
+    }
+
+    return (
+      <Tooltip title={`${device.expansion.pcie_slots.length} PCIe slot(s) available`}>
+        <Badge 
+          badgeContent={device.expansion.pcie_slots.length} 
+          color="primary" 
+          sx={{ '& .MuiBadge-badge': { fontSize: '0.6rem' } }}
+        >
+          <Chip
+            icon={<ExpandIcon />}
+            label="PCIe"
+            size="small"
+            color="primary"
+            variant="outlined"
+            sx={{ fontSize: '0.7rem', height: 20 }}
+          />
+        </Badge>
+      </Tooltip>
+    );
+  };
+
   return (
     <>
       <Paper elevation={0}>
@@ -137,6 +172,9 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                 <TableCell>Storage</TableCell>
                 <TableCell>Ethernet</TableCell>
                 <TableCell>WiFi</TableCell>
+                {hasAnyExpansionSlots && (
+                  <TableCell>{renderSortLabel('Expansion', 'has_expansion')}</TableCell>
+                )}
                 <TableCell>Details</TableCell>
               </TableRow>
             </TableHead>
@@ -199,7 +237,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         {storage.type} ({storage.interface})
                         <Typography variant="caption" color="text.secondary" component="div">
                           Max {storage.max_capacity}GB
-                          {storage.controller && ` - ${storage.controller}`}
                         </Typography>
                       </Typography>
                     ))}
@@ -225,6 +262,11 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       BT {device.networking.wifi.bluetooth}
                     </Typography>
                   </TableCell>
+                  {hasAnyExpansionSlots && (
+                    <TableCell>
+                      {renderExpansionIndicator(device)}
+                    </TableCell>
+                  )}
                   <TableCell>
                     <Tooltip title="View Full Details">
                       <IconButton size="small" onClick={() => handleOpenDetails(device)}>
@@ -302,11 +344,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       <Typography variant="body2">
                         Max Capacity: {storage.max_capacity}GB
                       </Typography>
-                      {storage.controller && (
-                        <Typography variant="body2">
-                          Controller: {storage.controller}
-                        </Typography>
-                      )}
                     </Box>
                   ))}
                 </Grid>
@@ -389,6 +426,31 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     <Typography variant="body2">
                       Input: {detailDevice.power.dc_input}
                     </Typography>
+                  </Grid>
+                )}
+
+                {/* Expansion Slots section */}
+                {detailDevice.expansion?.pcie_slots && detailDevice.expansion.pcie_slots.length > 0 && (
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom>Expansion Slots</Typography>
+                    {detailDevice.expansion.pcie_slots.map((slot, index) => (
+                      <Box key={index} mb={1}>
+                        <Typography variant="body2">
+                          PCIe {slot.type} {slot.version}
+                        </Typography>
+                        {(slot.full_height !== undefined || slot.length) && (
+                          <Typography variant="body2">
+                            {slot.full_height ? 'Full-height' : 'Low-profile'} 
+                            {slot.length && `, ${slot.length}`}
+                          </Typography>
+                        )}
+                      </Box>
+                    ))}
+                    {detailDevice.expansion.additional_info && (
+                      <Typography variant="body2" color="text.secondary">
+                        Note: {detailDevice.expansion.additional_info}
+                      </Typography>
+                    )}
                   </Grid>
                 )}
               </Grid>

@@ -23,7 +23,6 @@ storage:
     form_factor: "2280"
     interface: PCIe 4.0 x4
     max_capacity: 2000
-    controller: "AMD Promontory"
 networking:
   ethernet:
     - chipset: Realtek RTL8125BG

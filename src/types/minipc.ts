@@ -26,7 +26,6 @@ export interface MiniPC {
     form_factor: string;
     interface: string;
     max_capacity: number;
-    controller?: string; // Optional controller information
   }>;
   networking: {
     ethernet: Array<{
@@ -39,6 +38,15 @@ export interface MiniPC {
       standard: string;
       bluetooth: string;
     };
+  };
+  expansion?: {
+    pcie_slots?: Array<{
+      type: string; // e.g., "x1", "x4", "x16"
+      version: string; // e.g., "PCIe 3.0", "PCIe 4.0"
+      full_height?: boolean; // Whether it supports full-height cards
+      length?: string; // e.g., "half-length", "full-length"
+    }>;
+    additional_info?: string;
   };
   ports?: {
     usb_a?: number;
