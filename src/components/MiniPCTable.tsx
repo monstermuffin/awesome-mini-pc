@@ -19,7 +19,6 @@ import {
   DialogActions,
   Button,
   Badge,
-  useTheme,
 } from '@mui/material';
 import { useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
@@ -38,7 +37,6 @@ type SortConfig = {
 };
 
 export function MiniPCTable({ devices }: MiniPCTableProps) {
-  const theme = useTheme();
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: 'brand',
     direction: 'asc',
