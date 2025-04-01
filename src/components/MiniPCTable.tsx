@@ -223,14 +223,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       : 'rgba(33,150,243,0.1)',
                     fontWeight: 'bold',
                   }}
-                >{renderSortLabel('Year', 'release_date')}</TableCell>
-                <TableCell
-                  sx={{ 
-                    background: theme => theme.palette.mode === 'dark' 
-                      ? 'rgba(26,35,126,0.4)' 
-                      : 'rgba(33,150,243,0.1)',
-                    fontWeight: 'bold',
-                  }}
                 >{renderSortLabel('CPU', 'cpu.model')}</TableCell>
                 <TableCell 
                   align="right"
@@ -350,15 +342,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       {device.model}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {device.release_date}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" component="div">
-                      {device.release_date}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {getDeviceAge(device.release_date)}
+                      {device.release_date} - {getDeviceAge(device.release_date)}
                     </Typography>
                   </TableCell>
                   <TableCell>
