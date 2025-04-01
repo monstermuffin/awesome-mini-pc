@@ -585,17 +585,13 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       });
                       
                       return Object.entries(storageGroups).map(([key, { count, storage }], index) => (
-                        <Typography key={index} variant="body2" component="div" sx={{ 
-                          mb: index < Object.entries(storageGroups).length - 1 ? 0.8 : 0,
-                          whiteSpace: 'normal',
-                          overflow: 'visible',
-                          lineHeight: 1.3,
-                        }}>
-                          <Box component="span" sx={{ 
+                        <Box key={index} mb={1}>
+                          <Typography variant="body2" sx={{ 
+                            mb: 0.5, 
                             fontWeight: 'medium',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 0.5,
+                            gap: 0.5
                           }}>
                             {count > 1 && (
                               <Chip 
@@ -604,22 +600,18 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                                 sx={{ 
                                   height: 20, 
                                   fontSize: '0.7rem',
-                                  bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                  bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.2)' : 'rgba(33,150,243,0.15)',
                                   color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
                                   fontWeight: 600,
                                 }} 
                               />
                             )}
                             {storage.type} {storage.form_factor}
-                          </Box>
-                          <Box component="span" sx={{ 
-                            color: 'text.secondary',
-                            fontSize: '0.75rem',
-                            display: 'block',
-                          }}>
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                             {storage.interface}
-                          </Box>
-                        </Typography>
+                          </Typography>
+                        </Box>
                       ));
                     })()}
                   </TableCell>
@@ -862,16 +854,10 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     });
                     
                     return Object.entries(storageGroups).map(([key, { count, storage }], index) => (
-                      <Box key={index} mb={1} sx={{
-                        p: 1.5,
-                        borderRadius: 1,
-                        backgroundColor: theme => theme.palette.mode === 'dark' 
-                          ? 'rgba(255,255,255,0.03)' 
-                          : 'rgba(0,0,0,0.02)',
-                      }}>
+                      <Box key={index} mb={1}>
                         <Typography variant="body2" sx={{ 
                           mb: 0.5, 
-                          fontWeight: 500,
+                          fontWeight: 'medium',
                           display: 'flex',
                           alignItems: 'center',
                           gap: 0.5
@@ -889,15 +875,9 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                               }} 
                             />
                           )}
-                          <Box component="span" sx={{ fontWeight: 500 }}>
-                            {storage.type} {storage.form_factor}
-                          </Box>
+                          {storage.type} {storage.form_factor}
                         </Typography>
-                        <Typography variant="body2" sx={{ 
-                          color: 'text.secondary', 
-                          fontSize: '0.85rem',
-                          mb: 0.5 
-                        }}>
+                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                           {storage.interface}
                         </Typography>
                       </Box>
