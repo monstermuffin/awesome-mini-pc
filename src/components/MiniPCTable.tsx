@@ -388,26 +388,46 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     {device.networking.ethernet.map((eth, index) => (
                       <Box key={index}>
                         {Array.from({ length: eth.ports }).map((_, portIndex) => (
-                          <Typography key={portIndex} variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                            <span>{eth.speed}</span>
-                            <Typography variant="caption" color="text.secondary" component="span">
-                              ({eth.chipset})
+                          <Box key={portIndex} sx={{ mb: 0.5 }}>
+                            <Typography variant="body2">{eth.speed}</Typography>
+                            <Typography 
+                              variant="caption" 
+                              color="text.secondary" 
+                              sx={{ 
+                                display: 'block',
+                                fontSize: '0.75rem',
+                                opacity: 0.8
+                              }}
+                            >
+                              {eth.chipset}
                             </Typography>
-                          </Typography>
+                          </Box>
                         ))}
                       </Box>
                     ))}
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <span>{device.networking.wifi.standard}</span>
-                      <Typography variant="caption" color="text.secondary" component="span">
-                        ({device.networking.wifi.chipset})
+                    <Box>
+                      <Typography variant="body2">{device.networking.wifi.standard}</Typography>
+                      <Typography 
+                        variant="caption" 
+                        color="text.secondary" 
+                        sx={{ 
+                          display: 'block',
+                          fontSize: '0.75rem',
+                          opacity: 0.8
+                        }}
+                      >
+                        {device.networking.wifi.chipset}
                       </Typography>
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" component="div">
-                      BT {device.networking.wifi.bluetooth}
-                    </Typography>
+                      <Typography 
+                        variant="caption" 
+                        color="text.secondary" 
+                        sx={{ display: 'block' }}
+                      >
+                        BT {device.networking.wifi.bluetooth}
+                      </Typography>
+                    </Box>
                   </TableCell>
                   {hasAnyExpansionSlots && (
                     <TableCell>
@@ -510,12 +530,20 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                 
                 <Grid item xs={12} md={6}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom>WiFi</Typography>
-                  <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                    <span>{detailDevice.networking.wifi.standard}</span>
-                    <Typography variant="caption" color="text.secondary" component="span">
-                      ({detailDevice.networking.wifi.chipset})
+                  <Box sx={{ mb: 0.5 }}>
+                    <Typography variant="body2">{detailDevice.networking.wifi.standard}</Typography>
+                    <Typography 
+                      variant="caption" 
+                      color="text.secondary" 
+                      sx={{ 
+                        display: 'block',
+                        fontSize: '0.75rem',
+                        opacity: 0.8
+                      }}
+                    >
+                      {detailDevice.networking.wifi.chipset}
                     </Typography>
-                  </Typography>
+                  </Box>
                   <Typography variant="body2">
                     Bluetooth: {detailDevice.networking.wifi.bluetooth}
                   </Typography>
@@ -526,12 +554,20 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   {detailDevice.networking.ethernet.map((eth, index) => (
                     <Box key={index} mb={1}>
                       {Array.from({ length: eth.ports }).map((_, portIndex) => (
-                        <Typography key={portIndex} variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                          <span>{eth.speed}</span>
-                          <Typography variant="caption" color="text.secondary" component="span">
-                            ({eth.chipset})
+                        <Box key={portIndex} sx={{ mb: 0.5 }}>
+                          <Typography variant="body2">{eth.speed}</Typography>
+                          <Typography 
+                            variant="caption" 
+                            color="text.secondary" 
+                            sx={{ 
+                              display: 'block',
+                              fontSize: '0.75rem',
+                              opacity: 0.8
+                            }}
+                          >
+                            {eth.chipset}
                           </Typography>
-                        </Typography>
+                        </Box>
                       ))}
                     </Box>
                   ))}
