@@ -291,8 +291,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     fontWeight: 'bold',
                     color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
                     borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    width: 70,
-                    minWidth: 60,
+                    width: 80,
+                    minWidth: 80,
                   }}
                 >{renderSortLabel('Cores', 'cpu.cores')}</TableCell>
                 <TableCell 
@@ -304,8 +304,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     fontWeight: 'bold',
                     color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
                     borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    width: 70,
-                    minWidth: 60,
+                    width: 80,
+                    minWidth: 80,
                   }}
                 >{renderSortLabel('TDP', 'cpu.tdp')}</TableCell>
                 <TableCell
@@ -329,7 +329,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
                     borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
                     width: 90,
-                    minWidth: 80,
+                    minWidth: 90,
                   }}
                 >{renderSortLabel('Module', 'memory.module_type')}</TableCell>
                 <TableCell 
@@ -341,8 +341,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     fontWeight: 'bold',
                     color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
                     borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    width: 80,
-                    minWidth: 70,
+                    width: 90,
+                    minWidth: 90,
                   }}
                 >{renderSortLabel('Speed', 'memory.speed')}</TableCell>
                 <TableCell
