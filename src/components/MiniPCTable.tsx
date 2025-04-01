@@ -679,19 +679,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       mt: 0.3
                     }}>
                       <Typography variant="caption" color="text.secondary" component="div">
-                        BT
+                        BT {device.networking.wifi.bluetooth}
                       </Typography>
-                      <Chip 
-                        label={device.networking.wifi.bluetooth} 
-                        size="small" 
-                        sx={{ 
-                          height: 16, 
-                          fontSize: '0.65rem',
-                          bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
-                          color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                          fontWeight: 600,
-                        }} 
-                      />
                     </Box>
                   </TableCell>
                   {hasAnyExpansionSlots && (
@@ -951,19 +940,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     mt: 0.3
                   }}>
                     <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      Bluetooth:
+                      Bluetooth: {detailDevice.networking.wifi.bluetooth}
                     </Typography>
-                    <Chip 
-                      label={detailDevice.networking.wifi.bluetooth} 
-                      size="small" 
-                      sx={{ 
-                        height: 20, 
-                        fontSize: '0.7rem',
-                        bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
-                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                        fontWeight: 600,
-                      }} 
-                    />
                   </Box>
                 </Grid>
                 
