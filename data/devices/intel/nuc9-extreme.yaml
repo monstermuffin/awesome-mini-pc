@@ -13,7 +13,6 @@ cpu:
   chipset: Intel HM370
   architecture: "Coffee Lake"
 memory:
-  max_capacity: 64
   slots: 2
   type: DDR4
   speed: 2666
@@ -22,11 +21,9 @@ storage:
   - type: M.2
     form_factor: "2280"
     interface: PCIe 3.0 x4
-    max_capacity: 2000
   - type: M.2
     form_factor: "2280"
     interface: PCIe 3.0 x4
-    max_capacity: 2000
 expansion:
   pcie_slots:
     - type: "x16"

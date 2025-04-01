@@ -13,7 +13,6 @@ cpu:
   chipset: AMD X670E
   architecture: "Zen 4"
 memory:
-  max_capacity: 64
   slots: 2
   type: DDR5
   speed: 4800
@@ -22,7 +21,6 @@ storage:
   - type: M.2
     form_factor: "2280"
     interface: PCIe 4.0 x4
-    max_capacity: 2000
 networking:
   ethernet:
     - chipset: Realtek RTL8125BG

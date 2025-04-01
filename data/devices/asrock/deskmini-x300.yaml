@@ -13,7 +13,6 @@ cpu:
   chipset: AMD X300
   architecture: "Zen 3"
 memory:
-  max_capacity: 64
   slots: 2
   type: DDR4
   speed: 3200
@@ -22,11 +21,9 @@ storage:
   - type: M.2
     form_factor: "2280"
     interface: PCIe 3.0 x4
-    max_capacity: 2000
   - type: SATA
     form_factor: "2.5"
     interface: SATA III
-    max_capacity: 4000
 expansion:
   pcie_slots:
     - type: "x4"

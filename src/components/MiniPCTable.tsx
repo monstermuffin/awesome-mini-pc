@@ -381,9 +381,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     {device.storage.map((storage, index) => (
                       <Typography key={index} variant="body2" component="div">
                         {storage.type} ({storage.interface})
-                        <Typography variant="caption" color="text.secondary" component="div">
-                          Max {storage.max_capacity}GB
-                        </Typography>
                       </Typography>
                     ))}
                   </TableCell>
