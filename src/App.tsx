@@ -46,6 +46,7 @@ type FilterState = {
   cores: { min: number; max: number } | null;
   memorySpeed: { min: number; max: number } | null;
   memoryCapacity: { min: number; max: number } | null;
+  volume: { min: number; max: number } | null;
 };
 
 function App() {
@@ -109,6 +110,7 @@ function App() {
     cores: null,
     memorySpeed: null,
     memoryCapacity: null,
+    volume: null,
   });
 
   // Load data on mount
@@ -135,7 +137,7 @@ function App() {
       const newFilters = { ...prev };
       
       if (category === 'tdp' || category === 'cores' || category === 'memorySpeed' || 
-          category === 'memoryCapacity' || category === 'deviceAge') {
+          category === 'memoryCapacity' || category === 'deviceAge' || category === 'volume') {
         newFilters[category] = value as { min: number; max: number } | null;
       } else if (category === 'hasExpansionSlots') {
         newFilters[category] = checked as boolean;
@@ -155,6 +157,9 @@ function App() {
 
   // Filter devices based on selected filters
   const filteredDevices = devices.filter(device => {
+    // Skip filtering if filterOptions is not loaded yet
+    if (!filterOptions) return true;
+
     if (selectedFilters.brands.size > 0 && !selectedFilters.brands.has(device.brand)) {
       return false;
     }
@@ -246,6 +251,20 @@ function App() {
       if (device.memory.max_capacity < selectedFilters.memoryCapacity.min || 
           device.memory.max_capacity > selectedFilters.memoryCapacity.max) {
         return false;
+      }
+    }
+
+    if (selectedFilters.volume) {
+      if (!device.dimensions?.volume || 
+          device.dimensions.volume < selectedFilters.volume.min || 
+          device.dimensions.volume > selectedFilters.volume.max) {
+        // Only filter if the user has changed the volume range from the default
+        const volumeRange = filterOptions?.volumeRange;
+        if (!volumeRange || 
+            selectedFilters.volume.min !== volumeRange.min || 
+            selectedFilters.volume.max !== volumeRange.max) {
+          return false;
+        }
       }
     }
 

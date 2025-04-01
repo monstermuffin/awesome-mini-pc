@@ -13,6 +13,7 @@ export interface FilterOptions {
   tdpRange: { min: number; max: number };
   coreRange: { min: number; max: number };
   memorySpeedRange: { min: number; max: number };
+  volumeRange: { min: number; max: number };
 }
 
 // Add missing fields to the data for compatibility
@@ -60,6 +61,7 @@ function convertToFilterOptions(metadata: typeof generatedData.metadata): Filter
     tdpRange: metadata.tdpRange,
     coreRange: metadata.coreRange,
     memorySpeedRange: metadata.memorySpeedRange,
+    volumeRange: metadata.volumeRange,
   };
 }
 
@@ -91,6 +93,7 @@ export async function loadMiniPCData(): Promise<{ devices: MiniPC[]; filterOptio
         tdpRange: { min: 0, max: 0 },
         coreRange: { min: 0, max: 0 },
         memorySpeedRange: { min: 0, max: 0 },
+        volumeRange: { min: 0, max: 0 },
       },
     };
   }

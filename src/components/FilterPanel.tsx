@@ -33,6 +33,7 @@ type FilterState = {
   cores: { min: number; max: number } | null;
   memorySpeed: { min: number; max: number } | null;
   memoryCapacity: { min: number; max: number } | null;
+  volume: { min: number; max: number } | null;
 };
 
 interface FilterPanelProps {
@@ -133,11 +134,16 @@ const RangeFilter: React.FC<{
           min={range.min}
           max={range.max}
           step={step}
-          valueLabelFormat={(val) => `${val}${unit}`}
+          valueLabelFormat={(val) => {
+            if (val === range.min && value?.min === range.min) {
+              return 'Any';
+            }
+            return `${val}${unit}`;
+          }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
           <Typography variant="caption" color="text.secondary">
-            {range.min}{unit}
+            Any
           </Typography>
           <Typography variant="caption" color="text.secondary">
             {range.max}{unit}
@@ -243,6 +249,15 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.brands}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('brands', value, checked)}
+      />
+
+      <RangeFilter
+        title="Volume (Liters)"
+        range={filterOptions.volumeRange}
+        value={selectedFilters.volume}
+        onChange={(value) => onFilterChange('volume', value)}
+        step={0.1}
+        unit="L"
       />
 
       <FilterGroup

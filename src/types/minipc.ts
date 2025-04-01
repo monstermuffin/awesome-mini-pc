@@ -63,6 +63,7 @@ export interface MiniPC {
     width: number; // in mm
     depth: number; // in mm
     height: number; // in mm
+    volume?: number; // in liters
   };
   power?: {
     adapter_wattage: number; // in watts

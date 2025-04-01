@@ -29,7 +29,7 @@ interface MiniPCTableProps {
   devices: MiniPC[];
 }
 
-type SortKey = keyof MiniPC | 'cpu.cores' | 'cpu.tdp' | 'memory.speed' | 'cpu.model' | 'memory.type' | 'memory.module_type' | 'cpu.chipset' | 'release_date' | 'has_expansion';
+type SortKey = keyof MiniPC | 'cpu.cores' | 'cpu.tdp' | 'memory.speed' | 'cpu.model' | 'memory.type' | 'memory.module_type' | 'cpu.chipset' | 'release_date' | 'has_expansion' | 'dimensions.volume';
 
 type SortConfig = {
   key: SortKey;
@@ -68,6 +68,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
         return device.release_date || '';
       case 'has_expansion':
         return !!device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0;
+      case 'dimensions.volume':
+        return device.dimensions?.volume || 0;
       default:
         return device[key] as string;
     }
@@ -384,6 +386,19 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     minWidth: 100,
                   }}
                 >WiFi</TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
+                      : 'linear-gradient(180deg, rgba(33,150,243,0.2) 0%, rgba(33,150,243,0.1) 100%)',
+                    fontWeight: 'bold',
+                    color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
+                    borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                    width: 80,
+                    minWidth: 80,
+                  }}
+                >{renderSortLabel('Liters', 'dimensions.volume')}</TableCell>
                 {hasAnyExpansionSlots && (
                   <TableCell
                     align="left"
@@ -584,7 +599,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         }
                       });
                       
-                      return Object.entries(storageGroups).map(([key, { count, storage }], index) => (
+                      return Object.entries(storageGroups).map(([_, { count, storage }], index) => (
                         <Box key={index} mb={1}>
                           <Typography variant="body2" sx={{ 
                             mb: 0.5, 
@@ -674,6 +689,17 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         BT {device.networking.wifi.bluetooth}
                       </Typography>
                     </Box>
+                  </TableCell>
+                  <TableCell>
+                    {device.dimensions?.volume && (
+                      <Box sx={{ 
+                        fontWeight: 'medium', 
+                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {device.dimensions.volume.toFixed(2)}L
+                      </Box>
+                    )}
                   </TableCell>
                   {hasAnyExpansionSlots && (
                     <TableCell>
@@ -853,7 +879,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       }
                     });
                     
-                    return Object.entries(storageGroups).map(([key, { count, storage }], index) => (
+                    return Object.entries(storageGroups).map(([_, { count, storage }], index) => (
                       <Box key={index} mb={1}>
                         <Typography variant="body2" sx={{ 
                           mb: 0.5, 
@@ -1041,6 +1067,14 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     <Typography variant="body2" sx={{ mb: 0.5 }}>
                       {detailDevice.dimensions.width} × {detailDevice.dimensions.depth} × {detailDevice.dimensions.height} mm
                     </Typography>
+                    {detailDevice.dimensions.volume && (
+                      <Typography variant="body2" sx={{ 
+                        fontWeight: 'medium',
+                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2'
+                      }}>
+                        Volume: {detailDevice.dimensions.volume.toFixed(2)}L
+                      </Typography>
+                    )}
                   </Grid>
                 )}
                 
