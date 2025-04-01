@@ -386,12 +386,16 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   </TableCell>
                   <TableCell>
                     {device.networking.ethernet.map((eth, index) => (
-                      <Typography key={index} variant="body2" component="div">
-                        {eth.speed} ({eth.ports}x)
-                        <Typography variant="caption" color="text.secondary" component="div">
-                          {eth.chipset}
-                        </Typography>
-                      </Typography>
+                      <Box key={index}>
+                        {Array.from({ length: eth.ports }).map((_, portIndex) => (
+                          <Typography key={portIndex} variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                            <span>{eth.speed}</span>
+                            <Typography variant="caption" color="text.secondary" component="span">
+                              ({eth.chipset})
+                            </Typography>
+                          </Typography>
+                        ))}
+                      </Box>
                     ))}
                   </TableCell>
                   <TableCell>
@@ -521,12 +525,14 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom>Ethernet</Typography>
                   {detailDevice.networking.ethernet.map((eth, index) => (
                     <Box key={index} mb={1}>
-                      <Typography variant="body2">
-                        {eth.speed} ({eth.ports} port{eth.ports > 1 ? 's' : ''})
-                      </Typography>
-                      <Typography variant="body2">
-                        Chipset: {eth.chipset}
-                      </Typography>
+                      {Array.from({ length: eth.ports }).map((_, portIndex) => (
+                        <Typography key={portIndex} variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                          <span>{eth.speed}</span>
+                          <Typography variant="caption" color="text.secondary" component="span">
+                            ({eth.chipset})
+                          </Typography>
+                        </Typography>
+                      ))}
                     </Box>
                   ))}
                 </Grid>
