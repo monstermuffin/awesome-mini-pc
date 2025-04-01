@@ -59,29 +59,47 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
   devices,
   onSelect,
   getCount,
-}) => (
-  <Box sx={{ mb: 2, px: 2, pt: 1 }}>
-    <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>{title}</Typography>
-    <FormGroup>
-      {Array.from(options).sort().map((option) => {
-        const count = getCount(option);
-        return (
-          <FormControlLabel
-            key={option}
-            control={
-              <Checkbox
-                checked={selected.has(option)}
-                onChange={(e) => onSelect(option, e.target.checked)}
-                size="small"
-              />
-            }
-            label={<Typography variant="body2">{option}</Typography>}
-          />
-        );
-      })}
-    </FormGroup>
-  </Box>
-);
+}) => {
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ 
+      mb: 2, 
+      px: 2, 
+      pt: 1,
+      pb: 1
+    }}>
+      <Typography 
+        variant="subtitle2" 
+        sx={{ 
+          mb: 1, 
+          fontWeight: 500,
+          color: theme.palette.text.secondary
+        }}
+      >
+        {title}
+      </Typography>
+      <FormGroup>
+        {Array.from(options).sort().map((option) => {
+          const count = getCount(option);
+          return (
+            <FormControlLabel
+              key={option}
+              control={
+                <Checkbox
+                  checked={selected.has(option)}
+                  onChange={(e) => onSelect(option, e.target.checked)}
+                  size="small"
+                />
+              }
+              label={<Typography variant="body2">{option}</Typography>}
+            />
+          );
+        })}
+      </FormGroup>
+    </Box>
+  );
+};
 
 const RangeFilter: React.FC<{
   title: string;
@@ -90,36 +108,54 @@ const RangeFilter: React.FC<{
   onChange: (value: { min: number; max: number } | null) => void;
   step?: number;
   unit?: string;
-}> = ({ title, range, value, onChange, step = 1, unit = '' }) => (
-  <Box sx={{ mb: 2, px: 2, pt: 1 }}>
-    <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>{title}</Typography>
-    <Box sx={{ px: 1 }}>
-      <Slider
-        value={[
-          value?.min ?? range.min,
-          value?.max ?? range.max,
-        ]}
-        onChange={(_, newValue) => {
-          const [min, max] = newValue as number[];
-          onChange({ min, max });
+}> = ({ title, range, value, onChange, step = 1, unit = '' }) => {
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ 
+      mb: 2, 
+      px: 2, 
+      pt: 1,
+      pb: 1
+    }}>
+      <Typography 
+        variant="subtitle2" 
+        sx={{ 
+          mb: 1, 
+          fontWeight: 500,
+          color: theme.palette.text.secondary
         }}
-        valueLabelDisplay="auto"
-        min={range.min}
-        max={range.max}
-        step={step}
-        valueLabelFormat={(val) => `${val}${unit}`}
-      />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-        <Typography variant="caption" color="text.secondary">
-          {range.min}{unit}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {range.max}{unit}
-        </Typography>
+      >
+        {title}
+      </Typography>
+      <Box sx={{ px: 1 }}>
+        <Slider
+          value={[
+            value?.min ?? range.min,
+            value?.max ?? range.max,
+          ]}
+          onChange={(_, newValue) => {
+            const [min, max] = newValue as number[];
+            onChange({ min, max });
+          }}
+          valueLabelDisplay="auto"
+          min={range.min}
+          max={range.max}
+          step={step}
+          valueLabelFormat={(val) => `${val}${unit}`}
+        />
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+          <Typography variant="caption" color="text.secondary">
+            {range.min}{unit}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {range.max}{unit}
+          </Typography>
+        </Box>
       </Box>
     </Box>
-  </Box>
-);
+  );
+};
 
 export const FilterPanel: React.FC<FilterPanelProps> = ({
   filterOptions,
@@ -355,6 +391,11 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         borderRadius: 0,
       }}
     >
+      {/* General Filters */}
+      <Typography variant="subtitle1" sx={{ px: 2, pt: 2, pb: 1, fontWeight: 600 }}>
+        General
+      </Typography>
+      
       <FilterGroup
         title="Brands"
         options={new Set(filterOptions.brands)}
@@ -383,6 +424,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           unit=" yr"
         />
       )}
+
+      <Divider sx={{ mx: 2, my: 2 }} />
+
+      {/* CPU Filters */}
+      <Typography variant="subtitle1" sx={{ px: 2, pt: 1, pb: 1, fontWeight: 600 }}>
+        CPU
+      </Typography>
 
       <FilterGroup
         title="CPU Brands"
@@ -430,6 +478,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         unit="W"
       />
 
+      <Divider sx={{ mx: 2, my: 2 }} />
+
+      {/* Memory Filters */}
+      <Typography variant="subtitle1" sx={{ px: 2, pt: 1, pb: 1, fontWeight: 600 }}>
+        Memory
+      </Typography>
+
       <FilterGroup
         title="Memory Type"
         options={new Set(filterOptions.memoryTypes)}
@@ -475,6 +530,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         unit="GB"
       />
 
+      <Divider sx={{ mx: 2, my: 2 }} />
+
+      {/* Networking Filters */}
+      <Typography variant="subtitle1" sx={{ px: 2, pt: 1, pb: 1, fontWeight: 600 }}>
+        Networking
+      </Typography>
+
       <FilterGroup
         title="WiFi Standard"
         options={new Set(filterOptions.wifiStandards)}
@@ -514,16 +576,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       {/* PCIe Expansion Filters - only show if any device has expansion slots */}
       {hasExpansionDevices && (
         <>
-          <Typography 
-            variant="subtitle1" 
-            sx={{ 
-              px: 2, 
-              pt: 2, 
-              pb: 1, 
-              fontWeight: 500,
-              borderTop: `1px solid ${theme.palette.divider}` 
-            }}
-          >
+          <Divider sx={{ mx: 2, my: 2 }} />
+          <Typography variant="subtitle1" sx={{ px: 2, pt: 1, pb: 1, fontWeight: 600 }}>
             Expansion
           </Typography>
           
@@ -552,17 +606,10 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         </>
       )}
 
+      <Divider sx={{ mx: 2, my: 2 }} />
+
       {/* Storage-related filters */}
-      <Typography 
-        variant="subtitle1" 
-        sx={{ 
-          px: 2, 
-          pt: 2, 
-          pb: 1, 
-          fontWeight: 500,
-          borderTop: `1px solid ${theme.palette.divider}` 
-        }}
-      >
+      <Typography variant="subtitle1" sx={{ px: 2, pt: 1, pb: 1, fontWeight: 600 }}>
         Storage
       </Typography>
       
