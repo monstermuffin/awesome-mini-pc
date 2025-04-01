@@ -399,11 +399,11 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     ))}
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2" component="div">
-                      {device.networking.wifi.standard}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" component="div">
-                      {device.networking.wifi.chipset}
+                    <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <span>{device.networking.wifi.standard}</span>
+                      <Typography variant="caption" color="text.secondary" component="span">
+                        ({device.networking.wifi.chipset})
+                      </Typography>
                     </Typography>
                     <Typography variant="caption" color="text.secondary" component="div">
                       BT {device.networking.wifi.bluetooth}
@@ -510,11 +510,11 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                 
                 <Grid item xs={12} md={6}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom>WiFi</Typography>
-                  <Typography variant="body2">
-                    Standard: {detailDevice.networking.wifi.standard}
-                  </Typography>
-                  <Typography variant="body2">
-                    Chipset: {detailDevice.networking.wifi.chipset}
+                  <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                    <span>{detailDevice.networking.wifi.standard}</span>
+                    <Typography variant="caption" color="text.secondary" component="span">
+                      ({detailDevice.networking.wifi.chipset})
+                    </Typography>
                   </Typography>
                   <Typography variant="body2">
                     Bluetooth: {detailDevice.networking.wifi.bluetooth}
