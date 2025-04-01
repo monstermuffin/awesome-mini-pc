@@ -365,7 +365,7 @@ function App() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: theme.palette.mode === 'dark' ? 'transparent' : 'white',
             }}>
-              Awesome Mini PCs
+              Awesome Mini PC
             </Typography>
             <Tooltip title="View on GitHub">
               <IconButton 
