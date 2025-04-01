@@ -19,6 +19,7 @@ import {
   DialogActions,
   Button,
   Badge,
+  useTheme,
 } from '@mui/material';
 import { useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
@@ -149,38 +150,200 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
 
   return (
     <>
-      <Paper elevation={0}>
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+      <Paper 
+        elevation={0} 
+        sx={{
+          borderRadius: 2,
+          overflow: 'hidden',
+          background: 'transparent',
+          transition: 'all 0.3s ease',
+        }}
+      >
+        <Box sx={{ 
+          p: 2, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          borderTopLeftRadius: 8,
+          borderTopRightRadius: 8,
+          background: theme => theme.palette.mode === 'dark' 
+            ? 'linear-gradient(to right, rgba(26,35,126,0.15), rgba(13,71,161,0.15))'
+            : 'linear-gradient(to right, rgba(66,165,245,0.15), rgba(25,118,210,0.15))',
+        }}>
+          <Typography variant="h6" sx={{ 
+            fontWeight: 600,
+            color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1976d2',
+          }}>
             {devices.length} {devices.length === 1 ? 'result' : 'results'}
           </Typography>
         </Box>
         
-        <TableContainer>
-          <Table>
+        <TableContainer 
+          sx={{
+            maxHeight: 'calc(100vh - 200px)',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+              height: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: theme => theme.palette.mode === 'dark' ? '#1e1e1e' : '#f1f1f1',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: theme => theme.palette.mode === 'dark' ? '#555' : '#ccc',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: theme => theme.palette.mode === 'dark' ? '#666' : '#aaa',
+            }
+          }}
+        >
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell>{renderSortLabel('Brand', 'brand')}</TableCell>
-                <TableCell>{renderSortLabel('Model', 'model')}</TableCell>
-                <TableCell>{renderSortLabel('Year', 'release_date')}</TableCell>
-                <TableCell>{renderSortLabel('CPU', 'cpu.model')}</TableCell>
-                <TableCell align="right">{renderSortLabel('Cores', 'cpu.cores')}</TableCell>
-                <TableCell align="right">{renderSortLabel('TDP', 'cpu.tdp')}</TableCell>
-                <TableCell>{renderSortLabel('Memory', 'memory.type')}</TableCell>
-                <TableCell>{renderSortLabel('Module', 'memory.module_type')}</TableCell>
-                <TableCell align="right">{renderSortLabel('Speed', 'memory.speed')}</TableCell>
-                <TableCell>Storage</TableCell>
-                <TableCell>Ethernet</TableCell>
-                <TableCell>WiFi</TableCell>
+                <TableCell 
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',  
+                  }}
+                >{renderSortLabel('Brand', 'brand')}</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >{renderSortLabel('Model', 'model')}</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >{renderSortLabel('Year', 'release_date')}</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >{renderSortLabel('CPU', 'cpu.model')}</TableCell>
+                <TableCell 
+                  align="right"
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >{renderSortLabel('Cores', 'cpu.cores')}</TableCell>
+                <TableCell 
+                  align="right"
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >{renderSortLabel('TDP', 'cpu.tdp')}</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >{renderSortLabel('Memory', 'memory.type')}</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >{renderSortLabel('Module', 'memory.module_type')}</TableCell>
+                <TableCell 
+                  align="right"
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >{renderSortLabel('Speed', 'memory.speed')}</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >Storage</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >Ethernet</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >WiFi</TableCell>
                 {hasAnyExpansionSlots && (
-                  <TableCell>{renderSortLabel('Expansion', 'has_expansion')}</TableCell>
+                  <TableCell
+                    sx={{ 
+                      background: theme => theme.palette.mode === 'dark' 
+                        ? 'rgba(26,35,126,0.4)' 
+                        : 'rgba(33,150,243,0.1)',
+                      fontWeight: 'bold',
+                    }}
+                  >{renderSortLabel('Expansion', 'has_expansion')}</TableCell>
                 )}
-                <TableCell>Details</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'rgba(26,35,126,0.4)' 
+                      : 'rgba(33,150,243,0.1)',
+                    fontWeight: 'bold',
+                  }}
+                >Details</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedDevices.map((device) => (
-                <TableRow key={device.id} hover>
+              {sortedDevices.map((device, index) => (
+                <TableRow 
+                  key={device.id} 
+                  hover
+                  sx={{ 
+                    transition: 'all 0.2s ease',
+                    animation: `fadeIn 0.5s ease-out ${index * 0.05}s both`,
+                    '@keyframes fadeIn': {
+                      '0%': {
+                        opacity: 0,
+                        transform: 'translateY(10px)'
+                      },
+                      '100%': {
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                      }
+                    },
+                    '&:hover': {
+                      backgroundColor: theme => theme.palette.mode === 'dark' 
+                        ? 'rgba(255,255,255,0.05)' 
+                        : 'rgba(33,150,243,0.05)',
+                    }
+                  }}
+                >
                   <TableCell>{device.brand}</TableCell>
                   <TableCell>
                     <Typography variant="body2" component="div">
@@ -268,11 +431,24 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     </TableCell>
                   )}
                   <TableCell>
-                    <Tooltip title="View Full Details">
-                      <IconButton size="small" onClick={() => handleOpenDetails(device)}>
-                        <InfoIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                    <IconButton 
+                      size="small" 
+                      onClick={() => handleOpenDetails(device)}
+                      sx={{
+                        transition: 'all 0.2s ease',
+                        backgroundColor: theme => theme.palette.mode === 'dark' 
+                          ? 'rgba(33,150,243,0.15)'
+                          : 'rgba(33,150,243,0.1)',
+                        '&:hover': {
+                          backgroundColor: theme => theme.palette.mode === 'dark'
+                            ? 'rgba(33,150,243,0.25)'
+                            : 'rgba(33,150,243,0.2)',
+                          transform: 'scale(1.1)',
+                        }
+                      }}
+                    >
+                      <InfoIcon fontSize="small" color="primary" />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

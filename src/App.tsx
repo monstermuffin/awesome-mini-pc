@@ -273,6 +273,14 @@ function App() {
           borderRight: `1px solid ${theme.palette.divider}`,
           height: 'calc(100% - 64px)',
           top: 64,
+          transition: theme.transitions.create(['width', 'transform'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          boxShadow: drawerOpen ? (theme.palette.mode === 'dark' 
+            ? '4px 0 10px rgba(0,0,0,0.2)' 
+            : '4px 0 10px rgba(0,0,0,0.1)') : 'none',
+          overflowX: 'hidden',
         },
       }}
     >
@@ -282,9 +290,24 @@ function App() {
         justifyContent: 'space-between',
         p: 1,
         borderBottom: `1px solid ${theme.palette.divider}`,
+        transition: 'all 0.2s ease',
+        background: theme.palette.mode === 'dark' 
+          ? 'linear-gradient(to right, rgba(26,35,126,0.1), rgba(13,71,161,0.1))'
+          : 'linear-gradient(to right, rgba(66,165,245,0.1), rgba(25,118,210,0.1))',
       }}>
-        <Typography variant="h6" sx={{ pl: 1 }}>Filters</Typography>
-        <IconButton onClick={handleDrawerToggle}>
+        <Typography variant="h6" sx={{ 
+          pl: 1,
+          fontWeight: 500,
+          opacity: drawerOpen ? 1 : 0,
+          transition: 'opacity 0.3s ease'
+        }}>Filters</Typography>
+        <IconButton 
+          onClick={handleDrawerToggle}
+          sx={{
+            transition: 'transform 0.3s ease',
+            transform: drawerOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+          }}
+        >
           <ChevronLeftIcon />
         </IconButton>
       </Box>
@@ -313,6 +336,11 @@ function App() {
             ? 'linear-gradient(45deg, #1a237e 30%, #0d47a1 90%)'
             : 'linear-gradient(45deg, #42a5f5 30%, #1976d2 90%)',
           zIndex: theme.zIndex.drawer + 1,
+          transition: 'all 0.3s ease-in-out',
+          backdropFilter: 'blur(8px)',
+          boxShadow: theme.palette.mode === 'dark' 
+            ? '0 4px 20px 0 rgba(0,0,0,0.14), 0 7px 10px -5px rgba(26,35,126,0.4)'
+            : '0 4px 20px 0 rgba(0,0,0,0.12), 0 7px 8px -5px rgba(33,150,243,0.3)'
         }}>
           <Toolbar>
             <IconButton
@@ -320,11 +348,23 @@ function App() {
               aria-label="toggle filters"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2 }}
+              sx={{ 
+                mr: 2,
+                transform: drawerOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.3s ease-in-out'
+              }}
             >
               <FilterListIcon />
             </IconButton>
-            <Typography variant="h5" component="h1" sx={{ flexGrow: 1, fontWeight: 600 }}>
+            <Typography variant="h5" component="h1" sx={{ 
+              flexGrow: 1, 
+              fontWeight: 600,
+              background: theme.palette.mode === 'dark'
+                ? 'linear-gradient(to right, #fff, #e0e0e0)'
+                : 'linear-gradient(to right, #fff, #fff)', 
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: theme.palette.mode === 'dark' ? 'transparent' : 'white',
+            }}>
               Awesome Mini PCs
             </Typography>
             <Tooltip title="View on GitHub">
@@ -361,6 +401,25 @@ function App() {
             duration: theme.transitions.duration.leavingScreen,
           }),
           overflowX: 'hidden',
+          background: theme.palette.mode === 'dark' 
+            ? 'radial-gradient(circle at 50% 50%, rgba(26,35,126,0.15) 0%, rgba(13,71,161,0) 70%), ' +
+              'radial-gradient(circle at 80% 20%, rgba(30,60,175,0.1) 0%, rgba(13,71,161,0) 50%)'
+            : 'radial-gradient(circle at 50% 50%, rgba(66,165,245,0.08) 0%, rgba(25,118,210,0) 70%), ' +
+              'radial-gradient(circle at 80% 20%, rgba(66,165,245,0.05) 0%, rgba(25,118,210,0) 50%)',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: theme.palette.mode === 'dark'
+              ? 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%232a3968\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'
+              : 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%232196f3\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+            opacity: 0.5,
+            pointerEvents: 'none',
+            zIndex: -1,
+          }
         }}>
           <Toolbar />
           <Box sx={{ 
