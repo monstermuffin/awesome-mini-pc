@@ -43,11 +43,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
   });
   const [detailDevice, setDetailDevice] = useState<MiniPC | null>(null);
 
-  // Check if any device has PCIe expansion slots
-  const hasAnyExpansionSlots = devices.some(device => 
-    device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0
-  );
-
   const getSortValue = (device: MiniPC, key: SortKey): string | number | boolean => {
     switch (key) {
       case 'cpu.cores':
@@ -136,7 +131,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
     if (!device.expansion?.pcie_slots || device.expansion.pcie_slots.length === 0) {
       return null;
     }
-
+    
     return (
       <Tooltip title={`${device.expansion.pcie_slots.length} PCIe slot(s) available`}>
         <Badge 
@@ -147,24 +142,36 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
               fontSize: '0.6rem',
               fontWeight: 'bold',
               backgroundColor: theme => theme.palette.mode === 'dark' ? '#2196f3' : '#1976d2',
-            } 
+              minWidth: '16px',
+              height: '16px',
+              padding: '0 4px'
+            }
           }}
         >
-          <Chip
-            icon={<ExpandIcon sx={{ fontSize: '1rem' }} />}
-            label="PCIe"
+          <IconButton
             size="small"
-            color="primary"
-            variant="outlined"
-            sx={{ 
-              fontSize: '0.7rem', 
-              height: 20,
-              borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
+            sx={{
+              transition: 'all 0.2s ease',
+              backgroundColor: theme => theme.palette.mode === 'dark' 
+                ? 'rgba(33,150,243,0.2)'
+                : 'rgba(33,150,243,0.1)',
               color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-              fontWeight: 500,
-              px: 0.5,
+              boxShadow: theme => theme.palette.mode === 'dark'
+                ? '0 2px 8px rgba(0,0,0,0.2)'
+                : '0 2px 4px rgba(0,0,0,0.1)',
+              '&:hover': {
+                backgroundColor: theme => theme.palette.mode === 'dark'
+                  ? 'rgba(33,150,243,0.3)'
+                  : 'rgba(33,150,243,0.2)',
+                transform: 'scale(1.1)',
+                boxShadow: theme => theme.palette.mode === 'dark'
+                  ? '0 4px 12px rgba(0,0,0,0.3)'
+                  : '0 4px 8px rgba(0,0,0,0.15)',
+              }
             }}
-          />
+          >
+            <ExpandIcon fontSize="small" />
+          </IconButton>
         </Badge>
       </Tooltip>
     );
@@ -399,23 +406,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     minWidth: 80,
                   }}
                 >{renderSortLabel('Liters', 'dimensions.volume')}</TableCell>
-                {hasAnyExpansionSlots && (
-                  <TableCell
-                    align="left"
-                    sx={{ 
-                      background: theme => theme.palette.mode === 'dark' 
-                        ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
-                        : 'linear-gradient(180deg, rgba(33,150,243,0.2) 0%, rgba(33,150,243,0.1) 100%)',
-                      fontWeight: 'bold',
-                      color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
-                      borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                      width: 120,
-                      minWidth: 100,
-                    }}
-                  >{renderSortLabel('Expansion', 'has_expansion')}</TableCell>
-                )}
                 <TableCell
-                  align="left"
+                  align="right"
                   sx={{ 
                     background: theme => theme.palette.mode === 'dark' 
                       ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
@@ -423,8 +415,9 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     fontWeight: 'bold',
                     color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
                     borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    width: 120,
-                    minWidth: 100,
+                    width: 70,
+                    minWidth: 70,
+                    padding: '6px 8px',
                   }}
                 >Details</TableCell>
               </TableRow>
@@ -701,37 +694,65 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       </Box>
                     )}
                   </TableCell>
-                  {hasAnyExpansionSlots && (
-                    <TableCell>
-                      {renderExpansionIndicator(device)}
-                    </TableCell>
-                  )}
-                  <TableCell>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => handleOpenDetails(device)}
-                      sx={{
-                        transition: 'all 0.2s ease',
-                        backgroundColor: theme => theme.palette.mode === 'dark' 
-                          ? 'rgba(33,150,243,0.2)'
-                          : 'rgba(33,150,243,0.1)',
-                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                        boxShadow: theme => theme.palette.mode === 'dark'
-                          ? '0 2px 8px rgba(0,0,0,0.2)'
-                          : '0 2px 4px rgba(0,0,0,0.1)',
-                        '&:hover': {
-                          backgroundColor: theme => theme.palette.mode === 'dark'
-                            ? 'rgba(33,150,243,0.3)'
-                            : 'rgba(33,150,243,0.2)',
-                          transform: 'scale(1.1)',
-                          boxShadow: theme => theme.palette.mode === 'dark'
-                            ? '0 4px 12px rgba(0,0,0,0.3)'
-                            : '0 4px 8px rgba(0,0,0,0.15)',
-                        }
-                      }}
-                    >
-                      <InfoIcon fontSize="small" />
-                    </IconButton>
+                  <TableCell sx={{ 
+                    padding: '6px 8px',
+                    width: 70,
+                    minWidth: 70,
+                  }}>
+                    <Box sx={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end'
+                    }}>
+                      <Badge 
+                        badgeContent={device.expansion?.pcie_slots?.length || 0}
+                        color="primary"
+                        sx={{ 
+                          '& .MuiBadge-badge': { 
+                            display: (!device.expansion?.pcie_slots || device.expansion.pcie_slots.length === 0) ? 'none' : 'flex',
+                            fontSize: '0.6rem',
+                            fontWeight: 'bold',
+                            backgroundColor: theme => theme.palette.mode === 'dark' ? '#2196f3' : '#1976d2',
+                            minWidth: '16px',
+                            height: '16px',
+                            padding: '0 4px',
+                          }
+                        }}
+                      >
+                        <Tooltip title={
+                          device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0
+                            ? `${device.expansion.pcie_slots.length} PCIe slot(s) available`
+                            : "View details"
+                        }>
+                          <IconButton 
+                            size="small" 
+                            onClick={() => handleOpenDetails(device)}
+                            sx={{
+                              padding: 0.75,
+                              transition: 'all 0.2s ease',
+                              backgroundColor: theme => theme.palette.mode === 'dark' 
+                                ? 'rgba(33,150,243,0.2)'
+                                : 'rgba(33,150,243,0.1)',
+                              color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                              boxShadow: theme => theme.palette.mode === 'dark'
+                                ? '0 2px 8px rgba(0,0,0,0.2)'
+                                : '0 2px 4px rgba(0,0,0,0.1)',
+                              '&:hover': {
+                                backgroundColor: theme => theme.palette.mode === 'dark'
+                                  ? 'rgba(33,150,243,0.3)'
+                                  : 'rgba(33,150,243,0.2)',
+                                transform: 'scale(1.1)',
+                                boxShadow: theme => theme.palette.mode === 'dark'
+                                  ? '0 4px 12px rgba(0,0,0,0.3)'
+                                  : '0 4px 8px rgba(0,0,0,0.15)',
+                              }
+                            }}
+                          >
+                            <InfoIcon sx={{ fontSize: '1.1rem' }} />
+                          </IconButton>
+                        </Tooltip>
+                      </Badge>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
