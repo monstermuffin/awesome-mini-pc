@@ -95,6 +95,14 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
       active={sortConfig.key === key}
       direction={sortConfig.key === key ? sortConfig.direction : 'asc'}
       onClick={() => handleSort(key)}
+      sx={{
+        display: 'flex',
+        width: '100%', 
+        justifyContent: key === 'cpu.cores' || key === 'cpu.tdp' || key === 'memory.speed' ? 'flex-end' : 'flex-start',
+        '& .MuiTableSortLabel-icon': {
+          marginTop: '2px'
+        }
+      }}
     >
       {label}
     </TableSortLabel>
@@ -246,6 +254,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
                     width: 100,
                     minWidth: 80,
+                    textAlign: 'left',
                   }}
                 >{renderSortLabel('Brand', 'brand')}</TableCell>
                 <TableCell
@@ -258,6 +267,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
                     width: 140,
                     minWidth: 120,
+                    textAlign: 'left',
                   }}
                 >{renderSortLabel('Model', 'model')}</TableCell>
                 <TableCell
@@ -336,6 +346,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   }}
                 >{renderSortLabel('Speed', 'memory.speed')}</TableCell>
                 <TableCell
+                  align="left"
                   sx={{ 
                     background: theme => theme.palette.mode === 'dark' 
                       ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
@@ -348,6 +359,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   }}
                 >Storage</TableCell>
                 <TableCell
+                  align="left"
                   sx={{ 
                     background: theme => theme.palette.mode === 'dark' 
                       ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
@@ -360,6 +372,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   }}
                 >Ethernet</TableCell>
                 <TableCell
+                  align="left"
                   sx={{ 
                     background: theme => theme.palette.mode === 'dark' 
                       ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
@@ -373,6 +386,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                 >WiFi</TableCell>
                 {hasAnyExpansionSlots && (
                   <TableCell
+                    align="left"
                     sx={{ 
                       background: theme => theme.palette.mode === 'dark' 
                         ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
@@ -386,6 +400,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   >{renderSortLabel('Expansion', 'has_expansion')}</TableCell>
                 )}
                 <TableCell
+                  align="left"
                   sx={{ 
                     background: theme => theme.palette.mode === 'dark' 
                       ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
@@ -894,8 +909,21 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                 
                 {detailDevice.dimensions && (
                   <Grid item xs={12} md={6}>
-                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom>Dimensions</Typography>
-                    <Typography variant="body2">
+                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
+                      color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      '&::before': {
+                        content: '""',
+                        display: 'block',
+                        width: 3,
+                        height: 16,
+                        backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                        marginRight: 1,
+                        borderRadius: 1,
+                      }
+                    }}>Dimensions</Typography>
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
                       {detailDevice.dimensions.width} × {detailDevice.dimensions.depth} × {detailDevice.dimensions.height} mm
                     </Typography>
                   </Grid>
@@ -903,11 +931,24 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                 
                 {detailDevice.power && (
                   <Grid item xs={12} md={6}>
-                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom>Power</Typography>
-                    <Typography variant="body2">
+                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
+                      color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      '&::before': {
+                        content: '""',
+                        display: 'block',
+                        width: 3,
+                        height: 16,
+                        backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                        marginRight: 1,
+                        borderRadius: 1,
+                      }
+                    }}>Power</Typography>
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
                       Adapter: {detailDevice.power.adapter_wattage}W
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
                       Input: {detailDevice.power.dc_input}
                     </Typography>
                   </Grid>
