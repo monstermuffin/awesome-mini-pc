@@ -13,6 +13,7 @@ interface ProcessedData {
     brands: string[];
     cpuBrands: string[];
     memoryTypes: string[];
+    memoryModuleTypes: string[];
     wifiStandards: string[];
     ethernetSpeeds: string[];
     storageTypes: string[];
@@ -33,8 +34,12 @@ function validateMiniPC(data: any): data is MiniPC {
     throw new Error('Missing or invalid CPU information');
   }
 
-  if (!data.memory || !data.memory.type || !data.memory.speed) {
+  if (!data.memory || !data.memory.type || !data.memory.speed || !data.memory.slots) {
     throw new Error('Missing or invalid memory information');
+  }
+
+  if (!data.memory.module_type) {
+    console.warn(`Warning: ${data.id} is missing memory.module_type (SODIMM/DIMM)`);
   }
 
   if (!Array.isArray(data.storage)) {
@@ -45,6 +50,18 @@ function validateMiniPC(data: any): data is MiniPC {
     throw new Error('Missing or invalid networking information');
   }
 
+  // Check if wifi has chipset
+  if (!data.networking.wifi.chipset) {
+    throw new Error('WiFi chipset is required');
+  }
+
+  // Validate ethernet entries
+  for (const eth of data.networking.ethernet) {
+    if (!eth.chipset || !eth.speed) {
+      throw new Error('Ethernet entries must include chipset and speed');
+    }
+  }
+
   return true;
 }
 
@@ -53,6 +70,7 @@ function extractMetadata(devices: MiniPC[]): ProcessedData['metadata'] {
     brands: new Set<string>(),
     cpuBrands: new Set<string>(),
     memoryTypes: new Set<string>(),
+    memoryModuleTypes: new Set<string>(),
     wifiStandards: new Set<string>(),
     ethernetSpeeds: new Set<string>(),
     storageTypes: new Set<string>(),
@@ -66,6 +84,9 @@ function extractMetadata(devices: MiniPC[]): ProcessedData['metadata'] {
     metadata.brands.add(pc.brand);
     metadata.cpuBrands.add(pc.cpu.brand);
     metadata.memoryTypes.add(pc.memory.type);
+    if (pc.memory.module_type) {
+      metadata.memoryModuleTypes.add(pc.memory.module_type);
+    }
     metadata.wifiStandards.add(pc.networking.wifi.standard);
     
     pc.networking.ethernet.forEach(eth => {
@@ -91,6 +112,7 @@ function extractMetadata(devices: MiniPC[]): ProcessedData['metadata'] {
     brands: [...metadata.brands].sort(),
     cpuBrands: [...metadata.cpuBrands].sort(),
     memoryTypes: [...metadata.memoryTypes].sort(),
+    memoryModuleTypes: [...metadata.memoryModuleTypes].sort(),
     wifiStandards: [...metadata.wifiStandards].sort(),
     ethernetSpeeds: [...metadata.ethernetSpeeds].sort(),
     storageTypes: [...metadata.storageTypes].sort(),
@@ -106,6 +128,7 @@ function generateTypeDefinitions(data: ProcessedData): string {
 export const BRANDS = ${JSON.stringify(data.metadata.brands)} as const;
 export const CPU_BRANDS = ${JSON.stringify(data.metadata.cpuBrands)} as const;
 export const MEMORY_TYPES = ${JSON.stringify(data.metadata.memoryTypes)} as const;
+export const MEMORY_MODULE_TYPES = ${JSON.stringify(data.metadata.memoryModuleTypes)} as const;
 export const WIFI_STANDARDS = ${JSON.stringify(data.metadata.wifiStandards)} as const;
 export const ETHERNET_SPEEDS = ${JSON.stringify(data.metadata.ethernetSpeeds)} as const;
 export const STORAGE_TYPES = ${JSON.stringify(data.metadata.storageTypes)} as const;
@@ -114,6 +137,7 @@ export const STORAGE_INTERFACES = ${JSON.stringify(data.metadata.storageInterfac
 export type Brand = typeof BRANDS[number];
 export type CpuBrand = typeof CPU_BRANDS[number];
 export type MemoryType = typeof MEMORY_TYPES[number];
+export type MemoryModuleType = typeof MEMORY_MODULE_TYPES[number];
 export type WifiStandard = typeof WIFI_STANDARDS[number];
 export type EthernetSpeed = typeof ETHERNET_SPEEDS[number];
 export type StorageType = typeof STORAGE_TYPES[number];

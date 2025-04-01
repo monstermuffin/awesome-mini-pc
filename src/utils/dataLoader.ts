@@ -5,6 +5,7 @@ export interface FilterOptions {
   brands: Set<string>;
   cpuBrands: Set<string>;
   memoryTypes: Set<string>;
+  memoryModuleTypes: Set<string>;
   wifiStandards: Set<string>;
   ethernetSpeeds: Set<string>;
   storageTypes: Set<string>;
@@ -14,12 +15,44 @@ export interface FilterOptions {
   memorySpeedRange: { min: number; max: number };
 }
 
+// Add missing fields to the data for compatibility
+function enhanceDataForCompat(devices: any[]): MiniPC[] {
+  return devices.map(device => {
+    // Add module_type if missing
+    if (!device.memory.module_type) {
+      device.memory.module_type = device.memory.type === 'DDR4' || device.memory.type === 'DDR5' ? 'SO-DIMM' : 'DIMM';
+    }
+    
+    // Add other missing fields as needed
+    if (device.cpu && !device.cpu.chipset) {
+      device.cpu.chipset = undefined;
+    }
+    
+    if (device.cpu && !device.cpu.architecture) {
+      device.cpu.architecture = undefined;
+    }
+    
+    return device as MiniPC;
+  });
+}
+
 // Function to convert arrays to Sets in the filter options
 function convertToFilterOptions(metadata: typeof generatedData.metadata): FilterOptions {
+  // Extract memory module types from devices if not in metadata
+  const memoryModuleTypes = new Set<string>();
+  if (generatedData.devices) {
+    generatedData.devices.forEach(device => {
+      if ((device as any).memory?.module_type) {
+        memoryModuleTypes.add((device as any).memory.module_type);
+      }
+    });
+  }
+  
   return {
     brands: new Set(metadata.brands),
     cpuBrands: new Set(metadata.cpuBrands),
     memoryTypes: new Set(metadata.memoryTypes),
+    memoryModuleTypes,
     wifiStandards: new Set(metadata.wifiStandards),
     ethernetSpeeds: new Set(metadata.ethernetSpeeds),
     storageTypes: new Set(metadata.storageTypes),
@@ -35,8 +68,11 @@ export async function loadMiniPCData(): Promise<{ devices: MiniPC[]; filterOptio
   try {
     console.log('Loading Mini PC data from generated file...');
     
+    // Process devices to add missing fields required by the updated schema
+    const enhancedDevices = enhanceDataForCompat(generatedData.devices);
+    
     return {
-      devices: generatedData.devices,
+      devices: enhancedDevices,
       filterOptions: convertToFilterOptions(generatedData.metadata),
     };
   } catch (error) {
@@ -47,6 +83,7 @@ export async function loadMiniPCData(): Promise<{ devices: MiniPC[]; filterOptio
         brands: new Set(),
         cpuBrands: new Set(),
         memoryTypes: new Set(),
+        memoryModuleTypes: new Set(),
         wifiStandards: new Set(),
         ethernetSpeeds: new Set(),
         storageTypes: new Set(),
