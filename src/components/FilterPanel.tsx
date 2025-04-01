@@ -6,13 +6,9 @@ import {
   FormControlLabel,
   Checkbox,
   Slider,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Divider,
   useTheme,
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FilterOptions } from '../utils/dataLoader';
 import type { MiniPC } from '../types/minipc';
 
@@ -64,31 +60,27 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
   onSelect,
   getCount,
 }) => (
-  <Accordion defaultExpanded>
-    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-      <Typography>{title}</Typography>
-    </AccordionSummary>
-    <AccordionDetails>
-      <FormGroup>
-        {Array.from(options).sort().map((option) => {
-          const count = getCount(option);
-          return (
-            <FormControlLabel
-              key={option}
-              control={
-                <Checkbox
-                  checked={selected.has(option)}
-                  onChange={(e) => onSelect(option, e.target.checked)}
-                  size="small"
-                />
-              }
-              label={<Typography variant="body2">{option}</Typography>}
-            />
-          );
-        })}
-      </FormGroup>
-    </AccordionDetails>
-  </Accordion>
+  <Box sx={{ mb: 2, px: 2, pt: 1 }}>
+    <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>{title}</Typography>
+    <FormGroup>
+      {Array.from(options).sort().map((option) => {
+        const count = getCount(option);
+        return (
+          <FormControlLabel
+            key={option}
+            control={
+              <Checkbox
+                checked={selected.has(option)}
+                onChange={(e) => onSelect(option, e.target.checked)}
+                size="small"
+              />
+            }
+            label={<Typography variant="body2">{option}</Typography>}
+          />
+        );
+      })}
+    </FormGroup>
+  </Box>
 );
 
 const RangeFilter: React.FC<{
@@ -99,38 +91,34 @@ const RangeFilter: React.FC<{
   step?: number;
   unit?: string;
 }> = ({ title, range, value, onChange, step = 1, unit = '' }) => (
-  <Accordion defaultExpanded>
-    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-      <Typography>{title}</Typography>
-    </AccordionSummary>
-    <AccordionDetails>
-      <Box sx={{ px: 2 }}>
-        <Slider
-          value={[
-            value?.min ?? range.min,
-            value?.max ?? range.max,
-          ]}
-          onChange={(_, newValue) => {
-            const [min, max] = newValue as number[];
-            onChange({ min, max });
-          }}
-          valueLabelDisplay="auto"
-          min={range.min}
-          max={range.max}
-          step={step}
-          valueLabelFormat={(val) => `${val}${unit}`}
-        />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-          <Typography variant="caption" color="text.secondary">
-            {range.min}{unit}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {range.max}{unit}
-          </Typography>
-        </Box>
+  <Box sx={{ mb: 2, px: 2, pt: 1 }}>
+    <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>{title}</Typography>
+    <Box sx={{ px: 1 }}>
+      <Slider
+        value={[
+          value?.min ?? range.min,
+          value?.max ?? range.max,
+        ]}
+        onChange={(_, newValue) => {
+          const [min, max] = newValue as number[];
+          onChange({ min, max });
+        }}
+        valueLabelDisplay="auto"
+        min={range.min}
+        max={range.max}
+        step={step}
+        valueLabelFormat={(val) => `${val}${unit}`}
+      />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+        <Typography variant="caption" color="text.secondary">
+          {range.min}{unit}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {range.max}{unit}
+        </Typography>
       </Box>
-    </AccordionDetails>
-  </Accordion>
+    </Box>
+  </Box>
 );
 
 export const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -367,11 +355,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         borderRadius: 0,
       }}
     >
-      <Typography variant="h6" sx={{ p: 2, fontWeight: 600 }}>
-        Filters
-      </Typography>
-      <Divider />
-
       <FilterGroup
         title="Brands"
         options={new Set(filterOptions.brands)}
