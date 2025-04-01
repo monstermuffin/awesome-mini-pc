@@ -13,7 +13,9 @@ cpu:
 memory:
   slots: 2
   type: DDR5
+  module_type: "SO-DIMM"
   speed: 4800
+  max_capacity: 64
 storage:
   - type: M.2
     form_factor: 2280

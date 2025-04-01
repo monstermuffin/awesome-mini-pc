@@ -14,6 +14,8 @@ memory:
   slots: 2
   type: DDR4
   speed: 3200
+  max_capacity: 64
+  module_type: "SO-DIMM"
 storage:
   - type: M.2
     form_factor: "2280"

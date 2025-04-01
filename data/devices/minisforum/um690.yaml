@@ -17,6 +17,7 @@ memory:
   type: DDR5
   speed: 4800
   module_type: "SO-DIMM"
+  max_capacity: 64
 storage:
   - type: M.2
     form_factor: "2280"
