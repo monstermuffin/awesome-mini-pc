@@ -140,7 +140,7 @@ function validateRequiredFields(data, path, errors, deviceFile) {
   // Storage
   if (data.storage && Array.isArray(data.storage)) {
     data.storage.forEach((storage, index) => {
-      const requiredStorageFields = ['type', 'form_factor', 'interface', 'max_capacity'];
+      const requiredStorageFields = ['type', 'form_factor', 'interface'];
       for (const field of requiredStorageFields) {
         if (storage[field] === undefined) {
           errors.push({
