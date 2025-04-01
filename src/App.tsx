@@ -11,11 +11,14 @@ import {
   IconButton,
   useMediaQuery,
   Drawer,
+  Link,
+  Tooltip,
 } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { loadMiniPCData } from './utils/dataLoader';
 import type { MiniPC } from './types/minipc';
 import type { FilterOptions } from './utils/dataLoader';
@@ -303,6 +306,18 @@ function App() {
             <Typography variant="h5" component="h1" sx={{ flexGrow: 1, fontWeight: 600 }}>
               Awesome Mini PCs
             </Typography>
+            <Tooltip title="View on GitHub">
+              <IconButton 
+                color="inherit" 
+                component={Link}
+                href="https://github.com/monstermuffin/awesome-mini-pc"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ mr: 1 }}
+              >
+                <GitHubIcon />
+              </IconButton>
+            </Tooltip>
             <IconButton 
               color="inherit" 
               onClick={() => setDarkMode(!darkMode)}
@@ -361,7 +376,7 @@ function App() {
                 : 'rgba(0, 0, 0, 0.05)'
             }}>
               <Typography variant="body2" color="text.secondary" align="center">
-                Data is community-maintained. Want to add a Mini PC? Check out our GitHub repository.
+                Bigups the mini pc massive
               </Typography>
             </Box>
           </Box>
