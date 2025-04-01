@@ -62,7 +62,7 @@ function validateRequiredFields(data, path, errors, deviceFile) {
   
   // Memory required fields
   if (data.memory) {
-    const requiredMemoryFields = ['max_capacity', 'slots', 'type', 'speed'];
+    const requiredMemoryFields = ['slots', 'type', 'speed'];
     for (const field of requiredMemoryFields) {
       if (data.memory[field] === undefined) {
         errors.push({
