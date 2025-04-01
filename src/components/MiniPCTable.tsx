@@ -38,6 +38,7 @@ type SortConfig = {
 };
 
 export function MiniPCTable({ devices }: MiniPCTableProps) {
+  const theme = useTheme();
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: 'brand',
     direction: 'asc',
