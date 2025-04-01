@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run validate-data && npm run build:data && tsc && vite build",
-    "build:data": "ts-node --project scripts/tsconfig.json scripts/build-data.ts",
-    "validate-data": "ts-node --project scripts/tsconfig.json scripts/validate-data.ts",
+    "build:data": "node scripts/build-data.cjs",
+    "validate-data": "node scripts/validate-data.cjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

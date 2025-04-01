@@ -19,7 +19,6 @@ import {
   DialogActions,
   Button,
   Badge,
-  useTheme,
 } from '@mui/material';
 import { useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';

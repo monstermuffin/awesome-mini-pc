@@ -1,8 +1,10 @@
 name: Build and Deploy
+
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -16,8 +18,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
       
       - name: Setup Node
@@ -30,23 +33,23 @@ jobs:
         run: npm ci
       
       - name: Validate data
-        run: npm run validate-data
-      
-      - name: Build data
-        run: npm run build:data
-      
-      - name: Build project
+        run: node scripts/validate-data.cjs
+
+      - name: Build
         run: npm run build
-      
+
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        if: github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v4
       
       - name: Upload artifact
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
-  
+
   deploy:
+    if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -7,7 +7,6 @@ import {
   Checkbox,
   Slider,
   Divider,
-  useTheme,
 } from '@mui/material';
 import { FilterOptions } from '../utils/dataLoader';
 import type { MiniPC } from '../types/minipc';
@@ -49,19 +48,14 @@ interface FilterGroupProps {
   selected: Set<string>;
   devices: MiniPC[];
   onSelect: (value: string, checked: boolean) => void;
-  getCount: (option: string) => number;
 }
 
 const FilterGroup: React.FC<FilterGroupProps> = ({
   title,
   options,
   selected,
-  devices,
   onSelect,
-  getCount,
 }) => {
-  const theme = useTheme();
-
   return (
     <Box sx={{ 
       mb: 2, 
@@ -74,14 +68,13 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
         sx={{ 
           mb: 1, 
           fontWeight: 500,
-          color: theme.palette.text.secondary
+          color: 'text.secondary'
         }}
       >
         {title}
       </Typography>
       <FormGroup>
         {Array.from(options).sort().map((option) => {
-          const count = getCount(option);
           return (
             <FormControlLabel
               key={option}
@@ -109,8 +102,6 @@ const RangeFilter: React.FC<{
   step?: number;
   unit?: string;
 }> = ({ title, range, value, onChange, step = 1, unit = '' }) => {
-  const theme = useTheme();
-
   return (
     <Box sx={{ 
       mb: 2, 
@@ -123,7 +114,7 @@ const RangeFilter: React.FC<{
         sx={{ 
           mb: 1, 
           fontWeight: 500,
-          color: theme.palette.text.secondary
+          color: 'text.secondary'
         }}
       >
         {title}
@@ -163,156 +154,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   selectedFilters,
   onFilterChange,
 }) => {
-  const theme = useTheme();
-
-  // Helper function to count matching devices for a filter option
-  const getFilterCount = (category: keyof FilterOptions | string, value: string) => {
-    return devices.filter(device => {
-      // Skip this filter if checking its own category
-      const skipCategory = category;
-      
-      // Apply all other selected filters
-      const matchesOtherFilters = Object.entries(selectedFilters).every(([filterCat, selected]) => {
-        if (filterCat === skipCategory) return true;
-        if (filterCat === 'tdp' || filterCat === 'cores' || filterCat === 'memorySpeed' || 
-            filterCat === 'memoryCapacity' || filterCat === 'deviceAge') {
-          const range = selected as { min: number; max: number } | null;
-          if (!range) return true;
-          
-          if (filterCat === 'tdp') {
-            return device.cpu.tdp >= range.min && device.cpu.tdp <= range.max;
-          } else if (filterCat === 'cores') {
-            return device.cpu.cores >= range.min && device.cpu.cores <= range.max;
-          } else if (filterCat === 'memorySpeed') {
-            return device.memory.speed >= range.min && device.memory.speed <= range.max;
-          } else if (filterCat === 'memoryCapacity') {
-            return device.memory.max_capacity >= range.min && device.memory.max_capacity <= range.max;
-          } else if (filterCat === 'deviceAge') {
-            const currentYear = new Date().getFullYear();
-            const deviceYear = parseInt(device.release_date, 10);
-            if (isNaN(deviceYear)) return false;
-            
-            const age = currentYear - deviceYear;
-            return age >= range.min && age <= range.max;
-          }
-        }
-        
-        if (filterCat === 'hasExpansionSlots') {
-          // If "Has PCIe expansion slots" filter is active
-          if (selected && !device.expansion?.pcie_slots?.length) {
-            return false;
-          }
-        }
-        
-        const selectedSet = selected as Set<string>;
-        if (selectedSet.size === 0) return true;
-        
-        switch (filterCat) {
-          case 'brands':
-            return selectedSet.has(device.brand);
-          case 'cpuBrands':
-            return selectedSet.has(device.cpu.brand);
-          case 'cpuArchitectures':
-            return !device.cpu.architecture || selectedSet.has(device.cpu.architecture);
-          case 'cpuChipsets':
-            return !device.cpu.chipset || selectedSet.has(device.cpu.chipset);
-          case 'memoryTypes':
-            return selectedSet.has(device.memory.type);
-          case 'memoryModuleTypes':
-            return selectedSet.has(device.memory.module_type);
-          case 'memorySlotsCount':
-            return selectedSet.has(device.memory.slots.toString());
-          case 'wifiStandards':
-            return selectedSet.has(device.networking.wifi.standard);
-          case 'wifiChipsets':
-            return selectedSet.has(device.networking.wifi.chipset);
-          case 'ethernetSpeeds':
-            return device.networking.ethernet.some(eth => selectedSet.has(eth.speed));
-          case 'ethernetChipsets':
-            return device.networking.ethernet.some(eth => selectedSet.has(eth.chipset));
-          case 'storageTypes':
-            return device.storage.some(s => selectedSet.has(s.type));
-          case 'storageInterfaces':
-            return device.storage.some(s => selectedSet.has(s.interface));
-          case 'releaseYears':
-            return selectedSet.has(device.release_date);
-          case 'pcieSlotTypes':
-            return !device.expansion?.pcie_slots || device.expansion.pcie_slots.some(
-              slot => selectedSet.has(slot.type)
-            );
-          default:
-            return true;
-        }
-      });
-
-      // Check if the device matches the current filter value
-      let matchesCurrentFilter = false;
-      switch (category) {
-        case 'brands':
-        case 'cpuBrands':
-        case 'memoryTypes':
-        case 'wifiStandards':
-        case 'ethernetSpeeds':
-        case 'storageTypes':
-        case 'storageInterfaces':
-          // For categories already in FilterOptions, use the old logic
-          return getStandardFilterMatch(device, category as keyof FilterOptions, value);
-        case 'cpuArchitectures':
-          matchesCurrentFilter = device.cpu.architecture === value;
-          break;
-        case 'cpuChipsets':
-          matchesCurrentFilter = device.cpu.chipset === value;
-          break;
-        case 'memoryModuleTypes':
-          matchesCurrentFilter = device.memory.module_type === value;
-          break;
-        case 'memorySlotsCount':
-          matchesCurrentFilter = device.memory.slots.toString() === value;
-          break;
-        case 'wifiChipsets':
-          matchesCurrentFilter = device.networking.wifi.chipset === value;
-          break;
-        case 'ethernetChipsets':
-          matchesCurrentFilter = device.networking.ethernet.some(eth => eth.chipset === value);
-          break;
-        case 'releaseYears':
-          matchesCurrentFilter = device.release_date === value;
-          break;
-        case 'pcieSlotTypes':
-          matchesCurrentFilter = device.expansion?.pcie_slots?.some(
-            slot => slot.type === value
-          ) || false;
-          break;
-        default:
-          matchesCurrentFilter = false;
-      }
-
-      return matchesOtherFilters && matchesCurrentFilter;
-    }).length;
-  };
-
-  // Helper function to get standard filter matches
-  const getStandardFilterMatch = (device: MiniPC, category: keyof FilterOptions, value: string): boolean => {
-    switch (category) {
-      case 'brands':
-        return device.brand === value;
-      case 'cpuBrands':
-        return device.cpu.brand === value;
-      case 'memoryTypes':
-        return device.memory.type === value;
-      case 'wifiStandards':
-        return device.networking.wifi.standard === value;
-      case 'ethernetSpeeds':
-        return device.networking.ethernet.some(eth => eth.speed === value);
-      case 'storageTypes':
-        return device.storage.some(s => s.type === value);
-      case 'storageInterfaces':
-        return device.storage.some(s => s.interface === value);
-      default:
-        return false;
-    }
-  };
-
   // Extract all available CPU architectures from devices
   const cpuArchitectures = new Set<string>();
   devices.forEach(device => {
@@ -402,7 +243,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.brands}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('brands', value, checked)}
-        getCount={(option) => getFilterCount('brands', option)}
       />
 
       <FilterGroup
@@ -411,7 +251,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.releaseYears}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('releaseYears', value, checked)}
-        getCount={(option) => getFilterCount('releaseYears', option)}
       />
 
       {ageRange.max > 0 && (
@@ -438,7 +277,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.cpuBrands}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('cpuBrands', value, checked)}
-        getCount={(option) => getFilterCount('cpuBrands', option)}
       />
 
       {cpuArchitectures.size > 0 && (
@@ -448,7 +286,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           selected={selectedFilters.cpuArchitectures}
           devices={devices}
           onSelect={(value, checked) => onFilterChange('cpuArchitectures', value, checked)}
-          getCount={(option) => getFilterCount('cpuArchitectures', option)}
         />
       )}
 
@@ -459,7 +296,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
           selected={selectedFilters.cpuChipsets}
           devices={devices}
           onSelect={(value, checked) => onFilterChange('cpuChipsets', value, checked)}
-          getCount={(option) => getFilterCount('cpuChipsets', option)}
         />
       )}
 
@@ -491,7 +327,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.memoryTypes}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('memoryTypes', value, checked)}
-        getCount={(option) => getFilterCount('memoryTypes', option)}
       />
 
       <FilterGroup
@@ -500,7 +335,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.memoryModuleTypes}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('memoryModuleTypes', value, checked)}
-        getCount={(option) => getFilterCount('memoryModuleTypes', option)}
       />
 
       <FilterGroup
@@ -509,7 +343,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.memorySlotsCount}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('memorySlotsCount', value, checked)}
-        getCount={(option) => getFilterCount('memorySlotsCount', option)}
       />
 
       <RangeFilter
@@ -543,7 +376,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.wifiStandards}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('wifiStandards', value, checked)}
-        getCount={(option) => getFilterCount('wifiStandards', option)}
       />
 
       <FilterGroup
@@ -552,7 +384,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.wifiChipsets}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('wifiChipsets', value, checked)}
-        getCount={(option) => getFilterCount('wifiChipsets', option)}
       />
 
       <FilterGroup
@@ -561,7 +392,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.ethernetSpeeds}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('ethernetSpeeds', value, checked)}
-        getCount={(option) => getFilterCount('ethernetSpeeds', option)}
       />
 
       <FilterGroup
@@ -570,7 +400,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.ethernetChipsets}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('ethernetChipsets', value, checked)}
-        getCount={(option) => getFilterCount('ethernetChipsets', option)}
       />
 
       {/* PCIe Expansion Filters - only show if any device has expansion slots */}
@@ -600,7 +429,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               selected={selectedFilters.pcieSlotTypes}
               devices={devices}
               onSelect={(value, checked) => onFilterChange('pcieSlotTypes', value, checked)}
-              getCount={(option) => getFilterCount('pcieSlotTypes', option)}
             />
           )}
         </>
@@ -619,7 +447,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.storageTypes}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('storageTypes', value, checked)}
-        getCount={(option) => getFilterCount('storageTypes', option)}
       />
 
       <FilterGroup
@@ -628,7 +455,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         selected={selectedFilters.storageInterfaces}
         devices={devices}
         onSelect={(value, checked) => onFilterChange('storageInterfaces', value, checked)}
-        getCount={(option) => getFilterCount('storageInterfaces', option)}
       />
     </Paper>
   );
