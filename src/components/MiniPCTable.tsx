@@ -226,7 +226,14 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
             right: 0,
           }}
         >
-          <Table stickyHeader size="small" sx={{ tableLayout: 'fixed' }}>
+          <Table stickyHeader size="small" sx={{ 
+            tableLayout: 'fixed',
+            '& .MuiTableCell-head': {
+              py: 1.5,
+              verticalAlign: 'bottom',
+              lineHeight: 1.3
+            }
+          }}>
             <TableHead>
               <TableRow>
                 <TableCell 
@@ -324,8 +331,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     fontWeight: 'bold',
                     color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
                     borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    width: 70,
-                    minWidth: 60,
+                    width: 80,
+                    minWidth: 70,
                   }}
                 >{renderSortLabel('Speed', 'memory.speed')}</TableCell>
                 <TableCell
@@ -420,20 +427,29 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       backgroundColor: theme => theme.palette.mode === 'dark' 
                         ? 'rgba(255,255,255,0.02)' 
                         : 'rgba(0,0,0,0.02)',
+                    },
+                    '& .MuiTableCell-root': {
+                      py: 1.2,
+                      verticalAlign: 'top',
                     }
                   }}
                 >
                   <TableCell>{device.brand}</TableCell>
                   <TableCell>
-                    <Typography variant="body2" component="div" sx={{ fontWeight: 500 }}>
+                    <Typography variant="body2" component="div" sx={{ 
+                      fontWeight: 500,
+                      whiteSpace: 'normal',
+                      overflow: 'visible',
+                      lineHeight: 1.3,
+                      mb: 0.3
+                    }}>
                       {device.model}
                     </Typography>
                     <Typography variant="caption" color="text.secondary" sx={{ 
                       display: 'flex', 
-                      alignItems: 'center', 
+                      alignItems: 'flex-start', 
                       gap: 0.5,
-                      flexWrap: 'nowrap',
-                      whiteSpace: 'nowrap'
+                      flexWrap: 'wrap',
                     }}>
                       {device.release_date} 
                       <Box component="span" sx={{ 
@@ -444,7 +460,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         borderRadius: 1,
                         fontSize: '0.7rem',
                         color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                        whiteSpace: 'nowrap',
                       }}>
                         {getDeviceAge(device.release_date)}
                       </Box>
@@ -453,25 +468,27 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   <TableCell>
                     <Typography variant="body2" component="div" sx={{ 
                       fontWeight: 500,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
+                      whiteSpace: 'normal',
+                      overflow: 'visible',
+                      lineHeight: 1.3,
+                      mb: 0.3
                     }}>
                       {device.cpu.brand} {device.cpu.model}
                     </Typography>
                     <Typography variant="caption" color="text.secondary" sx={{
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: 'block'
+                      whiteSpace: 'normal',
+                      overflow: 'visible',
+                      display: 'block',
+                      lineHeight: 1.3,
+                      mb: 0.3
                     }}>
                       {device.cpu.base_clock}GHz - {device.cpu.boost_clock}GHz
                     </Typography>
                     {device.cpu.chipset && (
                       <Typography variant="caption" color="text.secondary" component="div" sx={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
+                        whiteSpace: 'normal',
+                        overflow: 'visible',
+                        lineHeight: 1.3,
                       }}>
                         {device.cpu.chipset}
                       </Typography>
@@ -510,21 +527,22 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   <TableCell>
                     <Typography variant="body2" component="div" sx={{ 
                       fontWeight: 500,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
+                      whiteSpace: 'normal',
+                      overflow: 'visible',
+                      lineHeight: 1.3,
+                      mb: 0.3
                     }}>
                       {device.memory.type}
                     </Typography>
                     <Typography variant="caption" color="text.secondary" sx={{
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
+                      whiteSpace: 'normal',
+                      overflow: 'visible',
+                      lineHeight: 1.3,
                     }}>
                       {device.memory.slots}x slots, Max {device.memory.max_capacity}GB
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{device.memory.module_type}</TableCell>
+                  <TableCell sx={{ whiteSpace: 'normal' }}>{device.memory.module_type}</TableCell>
                   <TableCell align="right">
                     <Box sx={{ 
                       fontWeight: 'medium', 
@@ -536,10 +554,10 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   <TableCell>
                     {device.storage.map((storage, index) => (
                       <Typography key={index} variant="body2" component="div" sx={{ 
-                        mb: index < device.storage.length - 1 ? 0.5 : 0,
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
+                        mb: index < device.storage.length - 1 ? 0.8 : 0,
+                        whiteSpace: 'normal',
+                        overflow: 'visible',
+                        lineHeight: 1.3,
                       }}>
                         {storage.type} ({storage.interface})
                       </Typography>
@@ -550,36 +568,42 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       <Box key={index}>
                         {Array.from({ length: eth.ports }).map((_, portIndex) => (
                           <Typography key={portIndex} variant="body2" sx={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: 0.5, 
-                            mb: portIndex < eth.ports - 1 ? 0.5 : 0,
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
+                            mb: portIndex < eth.ports - 1 ? 0.8 : 0,
+                            lineHeight: 1.3,
                           }}>
-                            <Box component="span" sx={{ fontWeight: 'medium' }}>{eth.speed}</Box>
-                            <Typography variant="caption" color="text.secondary" component="span">
+                            <Box component="span" sx={{ 
+                              fontWeight: 'medium',
+                              display: 'block', 
+                            }}>
+                              {eth.speed}
+                            </Box>
+                            <Box component="span" sx={{ 
+                              color: 'text.secondary',
+                              fontSize: '0.75rem',
+                              display: 'block',
+                            }}>
                               ({eth.chipset})
-                            </Typography>
+                            </Box>
                           </Typography>
                         ))}
                       </Box>
                     ))}
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2" sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 0.5,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}>
-                      <Box component="span" sx={{ fontWeight: 'medium' }}>{device.networking.wifi.standard}</Box>
-                      <Typography variant="caption" color="text.secondary" component="span">
+                    <Typography variant="body2" sx={{ lineHeight: 1.3 }}>
+                      <Box component="span" sx={{ 
+                        fontWeight: 'medium',
+                        display: 'block', 
+                      }}>
+                        {device.networking.wifi.standard}
+                      </Box>
+                      <Box component="span" sx={{ 
+                        color: 'text.secondary',
+                        fontSize: '0.75rem',
+                        display: 'block',
+                      }}>
                         ({device.networking.wifi.chipset})
-                      </Typography>
+                      </Box>
                     </Typography>
                     <Typography variant="caption" color="text.secondary" component="div">
                       BT {device.networking.wifi.bluetooth}
@@ -778,11 +802,13 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       borderRadius: 1,
                     }
                   }}>WiFi</Typography>
-                  <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
-                    <span>{detailDevice.networking.wifi.standard}</span>
-                    <Typography variant="caption" color="text.secondary" component="span">
+                  <Typography variant="body2" sx={{ mb: 0.5 }}>
+                    <Box component="span" sx={{ fontWeight: 'medium', display: 'block' }}>
+                      {detailDevice.networking.wifi.standard}
+                    </Box>
+                    <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
                       ({detailDevice.networking.wifi.chipset})
-                    </Typography>
+                    </Box>
                   </Typography>
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
                     Bluetooth: {detailDevice.networking.wifi.bluetooth}
@@ -807,11 +833,13 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   {detailDevice.networking.ethernet.map((eth, index) => (
                     <Box key={index} mb={1}>
                       {Array.from({ length: eth.ports }).map((_, portIndex) => (
-                        <Typography key={portIndex} variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: portIndex < eth.ports - 1 ? 0.5 : 0 }}>
-                          <Box component="span" sx={{ fontWeight: 'medium' }}>{eth.speed}</Box>
-                          <Typography variant="caption" color="text.secondary" component="span">
+                        <Typography key={portIndex} variant="body2" sx={{ mb: portIndex < eth.ports - 1 ? 0.8 : 0 }}>
+                          <Box component="span" sx={{ fontWeight: 'medium', display: 'block' }}>
+                            {eth.speed}
+                          </Box>
+                          <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
                             ({eth.chipset})
-                          </Typography>
+                          </Box>
                         </Typography>
                       ))}
                     </Box>
