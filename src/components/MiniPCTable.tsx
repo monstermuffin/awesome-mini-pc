@@ -567,62 +567,132 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {device.storage.map((storage, index) => (
-                      <Typography key={index} variant="body2" component="div" sx={{ 
-                        mb: index < device.storage.length - 1 ? 0.8 : 0,
-                        whiteSpace: 'normal',
-                        overflow: 'visible',
-                        lineHeight: 1.3,
-                      }}>
-                        {storage.type} ({storage.interface})
-                      </Typography>
-                    ))}
+                    {(() => {
+                      // Group storage by type, interface, and form_factor
+                      const storageGroups: Record<string, {count: number; storage: typeof device.storage[0]}> = {};
+                      
+                      device.storage.forEach(storage => {
+                        const key = `${storage.type} ${storage.form_factor || ''} (${storage.interface})`;
+                        if (!storageGroups[key]) {
+                          storageGroups[key] = { count: 1, storage };
+                        } else {
+                          storageGroups[key].count += 1;
+                          // Keep the storage item with the highest max capacity
+                          if (storage.max_capacity > storageGroups[key].storage.max_capacity) {
+                            storageGroups[key].storage = storage;
+                          }
+                        }
+                      });
+                      
+                      return Object.entries(storageGroups).map(([key, { count, storage }], index) => (
+                        <Typography key={index} variant="body2" component="div" sx={{ 
+                          mb: index < Object.entries(storageGroups).length - 1 ? 0.8 : 0,
+                          whiteSpace: 'normal',
+                          overflow: 'visible',
+                          lineHeight: 1.3,
+                        }}>
+                          <Box component="span" sx={{ 
+                            fontWeight: 'medium',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 0.5,
+                          }}>
+                            {count > 1 && (
+                              <Chip 
+                                label={`${count}×`} 
+                                size="small" 
+                                sx={{ 
+                                  height: 20, 
+                                  fontSize: '0.7rem',
+                                  bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                  color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                  fontWeight: 600,
+                                }} 
+                              />
+                            )}
+                            {storage.type} {storage.form_factor}
+                          </Box>
+                          <Box component="span" sx={{ 
+                            color: 'text.secondary',
+                            fontSize: '0.75rem',
+                            display: 'block',
+                          }}>
+                            {storage.interface}
+                          </Box>
+                        </Typography>
+                      ));
+                    })()}
                   </TableCell>
                   <TableCell>
-                    {device.networking.ethernet.map((eth, index) => (
-                      <Box key={index}>
-                        {Array.from({ length: eth.ports }).map((_, portIndex) => (
-                          <Typography key={portIndex} variant="body2" sx={{ 
-                            mb: portIndex < eth.ports - 1 ? 0.8 : 0,
-                            lineHeight: 1.3,
-                          }}>
-                            <Box component="span" sx={{ 
-                              fontWeight: 'medium',
-                              display: 'block', 
-                            }}>
-                              {eth.speed}
-                            </Box>
-                            <Box component="span" sx={{ 
-                              color: 'text.secondary',
-                              fontSize: '0.75rem',
-                              display: 'block',
-                            }}>
-                              ({eth.chipset})
-                            </Box>
-                          </Typography>
-                        ))}
-                      </Box>
-                    ))}
+                    {(() => {
+                      // Group ethernet by speed and chipset
+                      const ethernetGroups: Record<string, number> = {};
+                      
+                      device.networking.ethernet.forEach(eth => {
+                        const key = `${eth.speed} (${eth.chipset})`;
+                        ethernetGroups[key] = (ethernetGroups[key] || 0) + eth.ports;
+                      });
+                      
+                      return Object.entries(ethernetGroups).map(([key, count], index) => (
+                        <Typography key={index} variant="body2" sx={{ mb: 0.5 }}>
+                          <Box component="span" sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
+                            {count > 1 && (
+                              <Chip 
+                                label={`${count}×`} 
+                                size="small" 
+                                sx={{ 
+                                  height: 20, 
+                                  fontSize: '0.7rem',
+                                  bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                  color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                  fontWeight: 600,
+                                }} 
+                              />
+                            )}
+                            {key.split(' (')[0]}
+                          </Box>
+                          <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
+                            ({key.split(' (')[1]})
+                          </Box>
+                        </Typography>
+                      ));
+                    })()}
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" sx={{ lineHeight: 1.3 }}>
                       <Box component="span" sx={{ 
                         fontWeight: 'medium',
-                        display: 'block', 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        gap: 1 
                       }}>
                         {device.networking.wifi.standard}
                       </Box>
-                      <Box component="span" sx={{ 
-                        color: 'text.secondary',
-                        fontSize: '0.75rem',
-                        display: 'block',
-                      }}>
+                      <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
                         ({device.networking.wifi.chipset})
                       </Box>
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" component="div">
-                      BT {device.networking.wifi.bluetooth}
-                    </Typography>
+                    <Box sx={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                      mt: 0.3
+                    }}>
+                      <Typography variant="caption" color="text.secondary" component="div">
+                        BT
+                      </Typography>
+                      <Chip 
+                        label={device.networking.wifi.bluetooth} 
+                        size="small" 
+                        sx={{ 
+                          height: 16, 
+                          fontSize: '0.65rem',
+                          bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                          color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                          fontWeight: 600,
+                        }} 
+                      />
+                    </Box>
                   </TableCell>
                   {hasAnyExpansionSlots && (
                     <TableCell>
@@ -784,22 +854,66 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       borderRadius: 1,
                     }
                   }}>Storage</Typography>
-                  {detailDevice.storage.map((storage, index) => (
-                    <Box key={index} mb={1} sx={{
-                      p: 1,
-                      borderRadius: 1,
-                      backgroundColor: theme => theme.palette.mode === 'dark' 
-                        ? 'rgba(255,255,255,0.03)' 
-                        : 'rgba(0,0,0,0.02)',
-                    }}>
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>
-                        {storage.type} {storage.form_factor} ({storage.interface})
-                      </Typography>
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>
-                        Max Capacity: {storage.max_capacity}GB
-                      </Typography>
-                    </Box>
-                  ))}
+                  
+                  {(() => {
+                    // Group storage by type, interface, and form_factor
+                    const storageGroups: Record<string, {count: number; storage: typeof detailDevice.storage[0]}> = {};
+                    
+                    detailDevice.storage.forEach(storage => {
+                      const key = `${storage.type} ${storage.form_factor || ''} (${storage.interface})`;
+                      if (!storageGroups[key]) {
+                        storageGroups[key] = { count: 1, storage };
+                      } else {
+                        storageGroups[key].count += 1;
+                        // Keep the storage item with the highest max capacity
+                        if (storage.max_capacity > storageGroups[key].storage.max_capacity) {
+                          storageGroups[key].storage = storage;
+                        }
+                      }
+                    });
+                    
+                    return Object.entries(storageGroups).map(([key, { count, storage }], index) => (
+                      <Box key={index} mb={1} sx={{
+                        p: 1.5,
+                        borderRadius: 1,
+                        backgroundColor: theme => theme.palette.mode === 'dark' 
+                          ? 'rgba(255,255,255,0.03)' 
+                          : 'rgba(0,0,0,0.02)',
+                      }}>
+                        <Typography variant="body2" sx={{ 
+                          mb: 0.5, 
+                          fontWeight: 500,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5
+                        }}>
+                          {count > 1 && (
+                            <Chip 
+                              label={`${count}×`} 
+                              size="small" 
+                              sx={{ 
+                                height: 20, 
+                                fontSize: '0.7rem',
+                                bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.2)' : 'rgba(33,150,243,0.15)',
+                                color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                fontWeight: 600,
+                              }} 
+                            />
+                          )}
+                          <Box component="span" sx={{ fontWeight: 500 }}>
+                            {storage.type} {storage.form_factor}
+                          </Box>
+                        </Typography>
+                        <Typography variant="body2" sx={{ 
+                          color: 'text.secondary', 
+                          fontSize: '0.85rem',
+                          mb: 0.5 
+                        }}>
+                          {storage.interface}
+                        </Typography>
+                      </Box>
+                    ));
+                  })()}
                 </Grid>
                 
                 <Grid item xs={12} md={6}>
@@ -818,16 +932,39 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     }
                   }}>WiFi</Typography>
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    <Box component="span" sx={{ fontWeight: 'medium', display: 'block' }}>
+                    <Box component="span" sx={{ 
+                      fontWeight: 'medium', 
+                      display: 'flex', 
+                      alignItems: 'center',
+                      gap: 1 
+                    }}>
                       {detailDevice.networking.wifi.standard}
                     </Box>
                     <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
                       ({detailDevice.networking.wifi.chipset})
                     </Box>
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    Bluetooth: {detailDevice.networking.wifi.bluetooth}
-                  </Typography>
+                  <Box sx={{ 
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    mt: 0.3
+                  }}>
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                      Bluetooth:
+                    </Typography>
+                    <Chip 
+                      label={detailDevice.networking.wifi.bluetooth} 
+                      size="small" 
+                      sx={{ 
+                        height: 20, 
+                        fontSize: '0.7rem',
+                        bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                        fontWeight: 600,
+                      }} 
+                    />
+                  </Box>
                 </Grid>
                 
                 <Grid item xs={12} md={6}>
@@ -845,20 +982,40 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       borderRadius: 1,
                     }
                   }}>Ethernet</Typography>
-                  {detailDevice.networking.ethernet.map((eth, index) => (
-                    <Box key={index} mb={1}>
-                      {Array.from({ length: eth.ports }).map((_, portIndex) => (
-                        <Typography key={portIndex} variant="body2" sx={{ mb: portIndex < eth.ports - 1 ? 0.8 : 0 }}>
-                          <Box component="span" sx={{ fontWeight: 'medium', display: 'block' }}>
-                            {eth.speed}
-                          </Box>
-                          <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                            ({eth.chipset})
-                          </Box>
-                        </Typography>
-                      ))}
-                    </Box>
-                  ))}
+                  
+                  {(() => {
+                    // Group ethernet by speed and chipset
+                    const ethernetGroups: Record<string, number> = {};
+                    
+                    detailDevice.networking.ethernet.forEach(eth => {
+                      const key = `${eth.speed} (${eth.chipset})`;
+                      ethernetGroups[key] = (ethernetGroups[key] || 0) + eth.ports;
+                    });
+                    
+                    return Object.entries(ethernetGroups).map(([key, count], index) => (
+                      <Typography key={index} variant="body2" sx={{ mb: 0.5 }}>
+                        <Box component="span" sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {count > 1 && (
+                            <Chip 
+                              label={`${count}×`} 
+                              size="small" 
+                              sx={{ 
+                                height: 20, 
+                                fontSize: '0.7rem',
+                                bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                fontWeight: 600,
+                              }} 
+                            />
+                          )}
+                          {key.split(' (')[0]}
+                        </Box>
+                        <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
+                          ({key.split(' (')[1]})
+                        </Box>
+                      </Typography>
+                    ));
+                  })()}
                 </Grid>
                 
                 {detailDevice.ports && (
