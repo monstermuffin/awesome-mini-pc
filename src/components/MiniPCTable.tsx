@@ -895,29 +895,111 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   </Grid>
                 )}
                 
+                {/* Storage and Expansion sections */}
                 <Grid item xs={12} sx={{ 
                   pt: 2, 
                   mt: 2, 
                   borderTop: theme => `1px solid ${theme.palette.divider}`
                 }}>
-                  <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
-                    color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    '&::before': {
-                      content: '""',
-                      display: 'block',
-                      width: 3,
-                      height: 16,
-                      backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                      marginRight: 1,
-                      borderRadius: 1,
-                    }
-                  }}>Storage</Typography>
-                  
-                  <StorageCell device={detailDevice} showDetails={true} />
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
+                      <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
+                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        '&::before': {
+                          content: '""',
+                          display: 'block',
+                          width: 3,
+                          height: 16,
+                          backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                          marginRight: 1,
+                          borderRadius: 1,
+                        }
+                      }}>Storage</Typography>
+                      
+                      <StorageCell device={detailDevice} showDetails={true} />
+                    </Grid>
+
+                    {((detailDevice?.expansion?.pcie_slots?.length ?? 0) > 0 || (detailDevice?.expansion?.oculink_ports?.length ?? 0) > 0) && (
+                      <Grid item xs={12} md={6}>
+                        <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
+                          color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          '&::before': {
+                            content: '""',
+                            display: 'block',
+                            width: 3,
+                            height: 16,
+                            backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                            marginRight: 1,
+                            borderRadius: 1,
+                          }
+                        }}>Expansion</Typography>
+                        <Box sx={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 1,
+                        }}>
+                          {/* PCIe Slots */}
+                          {detailDevice?.expansion?.pcie_slots?.map((slot, index) => (
+                            <Box key={`pcie-${index}`} sx={{
+                              p: 1.5,
+                              borderRadius: 1,
+                              backgroundColor: theme => theme.palette.mode === 'dark' 
+                                ? 'rgba(33,150,243,0.1)' 
+                                : 'rgba(33,150,243,0.05)',
+                              border: theme => `1px solid ${theme.palette.mode === 'dark' 
+                                ? 'rgba(33,150,243,0.2)' 
+                                : 'rgba(33,150,243,0.15)'}`,
+                              minWidth: 180,
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                                PCIe {slot.type} {slot.version}
+                              </Typography>
+                              {(slot.full_height !== undefined || slot.length) && (
+                                <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                  {slot.full_height ? 'Full-height' : 'Low-profile'} 
+                                  {slot.length && `, ${slot.length}`}
+                                </Typography>
+                              )}
+                            </Box>
+                          ))}
+
+                          {/* OCuLink Ports */}
+                          {detailDevice?.expansion?.oculink_ports?.map((port, index) => (
+                            <Box key={`oculink-${index}`} sx={{
+                              p: 1.5,
+                              borderRadius: 1,
+                              backgroundColor: theme => theme.palette.mode === 'dark' 
+                                ? 'rgba(76,175,80,0.1)' 
+                                : 'rgba(76,175,80,0.05)',
+                              border: theme => `1px solid ${theme.palette.mode === 'dark' 
+                                ? 'rgba(76,175,80,0.2)' 
+                                : 'rgba(76,175,80,0.15)'}`,
+                              minWidth: 180,
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                                OCuLink {port.version}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                PCIe x4 interface
+                              </Typography>
+                            </Box>
+                          ))}
+                        </Box>
+                        {detailDevice?.expansion?.additional_info && (
+                          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            Note: {detailDevice?.expansion?.additional_info}
+                          </Typography>
+                        )}
+                      </Grid>
+                    )}
+                  </Grid>
                 </Grid>
-                
+
+                {/* Ethernet section */}
                 <Grid item xs={12} md={6}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                     color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
@@ -1012,83 +1094,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   </Grid>
                 )}
 
-                {/* Expansion section */}
-                {((detailDevice?.expansion?.pcie_slots?.length ?? 0) > 0 || (detailDevice?.expansion?.oculink_ports?.length ?? 0) > 0) && (
-                  <Grid item xs={12} md={6}>
-                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
-                      color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
-                      display: 'flex',
-                      alignItems: 'center',
-                      '&::before': {
-                        content: '""',
-                        display: 'block',
-                        width: 3,
-                        height: 16,
-                        backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                        marginRight: 1,
-                        borderRadius: 1,
-                      }
-                    }}>Expansion</Typography>
-                    <Box sx={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 1,
-                    }}>
-                      {/* PCIe Slots */}
-                      {detailDevice?.expansion?.pcie_slots?.map((slot, index) => (
-                        <Box key={`pcie-${index}`} sx={{
-                          p: 1.5,
-                          borderRadius: 1,
-                          backgroundColor: theme => theme.palette.mode === 'dark' 
-                            ? 'rgba(33,150,243,0.1)' 
-                            : 'rgba(33,150,243,0.05)',
-                          border: theme => `1px solid ${theme.palette.mode === 'dark' 
-                            ? 'rgba(33,150,243,0.2)' 
-                            : 'rgba(33,150,243,0.15)'}`,
-                          minWidth: 180,
-                        }}>
-                          <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
-                            PCIe {slot.type} {slot.version}
-                          </Typography>
-                          {(slot.full_height !== undefined || slot.length) && (
-                            <Typography variant="body2" sx={{ mb: 0.5 }}>
-                              {slot.full_height ? 'Full-height' : 'Low-profile'} 
-                              {slot.length && `, ${slot.length}`}
-                            </Typography>
-                          )}
-                        </Box>
-                      ))}
-
-                      {/* OCuLink Ports */}
-                      {detailDevice?.expansion?.oculink_ports?.map((port, index) => (
-                        <Box key={`oculink-${index}`} sx={{
-                          p: 1.5,
-                          borderRadius: 1,
-                          backgroundColor: theme => theme.palette.mode === 'dark' 
-                            ? 'rgba(76,175,80,0.1)' 
-                            : 'rgba(76,175,80,0.05)',
-                          border: theme => `1px solid ${theme.palette.mode === 'dark' 
-                            ? 'rgba(76,175,80,0.2)' 
-                            : 'rgba(76,175,80,0.15)'}`,
-                          minWidth: 180,
-                        }}>
-                          <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
-                            OCuLink {port.version}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            PCIe x4 interface
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                    {detailDevice?.expansion?.additional_info && (
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        Note: {detailDevice?.expansion?.additional_info}
-                      </Typography>
-                    )}
-                  </Grid>
-                )}
-                
                 {/* Ports section */}
                 {detailDevice?.ports && (
                   <Grid item xs={12} sx={{ 
