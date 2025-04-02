@@ -1,0 +1,72 @@
+id: minisforum-ms02
+brand: Minisforum
+model: MS02
+release_date: "2024"
+cpu:
+  brand: AMD
+  model: "DIY"
+  cores: 0
+  threads: 0
+  base_clock: 0
+  boost_clock: 0
+  tdp: 45
+  socket:
+    type: "AM5"
+    supports_cpu_swap: true
+memory:
+  slots: 2
+  type: DDR5
+  speed: 5200
+  module_type: "SO-DIMM"
+  max_capacity: 96
+storage:
+  - type: M.2
+    form_factor: "2280"
+    interface: PCIe 4.0 x4
+    max_capacity: 4000
+  - type: M.2
+    form_factor: "22110"
+    interface: PCIe 3.0 x4
+    max_capacity: 4000
+  - type: M.2
+    form_factor: "22110"
+    interface: PCIe 3.0 x2
+    max_capacity: 4000
+  - type: U.2
+    form_factor: "2.5"
+    interface: PCIe 4.0 x4
+    max_capacity: 4000
+networking:
+  ethernet:
+    - chipset: "Intel X710"
+      speed: "10GbE"
+      ports: 2
+    - chipset: "Realtek RTL8125BG"
+      speed: "2.5GbE"
+      ports: 2
+  wifi:
+    chipset: "Intel AX210"
+    standard: "WiFi 6E"
+    bluetooth: "5.2"
+expansion:
+  pcie_slots:
+    - type: "x16"
+      version: "PCIe 4.0"
+      full_height: false
+      length: "half-length"
+  additional_info: "PCIe slot operates at x8 bandwidth, supports GPUs and other expansion cards"
+ports:
+  usb_a: 5
+  usb_c: 2
+  usb_c_thunderbolt: 2
+  hdmi: 1
+  displayport: 0
+  audio_jack: 1
+  sd_card_reader: false
+dimensions:
+  width: 189
+  depth: 196
+  height: 48
+power:
+  adapter_wattage: 180
+  dc_input: "19V/9.47A" 
