@@ -209,21 +209,6 @@ body:
     attributes:
       value: "## Storage Information"
 
-  - type: checkboxes
-    id: storage_types
-    attributes:
-      label: Storage Types *
-      description: Select all supported storage types (at least one must be selected)
-      options:
-        - label: M.2
-        - label: SATA
-        - label: NVMe
-        - label: 2.5"
-        - label: mSATA
-        - label: eMMC
-        - label: microSD
-        - label: U.2
-
   - type: textarea
     id: storage_details
     attributes:
@@ -245,7 +230,7 @@ body:
   - type: dropdown
     id: wifi_standard
     attributes:
-      label: WiFi Standard *
+      label: WiFi Standard
       options:
         - WiFi 4
         - WiFi 5
@@ -273,53 +258,36 @@ body:
     validations:
       required: false
 
-  - type: input
+  - type: textarea
     id: ethernet_ports
     attributes:
-      label: Number of Ethernet Ports
-      description: Number of ethernet ports
-      placeholder: "1"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: ethernet_speed
-    attributes:
-      label: Ethernet Speed
-      options:
-        - 100Mbps
-        - 1GbE
-        - 2.5GbE
-        - 5GbE
-        - 10GbE
-    validations:
-      required: true
-
-  - type: input
-    id: ethernet_chipset
-    attributes:
-      label: Ethernet Chipset
-      description: The model of the Ethernet controller
-      placeholder: Intel I225-V
-    validations:
-      required: true
-
-  - type: dropdown
-    id: ethernet_interface
-    attributes:
-      label: Ethernet Interface
-      options:
-        - RJ45
-        - SFP
-        - SFP+
-        - SFP28
-        - 10GBASE-T
+      label: Ethernet Ports
+      description: |
+        List all ethernet ports with their specifications:
+        - Type: 2.5GbE, Chipset: Intel I225-V, Interface: RJ45
+        - Type: 10GbE, Chipset: Intel X550-AT2, Interface: SFP+
+      placeholder: |
+        - Type: 2.5GbE, Chipset: Intel I225-V, Interface: RJ45
     validations:
       required: true
 
   - type: markdown
     attributes:
       value: "## Expansion"
+
+  - type: textarea
+    id: pcie_slots
+    attributes:
+      label: PCIe Slots
+      description: |
+        List all PCIe slots with their specifications:
+        - Type: PCIe 4.0 x16, Form Factor: Full Height
+        - Type: PCIe 3.0 x4, Form Factor: M.2 2280
+        - Type: Mini PCIe, Form Factor: Half Height
+      placeholder: |
+        - Type: PCIe 4.0 x16, Form Factor: Full Height
+    validations:
+      required: false
 
   - type: input
     id: oculink_ports
@@ -341,7 +309,8 @@ body:
       description: |
         List all USB ports with their specifications:
         - Type: USB 3.2 Gen2, Speed: 10Gbps, Count: 2
-        - Type: USB4, Alt Mode: DisplayPort 2.0, Max Resolution: 4K@144Hz
+        - Type: USB4, Count: 2, Alt Mode: DisplayPort, Max Resolution: 8K@30Hz, Thunderbolt: 3
+        - Type: USB-C, Count: 1, Alt Mode: DisplayPort 2.0, Power Delivery: 100W
       placeholder: |
         - Type: USB 3.2 Gen2, Speed: 10Gbps, Count: 2
     validations:
@@ -353,10 +322,10 @@ body:
       label: Display Ports
       description: |
         List all display outputs with their specifications:
-        - HDMI: Count: 1, Version: 2.1, Max Resolution: 8K@60Hz
-        - DisplayPort: Count: 1, Version: 2.0, Max Resolution: 4K@144Hz
+        - Type: HDMI, Count: 1, Version: 2.1, Form Factor: Full-size, Max Resolution: 8K@60Hz
+        - Type: DisplayPort, Count: 1, Version: 2.0, Form Factor: Mini, Max Resolution: 4K@144Hz
       placeholder: |
-        - HDMI: Count: 1, Version: 2.1, Max Resolution: 4K@60Hz
+        - Type: HDMI, Count: 1, Version: 2.1, Form Factor: Full-size, Max Resolution: 4K@60Hz
     validations:
       required: true
 
