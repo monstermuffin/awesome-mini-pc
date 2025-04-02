@@ -537,7 +537,9 @@ function App() {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),
-          overflowX: 'hidden',
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
           background: theme.palette.mode === 'dark' 
             ? 'radial-gradient(circle at 50% 50%, rgba(26,35,126,0.15) 0%, rgba(13,71,161,0) 70%), ' +
               'radial-gradient(circle at 80% 20%, rgba(30,60,175,0.1) 0%, rgba(13,71,161,0) 50%)'
@@ -560,42 +562,25 @@ function App() {
         }}>
           <Toolbar />
           <Box sx={{ 
+            flex: 1,
             p: { xs: 1, sm: 2 },
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: 'calc(100vh - 64px)',
+            overflow: 'auto',
+            height: 'calc(100vh - 64px)', // Height minus toolbar
           }}>
             {loading ? (
               <Box sx={{ 
                 display: 'flex', 
                 justifyContent: 'center', 
                 alignItems: 'center',
-                flex: 1
+                height: '100%'
               }}>
                 <Typography variant="h6">Loading...</Typography>
               </Box>
             ) : (
-              <Box sx={{ 
-                flex: 1,
-                overflow: 'auto',
-                width: '100%',
-              }}>
+              <Box sx={{ height: '100%' }}>
                 <MiniPCTable devices={filteredDevices} />
               </Box>
             )}
-
-            <Box component="footer" sx={{ 
-              py: 3, 
-              px: 2,
-              mt: 3,
-              backgroundColor: theme.palette.mode === 'dark' 
-                ? 'rgba(255, 255, 255, 0.05)' 
-                : 'rgba(0, 0, 0, 0.05)'
-            }}>
-              <Typography variant="body2" color="text.secondary" align="center">
-                Bigups the mini pc massive
-              </Typography>
-            </Box>
           </Box>
         </Box>
       </Box>
