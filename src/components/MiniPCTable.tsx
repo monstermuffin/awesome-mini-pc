@@ -1181,9 +1181,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                                     </Typography>
                                     {(port.alt_mode || port.max_resolution) && (
                                       <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                                        {port.alt_mode && `${port.alt_mode}`}
-                                        {port.alt_mode && port.max_resolution && ' - '}
-                                        {port.max_resolution && `${port.max_resolution}`}
+                                        {port.alt_mode}
+                                        {port.max_resolution && ` (${port.max_resolution})`}
                                       </Typography>
                                     )}
                                   </Box>
@@ -1276,6 +1275,11 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                               ) : (
                                 <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice?.ports?.displayport}x ports</Typography>
                               )}
+                              {typeof detailDevice?.ports?.displayport === 'object' && detailDevice?.ports?.displayport.form_factor && (
+                                <Typography variant="body2" sx={{ ml: 2, color: 'text.secondary' }}>
+                                  Form factor: {detailDevice?.ports?.displayport.form_factor}
+                                </Typography>
+                              )}
                             </Box>
                           )}
 
@@ -1321,6 +1325,19 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                             }}>
                               <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>Audio Jack:</Typography>
                               <Typography variant="body2">{detailDevice?.ports?.audio_jack}x</Typography>
+                            </Box>
+                          )}
+
+                          {/* IR Receiver */}
+                          {detailDevice?.ports?.ir_receiver && (
+                            <Box sx={{ 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 0.5
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>IR Receiver:</Typography>
+                              <Typography variant="body2">Yes</Typography>
                             </Box>
                           )}
 

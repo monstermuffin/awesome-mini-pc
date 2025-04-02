@@ -81,11 +81,13 @@ export interface MiniPC {
       count: number;
       version: string;
       max_resolution?: string;
+      form_factor?: string;
     } | number;
     audio_jack?: number;
     sd_card_reader?: boolean;
     serial?: number;
     oculink?: string;
+    ir_receiver?: boolean;
     other?: string[];
   };
   dimensions?: {
