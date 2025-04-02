@@ -72,6 +72,8 @@ ports:
       type: "USB4"
       alt_mode: "DisplayPort"
       max_resolution: "8K@30Hz"
+      thunderbolt_compatible: true
+      thunderbolt_version: "3"
   hdmi:
     count: 1
     version: "2.0"

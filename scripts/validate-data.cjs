@@ -578,6 +578,21 @@ function validateLogicalConstraints(data, path, errors, deviceFile) {
       });
     }
   }
+
+  // Validate Thunderbolt compatibility and version
+  if (data.ports?.usb_c && Array.isArray(data.ports.usb_c)) {
+    data.ports.usb_c.forEach((port, index) => {
+      if (port.thunderbolt_compatible === true && !port.thunderbolt_version) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `USB-C port with Thunderbolt compatibility must specify thunderbolt_version`,
+          path: `${path}.ports.usb_c[${index}]`,
+          critical: true
+        });
+      }
+    });
+  }
 }
 
 /**

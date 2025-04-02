@@ -1194,8 +1194,14 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                                       {port.type}
                                       {port.speed && ` (${port.speed})`}
                                     </Typography>
-                                    {(port.alt_mode || port.max_resolution) && (
+                                    {(port.alt_mode || port.max_resolution || port.thunderbolt_compatible) && (
                                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                        {port.thunderbolt_compatible && (
+                                          <>
+                                            Thunderbolt{port.thunderbolt_version ? ` ${port.thunderbolt_version}` : ' compatible'}
+                                            {(port.alt_mode || port.max_resolution) && ' • '}
+                                          </>
+                                        )}
                                         {port.alt_mode}
                                         {port.max_resolution && ` (${port.max_resolution})`}
                                       </Typography>

@@ -72,6 +72,8 @@ export interface MiniPC {
       speed?: string;
       alt_mode?: string;
       max_resolution?: string;
+      thunderbolt_compatible?: boolean;
+      thunderbolt_version?: string;
     }> | number;
     usb_c_thunderbolt?: number;
     hdmi?: {
