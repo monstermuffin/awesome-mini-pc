@@ -33,6 +33,7 @@ export interface MiniPC {
     form_factor: string;
     interface: string;
     max_capacity: number;
+    alt_interface?: string;
   }>;
   networking: {
     ethernet: Array<{
