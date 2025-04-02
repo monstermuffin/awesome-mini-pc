@@ -1172,15 +1172,30 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                           {/* USB-C Ports */}
                           {detailDevice?.ports?.usb_c && (
                             <Box sx={{ mb: 1.5 }}>
-                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5, color: 'text.secondary' }}>USB Type-C:</Typography>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5, color: 'text.secondary' }}>USB-C:</Typography>
                               {Array.isArray(detailDevice?.ports?.usb_c) ? (
                                 detailDevice?.ports?.usb_c.map((port, index) => (
                                   <Box key={index} sx={{ ml: 2, mb: 0.5 }}>
-                                    <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                    <Typography variant="body2">
+                                      {port.count && port.count > 1 && (
+                                        <Chip 
+                                          label={`${port.count}×`} 
+                                          size="small" 
+                                          sx={{ 
+                                            height: 20,
+                                            mr: 0.5,
+                                            fontSize: '0.7rem',
+                                            bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                            fontWeight: 600,
+                                          }} 
+                                        />
+                                      )}
                                       {port.type}
+                                      {port.speed && ` (${port.speed})`}
                                     </Typography>
                                     {(port.alt_mode || port.max_resolution) && (
-                                      <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                                         {port.alt_mode}
                                         {port.max_resolution && ` (${port.max_resolution})`}
                                       </Typography>
@@ -1190,6 +1205,16 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                               ) : (
                                 <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice?.ports?.usb_c}x ports</Typography>
                               )}
+                            </Box>
+                          )}
+
+                          {/* Thunderbolt Ports */}
+                          {detailDevice?.ports?.usb_c_thunderbolt !== undefined && detailDevice?.ports?.usb_c_thunderbolt > 0 && (
+                            <Box sx={{ mb: 1.5 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5, color: 'text.secondary' }}>Thunderbolt:</Typography>
+                              <Typography variant="body2" sx={{ ml: 2 }}>
+                                {detailDevice?.ports?.usb_c_thunderbolt}× ports
+                              </Typography>
                             </Box>
                           )}
                         </Box>
@@ -1314,32 +1339,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                           }}>
                             Other Ports
                           </Typography>
-
-                          {/* Audio Jack */}
-                          {detailDevice?.ports?.audio_jack !== undefined && (
-                            <Box sx={{ 
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 1,
-                              mb: 0.5
-                            }}>
-                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>Audio Jack:</Typography>
-                              <Typography variant="body2">{detailDevice?.ports?.audio_jack}x</Typography>
-                            </Box>
-                          )}
-
-                          {/* IR Receiver */}
-                          {detailDevice?.ports?.ir_receiver && (
-                            <Box sx={{ 
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 1,
-                              mb: 0.5
-                            }}>
-                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>IR Receiver:</Typography>
-                              <Typography variant="body2">Yes</Typography>
-                            </Box>
-                          )}
 
                           {/* SD Card Reader */}
                           {detailDevice?.ports?.sd_card_reader !== undefined && (

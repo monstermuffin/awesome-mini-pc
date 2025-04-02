@@ -68,6 +68,8 @@ export interface MiniPC {
     }> | number;
     usb_c?: Array<{
       type: string;
+      count?: number;
+      speed?: string;
       alt_mode?: string;
       max_resolution?: string;
     }> | number;
