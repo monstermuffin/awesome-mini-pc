@@ -6,8 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to submit a machine! Please fill out the information below carefully.
-        All fields marked with * are required.
+        Thanks for taking the time to submit a machine. Please fill out the information below carefully and ensure you have read [contributing](https://github.com/monstermuffin/awesome-mini-pc/blob/main/CONTRIBUTING.md) before continuing.
 
   - type: input
     id: id
