@@ -666,11 +666,14 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       justifyContent: 'flex-start'
                     }}>
                       <Badge 
-                        badgeContent={device.expansion?.pcie_slots?.length || 0}
+                        badgeContent={
+                          (device?.expansion?.pcie_slots?.length ?? 0) + 
+                          (device?.expansion?.oculink_ports?.length ?? 0)
+                        }
                         color="primary"
                         sx={{ 
                           '& .MuiBadge-badge': { 
-                            display: (!device.expansion?.pcie_slots || device.expansion.pcie_slots.length === 0) ? 'none' : 'flex',
+                            display: (!device?.expansion?.pcie_slots?.length && !device?.expansion?.oculink_ports?.length) ? 'none' : 'flex',
                             fontSize: '0.6rem',
                             fontWeight: 'bold',
                             backgroundColor: theme => theme.palette.mode === 'dark' ? '#2196f3' : '#1976d2',
@@ -681,8 +684,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         }}
                       >
                         <Tooltip title={
-                          device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0
-                            ? `${device.expansion.pcie_slots.length} PCIe slot(s) available`
+                          ((device?.expansion?.pcie_slots?.length ?? 0) + (device?.expansion?.oculink_ports?.length ?? 0)) > 0
+                            ? `${device?.expansion?.pcie_slots?.length ?? 0} PCIe slot(s)${device?.expansion?.oculink_ports?.length ? `, ${device.expansion.oculink_ports.length} OCuLink port(s)` : ''} available`
                             : "View details"
                         }>
                           <IconButton 
@@ -925,53 +928,13 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       marginRight: 1,
                       borderRadius: 1,
                     }
-                  }}>WiFi</Typography>
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    <Box component="span" sx={{ 
-                      fontWeight: 'medium', 
-                      display: 'flex', 
-                      alignItems: 'center',
-                      gap: 1 
-                    }}>
-                      {detailDevice.networking.wifi.standard}
-                    </Box>
-                    <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                      ({detailDevice.networking.wifi.chipset})
-                    </Box>
-                  </Typography>
-                  <Box sx={{ 
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    mt: 0.3
-                  }}>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      Bluetooth: {detailDevice.networking.wifi.bluetooth}
-                    </Typography>
-                  </Box>
-                </Grid>
-                
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
-                    color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    '&::before': {
-                      content: '""',
-                      display: 'block',
-                      width: 3,
-                      height: 16,
-                      backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                      marginRight: 1,
-                      borderRadius: 1,
-                    }
                   }}>Ethernet</Typography>
                   
                   {(() => {
                     // Group ethernet by speed and chipset
                     const ethernetGroups: Record<string, number> = {};
                     
-                    detailDevice.networking.ethernet.forEach(eth => {
+                    detailDevice?.networking?.ethernet?.forEach(eth => {
                       const key = `${eth.speed} (${eth.chipset})`;
                       ethernetGroups[key] = (ethernetGroups[key] || 0) + eth.ports;
                     });
@@ -1002,8 +965,52 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   })()}
                 </Grid>
                 
+                <Grid item xs={12} md={6}>
+                  <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
+                    color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    '&::before': {
+                      content: '""',
+                      display: 'block',
+                      width: 3,
+                      height: 16,
+                      backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                      marginRight: 1,
+                      borderRadius: 1,
+                    }
+                  }}>WiFi</Typography>
+                  <Typography variant="body2" sx={{ mb: 0.5 }}>
+                    <Box component="span" sx={{ 
+                      fontWeight: 'medium', 
+                      display: 'flex', 
+                      alignItems: 'center',
+                      gap: 1 
+                    }}>
+                      {detailDevice.networking.wifi.standard}
+                    </Box>
+                    <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
+                      ({detailDevice.networking.wifi.chipset})
+                    </Box>
+                  </Typography>
+                  <Box sx={{ 
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    mt: 0.3
+                  }}>
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                      Bluetooth: {detailDevice.networking.wifi.bluetooth}
+                    </Typography>
+                  </Box>
+                </Grid>
+                
                 {detailDevice.ports && (
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} sx={{ 
+                    pt: 2, 
+                    mt: 2, 
+                    borderTop: theme => `1px solid ${theme.palette.divider}`
+                  }}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                       color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                       display: 'flex',
@@ -1019,94 +1026,241 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       }
                     }}>Ports</Typography>
                     
-                    {/* USB-A Ports */}
-                    {detailDevice.ports.usb_a && (
-                      <Box sx={{ mb: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>USB-A:</Typography>
-                        {Array.isArray(detailDevice.ports.usb_a) ? (
-                          detailDevice.ports.usb_a.map((port, index) => (
-                            <Typography key={index} variant="body2" sx={{ ml: 2, mb: 0.5 }}>
-                              {port.count}x {port.type}
-                              {port.speed && ` (${port.speed})`}
-                            </Typography>
-                          ))
-                        ) : (
-                          <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.usb_a}x</Typography>
-                        )}
-                      </Box>
-                    )}
-
-                    {/* USB-C Ports */}
-                    {detailDevice.ports.usb_c && (
-                      <Box sx={{ mb: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>USB-C:</Typography>
-                        {Array.isArray(detailDevice.ports.usb_c) ? (
-                          detailDevice.ports.usb_c.map((port, index) => (
-                            <Typography key={index} variant="body2" sx={{ ml: 2, mb: 0.5 }}>
-                              {port.type}
-                              {port.alt_mode && ` (${port.alt_mode})`}
-                              {port.max_resolution && ` - ${port.max_resolution}`}
-                            </Typography>
-                          ))
-                        ) : (
-                          <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.usb_c}x</Typography>
-                        )}
-                      </Box>
-                    )}
-
-                    {/* HDMI */}
-                    {detailDevice.ports.hdmi && (
-                      <Box sx={{ mb: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>HDMI:</Typography>
-                        {typeof detailDevice.ports.hdmi === 'object' ? (
-                          <Typography variant="body2" sx={{ ml: 2 }}>
-                            {detailDevice.ports.hdmi.count}x {detailDevice.ports.hdmi.version}
-                            {detailDevice.ports.hdmi.max_resolution && ` (${detailDevice.ports.hdmi.max_resolution})`}
+                    <Grid container spacing={3}>
+                      {/* USB Ports Section */}
+                      <Grid item xs={12} md={6}>
+                        <Box sx={{ mb: 2 }}>
+                          <Typography variant="body2" sx={{ 
+                            fontWeight: 600, 
+                            mb: 1,
+                            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                            borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.2)' : 'rgba(25,118,210,0.2)'}`,
+                            pb: 0.5
+                          }}>
+                            USB Ports
                           </Typography>
-                        ) : (
-                          <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.hdmi}x</Typography>
-                        )}
-                      </Box>
-                    )}
+                          
+                          {/* USB-A Ports */}
+                          {detailDevice.ports.usb_a && (
+                            <Box sx={{ mb: 1.5 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5, color: 'text.secondary' }}>USB Type-A:</Typography>
+                              {Array.isArray(detailDevice.ports.usb_a) ? (
+                                detailDevice.ports.usb_a.map((port, index) => (
+                                  <Box key={index} sx={{ 
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    mb: 0.5,
+                                    ml: 2
+                                  }}>
+                                    {port.count > 1 && (
+                                      <Chip 
+                                        label={`${port.count}×`} 
+                                        size="small" 
+                                        sx={{ 
+                                          height: 20, 
+                                          fontSize: '0.7rem',
+                                          bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                          color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                          fontWeight: 600,
+                                        }} 
+                                      />
+                                    )}
+                                    <Typography variant="body2">
+                                      {port.type}
+                                      {port.speed && ` (${port.speed})`}
+                                    </Typography>
+                                  </Box>
+                                ))
+                              ) : (
+                                <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.usb_a}x ports</Typography>
+                              )}
+                            </Box>
+                          )}
 
-                    {/* DisplayPort */}
-                    {detailDevice.ports.displayport && (
-                      <Box sx={{ mb: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>DisplayPort:</Typography>
-                        {typeof detailDevice.ports.displayport === 'object' ? (
-                          <Typography variant="body2" sx={{ ml: 2 }}>
-                            {detailDevice.ports.displayport.count}x {detailDevice.ports.displayport.version}
-                            {detailDevice.ports.displayport.max_resolution && ` (${detailDevice.ports.displayport.max_resolution})`}
+                          {/* USB-C Ports */}
+                          {detailDevice.ports.usb_c && (
+                            <Box sx={{ mb: 1.5 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5, color: 'text.secondary' }}>USB Type-C:</Typography>
+                              {Array.isArray(detailDevice.ports.usb_c) ? (
+                                detailDevice.ports.usb_c.map((port, index) => (
+                                  <Box key={index} sx={{ ml: 2, mb: 0.5 }}>
+                                    <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                      {port.type}
+                                    </Typography>
+                                    {(port.alt_mode || port.max_resolution) && (
+                                      <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
+                                        {port.alt_mode && `${port.alt_mode}`}
+                                        {port.alt_mode && port.max_resolution && ' - '}
+                                        {port.max_resolution && `${port.max_resolution}`}
+                                      </Typography>
+                                    )}
+                                  </Box>
+                                ))
+                              ) : (
+                                <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.usb_c}x ports</Typography>
+                              )}
+                            </Box>
+                          )}
+                        </Box>
+                      </Grid>
+
+                      {/* Display Outputs Section */}
+                      <Grid item xs={12} md={6}>
+                        <Box sx={{ mb: 2 }}>
+                          <Typography variant="body2" sx={{ 
+                            fontWeight: 600, 
+                            mb: 1,
+                            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                            borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.2)' : 'rgba(25,118,210,0.2)'}`,
+                            pb: 0.5
+                          }}>
+                            Display Outputs
                           </Typography>
-                        ) : (
-                          <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.displayport}x</Typography>
-                        )}
-                      </Box>
-                    )}
 
-                    {/* Audio Jack */}
-                    {detailDevice.ports.audio_jack !== undefined && (
-                      <Box sx={{ mb: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>Audio Jack:</Typography>
-                        <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.audio_jack}x</Typography>
-                      </Box>
-                    )}
+                          {/* HDMI */}
+                          {detailDevice.ports.hdmi && (
+                            <Box sx={{ mb: 1.5 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5, color: 'text.secondary' }}>HDMI:</Typography>
+                              {typeof detailDevice.ports.hdmi === 'object' ? (
+                                <Box sx={{ 
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 1,
+                                  ml: 2
+                                }}>
+                                  {detailDevice.ports.hdmi.count > 1 && (
+                                    <Chip 
+                                      label={`${detailDevice.ports.hdmi.count}×`} 
+                                      size="small" 
+                                      sx={{ 
+                                        height: 20, 
+                                        fontSize: '0.7rem',
+                                        bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                        fontWeight: 600,
+                                      }} 
+                                    />
+                                  )}
+                                  <Typography variant="body2">
+                                    {detailDevice.ports.hdmi.version}
+                                    {detailDevice.ports.hdmi.max_resolution && ` (${detailDevice.ports.hdmi.max_resolution})`}
+                                  </Typography>
+                                </Box>
+                              ) : (
+                                <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.hdmi}x ports</Typography>
+                              )}
+                            </Box>
+                          )}
 
-                    {/* SD Card Reader */}
-                    {detailDevice.ports.sd_card_reader !== undefined && (
-                      <Box sx={{ mb: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>SD Card Reader:</Typography>
-                        <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.sd_card_reader ? 'Yes' : 'No'}</Typography>
-                      </Box>
-                    )}
+                          {/* DisplayPort */}
+                          {detailDevice.ports.displayport && (
+                            <Box sx={{ mb: 1.5 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5, color: 'text.secondary' }}>DisplayPort:</Typography>
+                              {typeof detailDevice.ports.displayport === 'object' ? (
+                                <Box sx={{ 
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 1,
+                                  ml: 2
+                                }}>
+                                  {detailDevice.ports.displayport.count > 1 && (
+                                    <Chip 
+                                      label={`${detailDevice.ports.displayport.count}×`} 
+                                      size="small" 
+                                      sx={{ 
+                                        height: 20, 
+                                        fontSize: '0.7rem',
+                                        bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                        fontWeight: 600,
+                                      }} 
+                                    />
+                                  )}
+                                  <Typography variant="body2">
+                                    {detailDevice.ports.displayport.version}
+                                    {detailDevice.ports.displayport.max_resolution && ` (${detailDevice.ports.displayport.max_resolution})`}
+                                  </Typography>
+                                </Box>
+                              ) : (
+                                <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.displayport}x ports</Typography>
+                              )}
+                            </Box>
+                          )}
 
-                    {/* OCuLink */}
-                    {detailDevice.ports.oculink !== undefined && (
-                      <Box sx={{ mb: 1 }}>
-                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>OCuLink:</Typography>
-                        <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.oculink}</Typography>
-                      </Box>
-                    )}
+                          {/* USB-C Display Outputs */}
+                          {Array.isArray(detailDevice.ports.usb_c) && detailDevice.ports.usb_c.some(port => port.alt_mode || port.max_resolution) && (
+                            <Box sx={{ mb: 1.5 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5, color: 'text.secondary' }}>USB-C Display Output:</Typography>
+                              {detailDevice.ports.usb_c
+                                .filter(port => port.alt_mode || port.max_resolution)
+                                .map((port, index) => (
+                                  <Box key={index} sx={{ ml: 2, mb: 0.5 }}>
+                                    <Typography variant="body2">
+                                      {port.alt_mode}
+                                      {port.max_resolution && ` (${port.max_resolution})`}
+                                    </Typography>
+                                  </Box>
+                                ))}
+                            </Box>
+                          )}
+                        </Box>
+                      </Grid>
+
+                      {/* Other Ports Section */}
+                      <Grid item xs={12} md={6}>
+                        <Box sx={{ mb: 2 }}>
+                          <Typography variant="body2" sx={{ 
+                            fontWeight: 600, 
+                            mb: 1,
+                            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                            borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.2)' : 'rgba(25,118,210,0.2)'}`,
+                            pb: 0.5
+                          }}>
+                            Other Ports
+                          </Typography>
+
+                          {/* Audio Jack */}
+                          {detailDevice.ports.audio_jack !== undefined && (
+                            <Box sx={{ 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 0.5
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>Audio Jack:</Typography>
+                              <Typography variant="body2">{detailDevice.ports.audio_jack}x</Typography>
+                            </Box>
+                          )}
+
+                          {/* SD Card Reader */}
+                          {detailDevice.ports.sd_card_reader !== undefined && (
+                            <Box sx={{ 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 0.5
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>SD Card Reader:</Typography>
+                              <Typography variant="body2">{detailDevice.ports.sd_card_reader ? 'Yes' : 'No'}</Typography>
+                            </Box>
+                          )}
+
+                          {/* OCuLink */}
+                          {detailDevice.ports.oculink !== undefined && (
+                            <Box sx={{ 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 0.5
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>OCuLink:</Typography>
+                              <Typography variant="body2">{detailDevice.ports.oculink}x</Typography>
+                            </Box>
+                          )}
+                        </Box>
+                      </Grid>
+                    </Grid>
                   </Grid>
                 )}
                 
@@ -1165,8 +1319,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   </Grid>
                 )}
 
-                {/* Expansion Slots section */}
-                {detailDevice.expansion?.pcie_slots && detailDevice.expansion.pcie_slots.length > 0 && (
+                {/* Expansion section */}
+                {((detailDevice?.expansion?.pcie_slots?.length ?? 0) > 0 || (detailDevice?.expansion?.oculink_ports?.length ?? 0) > 0) && (
                   <Grid item xs={12} sx={{ 
                     pt: 2, 
                     mt: 2, 
@@ -1185,14 +1339,15 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         marginRight: 1,
                         borderRadius: 1,
                       }
-                    }}>Expansion Slots</Typography>
+                    }}>Expansion</Typography>
                     <Box sx={{
                       display: 'flex',
                       flexWrap: 'wrap',
                       gap: 1,
                     }}>
-                      {detailDevice.expansion.pcie_slots.map((slot, index) => (
-                        <Box key={index} sx={{
+                      {/* PCIe Slots */}
+                      {detailDevice?.expansion?.pcie_slots?.map((slot, index) => (
+                        <Box key={`pcie-${index}`} sx={{
                           p: 1.5,
                           borderRadius: 1,
                           backgroundColor: theme => theme.palette.mode === 'dark' 
@@ -1214,10 +1369,32 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                           )}
                         </Box>
                       ))}
+
+                      {/* OCuLink Ports */}
+                      {detailDevice?.expansion?.oculink_ports?.map((port, index) => (
+                        <Box key={`oculink-${index}`} sx={{
+                          p: 1.5,
+                          borderRadius: 1,
+                          backgroundColor: theme => theme.palette.mode === 'dark' 
+                            ? 'rgba(76,175,80,0.1)' 
+                            : 'rgba(76,175,80,0.05)',
+                          border: theme => `1px solid ${theme.palette.mode === 'dark' 
+                            ? 'rgba(76,175,80,0.2)' 
+                            : 'rgba(76,175,80,0.15)'}`,
+                          minWidth: 180,
+                        }}>
+                          <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                            OCuLink {port.version}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            PCIe x4 interface
+                          </Typography>
+                        </Box>
+                      ))}
                     </Box>
-                    {detailDevice.expansion.additional_info && (
+                    {detailDevice?.expansion?.additional_info && (
                       <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        Note: {detailDevice.expansion.additional_info}
+                        Note: {detailDevice?.expansion?.additional_info}
                       </Typography>
                     )}
                   </Grid>

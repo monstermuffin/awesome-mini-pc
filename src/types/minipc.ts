@@ -50,6 +50,9 @@ export interface MiniPC {
       full_height?: boolean; // Whether it supports full-height cards
       length?: string; // e.g., "half-length", "full-length"
     }>;
+    oculink_ports?: Array<{
+      version: string; // e.g., "OCuLink 1.0", "OCuLink 2.0"
+    }>;
     additional_info?: string;
   };
   ports?: {
