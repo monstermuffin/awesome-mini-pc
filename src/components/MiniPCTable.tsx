@@ -1346,6 +1346,32 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                             Other Ports
                           </Typography>
 
+                          {/* Audio Jack */}
+                          {detailDevice?.ports?.audio_jack !== undefined && (
+                            <Box sx={{ 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 0.5
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>Audio Jack:</Typography>
+                              <Typography variant="body2">{detailDevice?.ports?.audio_jack}x</Typography>
+                            </Box>
+                          )}
+
+                          {/* IR Receiver */}
+                          {detailDevice?.ports?.ir_receiver !== undefined && (
+                            <Box sx={{ 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 0.5
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>IR Receiver:</Typography>
+                              <Typography variant="body2">{detailDevice?.ports?.ir_receiver ? 'Yes' : 'No'}</Typography>
+                            </Box>
+                          )}
+
                           {/* SD Card Reader */}
                           {detailDevice?.ports?.sd_card_reader !== undefined && (
                             <Box sx={{ 
