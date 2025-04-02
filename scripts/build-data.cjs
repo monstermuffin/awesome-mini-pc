@@ -4,8 +4,89 @@ const fs = require('fs');
 const path = require('path');
 
 /**
+ * @typedef {Object} CPUSocket
+ * @property {string} type - The socket type (e.g., "AM5", "LGA 1700")
+ * @property {boolean} supports_cpu_swap - Whether the CPU can be swapped
+ */
+
+/**
+ * @typedef {Object} CPU
+ * @property {string} brand - CPU brand
+ * @property {string} model - CPU model
+ * @property {number} cores - Number of cores
+ * @property {number} threads - Number of threads
+ * @property {number} base_clock - Base clock speed in GHz
+ * @property {number} boost_clock - Boost clock speed in GHz
+ * @property {number} tdp - TDP in watts
+ * @property {string} [chipset] - Optional chipset information
+ * @property {string} [architecture] - Optional architecture information
+ * @property {CPUSocket} [socket] - Optional socket information
+ */
+
+/**
+ * @typedef {Object} Memory
+ * @property {number} slots - Number of memory slots
+ * @property {string} type - Memory type (e.g., "DDR4", "DDR5")
+ * @property {number} speed - Memory speed in MHz
+ * @property {string} [module_type] - Module type (e.g., "SODIMM", "DIMM")
+ * @property {number} max_capacity - Maximum memory capacity in GB
+ */
+
+/**
+ * @typedef {Object} Storage
+ * @property {string} type - Storage type
+ * @property {string} form_factor - Form factor
+ * @property {string} interface - Interface type
+ * @property {number} max_capacity - Maximum capacity in GB
+ */
+
+/**
+ * @typedef {Object} NetworkingEthernet
+ * @property {string} chipset - Ethernet chipset
+ * @property {string} speed - Ethernet speed
+ * @property {number} ports - Number of ports
+ */
+
+/**
+ * @typedef {Object} NetworkingWifi
+ * @property {string} chipset - WiFi chipset
+ * @property {string} standard - WiFi standard
+ * @property {string} bluetooth - Bluetooth version
+ */
+
+/**
+ * @typedef {Object} Networking
+ * @property {NetworkingEthernet[]} ethernet - Ethernet configurations
+ * @property {NetworkingWifi} wifi - WiFi configuration
+ */
+
+/**
+ * @typedef {Object} Dimensions
+ * @property {number} width - Width in mm
+ * @property {number} depth - Depth in mm
+ * @property {number} height - Height in mm
+ * @property {number} [volume] - Volume in liters (calculated)
+ */
+
+/**
+ * @typedef {Object} MiniPCData
+ * @property {string} id - Device ID
+ * @property {string} brand - Device brand
+ * @property {string} model - Device model
+ * @property {string} release_date - Release year
+ * @property {CPU} cpu - CPU information
+ * @property {Memory} memory - Memory information
+ * @property {Storage[]} storage - Storage configurations
+ * @property {Networking} networking - Networking information
+ * @property {Dimensions} [dimensions] - Physical dimensions
+ * @property {string} [_sourcePath] - Source file path
+ * @property {string} [_vendor] - Vendor directory name
+ * @property {string} [_device] - Device file name without extension
+ */
+
+/**
  * Validates a Mini PC object
- * @param {any} data - The data to validate
+ * @param {MiniPCData} data - The data to validate
  * @returns {boolean} - Whether the data is valid
  */
 function validateMiniPC(data) {
@@ -14,8 +95,25 @@ function validateMiniPC(data) {
     throw new Error('Missing required fields: id, brand, or model');
   }
 
-  if (!data.cpu || !data.cpu.brand || !data.cpu.model || !data.cpu.cores || !data.cpu.tdp) {
-    throw new Error('Missing or invalid CPU information');
+  // Check if this is a DIY/barebones machine
+  const isDIYMachine = data.cpu?.socket?.supports_cpu_swap === true;
+
+  // CPU validation
+  if (!data.cpu || !data.cpu.brand || !data.cpu.model || !data.cpu.tdp) {
+    throw new Error('Missing required CPU fields: brand, model, or tdp');
+  }
+
+  // For DIY machines, require socket information
+  if (isDIYMachine) {
+    if (!data.cpu.socket?.type) {
+      throw new Error('DIY machine must specify CPU socket type');
+    }
+  } else {
+    // For non-DIY machines, require full CPU specs
+    if (data.cpu.cores === undefined || data.cpu.threads === undefined || 
+        data.cpu.base_clock === undefined || data.cpu.boost_clock === undefined) {
+      throw new Error('Missing required CPU performance specifications');
+    }
   }
 
   if (!data.memory || !data.memory.type || !data.memory.speed || !data.memory.slots) {
@@ -165,6 +263,7 @@ export const RANGES = ${JSON.stringify({
 async function main() {
   const dataDir = path.resolve(__dirname, '../data/devices');
   const outputDir = path.resolve(__dirname, '../src/generated');
+  /** @type {MiniPCData[]} */
   const devices = [];
 
   // Process each vendor directory
@@ -178,13 +277,20 @@ async function main() {
           const content = fs.readFileSync(filePath, 'utf-8');
           
           try {
-            const data = yaml.load(content);
-            if (validateMiniPC(data)) {
-              // Add metadata
-              data._sourcePath = `${vendor}/${file}`;
-              data._vendor = vendor;
-              data._device = file.replace(/\.ya?ml$/, '');
-              devices.push(data);
+            const rawData = yaml.load(content);
+            // Type check the loaded data
+            if (typeof rawData === 'object' && rawData !== null) {
+              /** @type {MiniPCData} */
+              const data = rawData;
+              if (validateMiniPC(data)) {
+                // Add metadata
+                data._sourcePath = `${vendor}/${file}`;
+                data._vendor = vendor;
+                data._device = file.replace(/\.ya?ml$/, '');
+                devices.push(data);
+              }
+            } else {
+              throw new Error('Invalid YAML: expected an object');
             }
           } catch (error) {
             console.error(`Error processing ${filePath}:`, error);

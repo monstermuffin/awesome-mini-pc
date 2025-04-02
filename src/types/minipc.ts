@@ -13,6 +13,10 @@ export interface MiniPC {
     tdp: number;
     chipset?: string; // Optional chipset information
     architecture?: string; // Optional architecture information
+    socket?: {
+      type: string; // e.g., "AM5", "LGA 1700"
+      supports_cpu_swap: boolean;
+    };
   };
   memory: {
     max_capacity: number;

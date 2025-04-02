@@ -29,6 +29,8 @@ type FilterState = {
   cpuBrands: Set<string>;
   cpuArchitectures: Set<string>;
   cpuChipsets: Set<string>;
+  cpuSockets: Set<string>;
+  hasSocketableCpu: boolean;
   memoryTypes: Set<string>;
   memoryModuleTypes: Set<string>;
   memorySlotsCount: Set<string>;
@@ -88,11 +90,13 @@ function App() {
   });
 
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [selectedFilters, setSelectedFilters] = useState<FilterState>({
+  const initialFilterState: FilterState = {
     brands: new Set<string>(),
     cpuBrands: new Set<string>(),
     cpuArchitectures: new Set<string>(),
     cpuChipsets: new Set<string>(),
+    cpuSockets: new Set<string>(),
+    hasSocketableCpu: false,
     memoryTypes: new Set<string>(),
     memoryModuleTypes: new Set<string>(),
     memorySlotsCount: new Set<string>(),
@@ -111,7 +115,9 @@ function App() {
     memorySpeed: null,
     memoryCapacity: null,
     volume: null,
-  });
+  };
+
+  const [selectedFilters, setSelectedFilters] = useState<FilterState>(initialFilterState);
 
   // Load data on mount
   useEffect(() => {
@@ -139,7 +145,7 @@ function App() {
       if (category === 'tdp' || category === 'cores' || category === 'memorySpeed' || 
           category === 'memoryCapacity' || category === 'deviceAge' || category === 'volume') {
         newFilters[category] = value as { min: number; max: number } | null;
-      } else if (category === 'hasExpansionSlots') {
+      } else if (category === 'hasExpansionSlots' || category === 'hasSocketableCpu') {
         newFilters[category] = checked as boolean;
       } else {
         const filterSet = new Set(prev[category] as Set<string>);
@@ -172,6 +178,14 @@ function App() {
     }
     if (selectedFilters.cpuChipsets.size > 0 && 
         (!device.cpu.chipset || !selectedFilters.cpuChipsets.has(device.cpu.chipset))) {
+      return false;
+    }
+    if (selectedFilters.cpuSockets.size > 0 && 
+        (!device.cpu.socket?.type || !selectedFilters.cpuSockets.has(device.cpu.socket.type))) {
+      return false;
+    }
+    if (selectedFilters.hasSocketableCpu && 
+        (!device.cpu.socket?.supports_cpu_swap)) {
       return false;
     }
     if (selectedFilters.memoryTypes.size > 0 && !selectedFilters.memoryTypes.has(device.memory.type)) {

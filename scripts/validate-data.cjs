@@ -7,11 +7,12 @@ const path = require('path');
 const VALID_CPU_BRANDS = ['Intel', 'AMD', 'ARM', 'Qualcomm', 'Apple'];
 const VALID_MEMORY_TYPES = ['DDR3', 'DDR3L', 'DDR4', 'DDR5', 'LPDDR4', 'LPDDR4X', 'LPDDR5'];
 const VALID_MEMORY_MODULE_TYPES = ['SODIMM', 'DIMM', 'Soldered', 'SO-DIMM'];
-const VALID_STORAGE_TYPES = ['M.2', 'SATA', 'NVMe', '2.5"', 'mSATA', 'eMMC', 'microSD'];
+const VALID_STORAGE_TYPES = ['M.2', 'SATA', 'NVMe', '2.5"', 'mSATA', 'eMMC', 'microSD', 'U.2'];
 const VALID_WIFI_STANDARDS = ['WiFi 4', 'WiFi 5', 'WiFi 6', 'WiFi 6E', 'WiFi 7', 'None'];
 const VALID_ETHERNET_SPEEDS = ['100Mbps', '1GbE', '2.5GbE', '5GbE', '10GbE', 'None'];
 const VALID_PCIE_TYPES = ['x1', 'x4', 'x8', 'x16', 'Mini PCIe', 'M.2'];
 const VALID_PCIE_VERSIONS = ['PCIe 2.0', 'PCIe 3.0', 'PCIe 4.0', 'PCIe 5.0'];
+const VALID_CPU_SOCKETS = ['AM4', 'AM5', 'LGA 1700', 'LGA 1200', 'LGA 1151', 'SP3', 'sTRX4', 'sWRX8'];
 
 /**
  * @typedef {Object} ValidationError
@@ -47,13 +48,31 @@ function validateRequiredFields(data, path, errors, deviceFile) {
   // CPU required fields
   if (data.cpu) {
     const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'boost_clock', 'tdp'];
-    for (const field of requiredCpuFields) {
+    const isDIYMachine = data.cpu.socket?.supports_cpu_swap === true;
+
+    // For DIY machines, only brand, model, and tdp are required
+    const fieldsToCheck = isDIYMachine ? ['brand', 'model', 'tdp'] : requiredCpuFields;
+
+    for (const field of fieldsToCheck) {
       if (data.cpu[field] === undefined) {
         errors.push({
           deviceId: data.id || 'unknown',
           file: deviceFile,
           message: `Missing required CPU field: ${field}`,
           path: `${path}.cpu.${field}`,
+          critical: true
+        });
+      }
+    }
+
+    // For DIY machines, socket information is required
+    if (isDIYMachine) {
+      if (!data.cpu.socket?.type) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `DIY machine must specify CPU socket type`,
+          path: `${path}.cpu.socket.type`,
           critical: true
         });
       }
@@ -219,46 +238,93 @@ function validateDataTypes(data, path, errors, deviceFile) {
   
   // CPU numeric values
   if (data.cpu) {
-    if (data.cpu.cores !== undefined && (!Number.isInteger(data.cpu.cores) || data.cpu.cores <= 0)) {
-      errors.push({
-        deviceId: data.id || 'unknown',
-        file: deviceFile,
-        message: `cpu.cores must be a positive integer`,
-        path: `${path}.cpu.cores`,
-        critical: true
-      });
+    const isDIYMachine = data.cpu.socket?.supports_cpu_swap === true;
+
+    // Only validate CPU specs for non-DIY machines
+    if (!isDIYMachine) {
+      if (data.cpu.cores !== undefined && (!Number.isInteger(data.cpu.cores) || data.cpu.cores <= 0)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `cpu.cores must be a positive integer`,
+          path: `${path}.cpu.cores`,
+          critical: true
+        });
+      }
+      
+      if (data.cpu.threads !== undefined && (!Number.isInteger(data.cpu.threads) || data.cpu.threads <= 0)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `cpu.threads must be a positive integer`,
+          path: `${path}.cpu.threads`,
+          critical: true
+        });
+      }
+      
+      if (data.cpu.base_clock !== undefined && (typeof data.cpu.base_clock !== 'number' || data.cpu.base_clock <= 0)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `cpu.base_clock must be a positive number`,
+          path: `${path}.cpu.base_clock`,
+          critical: true
+        });
+      }
+      
+      if (data.cpu.boost_clock !== undefined && (typeof data.cpu.boost_clock !== 'number' || data.cpu.boost_clock <= 0)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `cpu.boost_clock must be a positive number`,
+          path: `${path}.cpu.boost_clock`,
+          critical: true
+        });
+      }
+    } else {
+      // For DIY machines, these fields should be 0 or undefined
+      if (data.cpu.cores !== 0 && data.cpu.cores !== undefined) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `DIY machine should have cpu.cores set to 0 or undefined`,
+          path: `${path}.cpu.cores`,
+          critical: true
+        });
+      }
+      
+      if (data.cpu.threads !== 0 && data.cpu.threads !== undefined) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `DIY machine should have cpu.threads set to 0 or undefined`,
+          path: `${path}.cpu.threads`,
+          critical: true
+        });
+      }
+      
+      if (data.cpu.base_clock !== 0 && data.cpu.base_clock !== undefined) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `DIY machine should have cpu.base_clock set to 0 or undefined`,
+          path: `${path}.cpu.base_clock`,
+          critical: true
+        });
+      }
+      
+      if (data.cpu.boost_clock !== 0 && data.cpu.boost_clock !== undefined) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `DIY machine should have cpu.boost_clock set to 0 or undefined`,
+          path: `${path}.cpu.boost_clock`,
+          critical: true
+        });
+      }
     }
-    
-    if (data.cpu.threads !== undefined && (!Number.isInteger(data.cpu.threads) || data.cpu.threads <= 0)) {
-      errors.push({
-        deviceId: data.id || 'unknown',
-        file: deviceFile,
-        message: `cpu.threads must be a positive integer`,
-        path: `${path}.cpu.threads`,
-        critical: true
-      });
-    }
-    
-    if (data.cpu.base_clock !== undefined && (typeof data.cpu.base_clock !== 'number' || data.cpu.base_clock <= 0)) {
-      errors.push({
-        deviceId: data.id || 'unknown',
-        file: deviceFile,
-        message: `cpu.base_clock must be a positive number`,
-        path: `${path}.cpu.base_clock`,
-        critical: true
-      });
-    }
-    
-    if (data.cpu.boost_clock !== undefined && (typeof data.cpu.boost_clock !== 'number' || data.cpu.boost_clock <= 0)) {
-      errors.push({
-        deviceId: data.id || 'unknown',
-        file: deviceFile,
-        message: `cpu.boost_clock must be a positive number`,
-        path: `${path}.cpu.boost_clock`,
-        critical: true
-      });
-    }
-    
+
+    // TDP is always required and must be positive
     if (data.cpu.tdp !== undefined && (typeof data.cpu.tdp !== 'number' || data.cpu.tdp <= 0)) {
       errors.push({
         deviceId: data.id || 'unknown',
@@ -298,6 +364,28 @@ function validateDataTypes(data, path, errors, deviceFile) {
         file: deviceFile,
         message: `memory.speed must be a positive integer`,
         path: `${path}.memory.speed`,
+        critical: true
+      });
+    }
+  }
+
+  // Validate CPU socket if present
+  if (data.cpu?.socket) {
+    if (typeof data.cpu.socket.type !== 'string') {
+      errors.push({
+        deviceId: data.id || 'unknown',
+        file: deviceFile,
+        message: `cpu.socket.type must be a string`,
+        path: `${path}.cpu.socket.type`,
+        critical: true
+      });
+    }
+    if (typeof data.cpu.socket.supports_cpu_swap !== 'boolean') {
+      errors.push({
+        deviceId: data.id || 'unknown',
+        file: deviceFile,
+        message: `cpu.socket.supports_cpu_swap must be a boolean`,
+        path: `${path}.cpu.socket.supports_cpu_swap`,
         critical: true
       });
     }
@@ -409,6 +497,17 @@ function validateEnumValues(data, path, errors, deviceFile) {
           critical: false
         });
       }
+    });
+  }
+
+  // CPU socket type
+  if (data.cpu?.socket?.type && !VALID_CPU_SOCKETS.includes(data.cpu.socket.type)) {
+    errors.push({
+      deviceId: data.id || 'unknown',
+      file: deviceFile,
+      message: `Unknown cpu.socket.type: ${data.cpu.socket.type}. Known values: ${VALID_CPU_SOCKETS.join(', ')}`,
+      path: `${path}.cpu.socket.type`,
+      critical: false
     });
   }
 }

@@ -22,7 +22,6 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
-import ExpandIcon from '@mui/icons-material/ExpandMore';
 import type { MiniPC } from '../types/minipc';
 
 interface MiniPCTableProps {
@@ -124,57 +123,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
     if (age === 0) return 'This year';
     if (age === 1) return '1 year old';
     return `${age} years old`;
-  };
-
-  // Function to render expansion slots indicator
-  const renderExpansionIndicator = (device: MiniPC) => {
-    if (!device.expansion?.pcie_slots || device.expansion.pcie_slots.length === 0) {
-      return null;
-    }
-    
-    return (
-      <Tooltip title={`${device.expansion.pcie_slots.length} PCIe slot(s) available`}>
-        <Badge 
-          badgeContent={device.expansion.pcie_slots.length} 
-          color="primary" 
-          sx={{ 
-            '& .MuiBadge-badge': { 
-              fontSize: '0.6rem',
-              fontWeight: 'bold',
-              backgroundColor: theme => theme.palette.mode === 'dark' ? '#2196f3' : '#1976d2',
-              minWidth: '16px',
-              height: '16px',
-              padding: '0 4px'
-            }
-          }}
-        >
-          <IconButton
-            size="small"
-            sx={{
-              transition: 'all 0.2s ease',
-              backgroundColor: theme => theme.palette.mode === 'dark' 
-                ? 'rgba(33,150,243,0.2)'
-                : 'rgba(33,150,243,0.1)',
-              color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-              boxShadow: theme => theme.palette.mode === 'dark'
-                ? '0 2px 8px rgba(0,0,0,0.2)'
-                : '0 2px 4px rgba(0,0,0,0.1)',
-              '&:hover': {
-                backgroundColor: theme => theme.palette.mode === 'dark'
-                  ? 'rgba(33,150,243,0.3)'
-                  : 'rgba(33,150,243,0.2)',
-                transform: 'scale(1.1)',
-                boxShadow: theme => theme.palette.mode === 'dark'
-                  ? '0 4px 12px rgba(0,0,0,0.3)'
-                  : '0 4px 8px rgba(0,0,0,0.15)',
-              }
-            }}
-          >
-            <ExpandIcon fontSize="small" />
-          </IconButton>
-        </Badge>
-      </Tooltip>
-    );
   };
 
   return (
@@ -394,7 +342,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   }}
                 >WiFi</TableCell>
                 <TableCell
-                  align="right"
                   sx={{ 
                     background: theme => theme.palette.mode === 'dark' 
                       ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
@@ -407,7 +354,6 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   }}
                 >{renderSortLabel('Liters', 'dimensions.volume')}</TableCell>
                 <TableCell
-                  align="right"
                   sx={{ 
                     background: theme => theme.palette.mode === 'dark' 
                       ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
@@ -528,6 +474,21 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                           borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
                           color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2', 
                         }} 
+                      />
+                    )}
+                    {device.cpu.socket && (
+                      <Chip 
+                        label={`${device.cpu.socket.type}${device.cpu.socket.supports_cpu_swap ? ' (Socketable)' : ''}`}
+                        size="small"
+                        variant="outlined"
+                        sx={{ 
+                          fontSize: '0.7rem',
+                          height: 20,
+                          mt: 0.5,
+                          ml: device.cpu.architecture ? 0.5 : 0,
+                          borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(76,175,80,0.5)' : 'rgba(56,142,60,0.5)',
+                          color: theme => theme.palette.mode === 'dark' ? '#81c784' : '#2e7d32',
+                        }}
                       />
                     )}
                   </TableCell>
@@ -702,7 +663,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     <Box sx={{ 
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'flex-end'
+                      justifyContent: 'flex-start'
                     }}>
                       <Badge 
                         badgeContent={device.expansion?.pcie_slots?.length || 0}
@@ -831,6 +792,24 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   )}
                   {detailDevice.cpu.architecture && (
                     <Typography variant="body2" sx={{ mb: 0.5 }}>Architecture: {detailDevice.cpu.architecture}</Typography>
+                  )}
+                  {detailDevice.cpu.socket && (
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                      Socket: {detailDevice.cpu.socket.type}
+                      {detailDevice.cpu.socket.supports_cpu_swap && (
+                        <Chip
+                          label="Socketable"
+                          size="small"
+                          sx={{
+                            ml: 1,
+                            height: 20,
+                            fontSize: '0.7rem',
+                            bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(76,175,80,0.2)' : 'rgba(76,175,80,0.1)',
+                            color: theme => theme.palette.mode === 'dark' ? '#81c784' : '#2e7d32',
+                          }}
+                        />
+                      )}
+                    </Typography>
                   )}
                 </Grid>
                 
