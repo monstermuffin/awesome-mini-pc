@@ -1018,32 +1018,94 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         borderRadius: 1,
                       }
                     }}>Ports</Typography>
-                    {detailDevice.ports.usb_a !== undefined && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>USB-A: {detailDevice.ports.usb_a}</Typography>
+                    
+                    {/* USB-A Ports */}
+                    {detailDevice.ports.usb_a && (
+                      <Box sx={{ mb: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>USB-A:</Typography>
+                        {Array.isArray(detailDevice.ports.usb_a) ? (
+                          detailDevice.ports.usb_a.map((port, index) => (
+                            <Typography key={index} variant="body2" sx={{ ml: 2, mb: 0.5 }}>
+                              {port.count}x {port.type}
+                              {port.speed && ` (${port.speed})`}
+                            </Typography>
+                          ))
+                        ) : (
+                          <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.usb_a}x</Typography>
+                        )}
+                      </Box>
                     )}
-                    {detailDevice.ports.usb_c !== undefined && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>USB-C: {detailDevice.ports.usb_c}</Typography>
+
+                    {/* USB-C Ports */}
+                    {detailDevice.ports.usb_c && (
+                      <Box sx={{ mb: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>USB-C:</Typography>
+                        {Array.isArray(detailDevice.ports.usb_c) ? (
+                          detailDevice.ports.usb_c.map((port, index) => (
+                            <Typography key={index} variant="body2" sx={{ ml: 2, mb: 0.5 }}>
+                              {port.type}
+                              {port.alt_mode && ` (${port.alt_mode})`}
+                              {port.max_resolution && ` - ${port.max_resolution}`}
+                            </Typography>
+                          ))
+                        ) : (
+                          <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.usb_c}x</Typography>
+                        )}
+                      </Box>
                     )}
-                    {detailDevice.ports.usb_c_thunderbolt !== undefined && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>USB-C Thunderbolt: {detailDevice.ports.usb_c_thunderbolt}</Typography>
+
+                    {/* HDMI */}
+                    {detailDevice.ports.hdmi && (
+                      <Box sx={{ mb: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>HDMI:</Typography>
+                        {typeof detailDevice.ports.hdmi === 'object' ? (
+                          <Typography variant="body2" sx={{ ml: 2 }}>
+                            {detailDevice.ports.hdmi.count}x {detailDevice.ports.hdmi.version}
+                            {detailDevice.ports.hdmi.max_resolution && ` (${detailDevice.ports.hdmi.max_resolution})`}
+                          </Typography>
+                        ) : (
+                          <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.hdmi}x</Typography>
+                        )}
+                      </Box>
                     )}
-                    {detailDevice.ports.hdmi !== undefined && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>HDMI: {detailDevice.ports.hdmi}</Typography>
+
+                    {/* DisplayPort */}
+                    {detailDevice.ports.displayport && (
+                      <Box sx={{ mb: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>DisplayPort:</Typography>
+                        {typeof detailDevice.ports.displayport === 'object' ? (
+                          <Typography variant="body2" sx={{ ml: 2 }}>
+                            {detailDevice.ports.displayport.count}x {detailDevice.ports.displayport.version}
+                            {detailDevice.ports.displayport.max_resolution && ` (${detailDevice.ports.displayport.max_resolution})`}
+                          </Typography>
+                        ) : (
+                          <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.displayport}x</Typography>
+                        )}
+                      </Box>
                     )}
-                    {detailDevice.ports.displayport !== undefined && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>DisplayPort: {detailDevice.ports.displayport}</Typography>
-                    )}
+
+                    {/* Audio Jack */}
                     {detailDevice.ports.audio_jack !== undefined && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>Audio Jack: {detailDevice.ports.audio_jack}</Typography>
+                      <Box sx={{ mb: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>Audio Jack:</Typography>
+                        <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.audio_jack}x</Typography>
+                      </Box>
                     )}
+
+                    {/* SD Card Reader */}
                     {detailDevice.ports.sd_card_reader !== undefined && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>SD Card Reader: {detailDevice.ports.sd_card_reader ? 'Yes' : 'No'}</Typography>
+                      <Box sx={{ mb: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>SD Card Reader:</Typography>
+                        <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.sd_card_reader ? 'Yes' : 'No'}</Typography>
+                      </Box>
                     )}
-                    {detailDevice.ports.serial !== undefined && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>Serial: {detailDevice.ports.serial}</Typography>
-                    )}
-                    {detailDevice.ports.other && detailDevice.ports.other.length > 0 && (
-                      <Typography variant="body2" sx={{ mb: 0.5 }}>Other: {detailDevice.ports.other.join(', ')}</Typography>
+
+                    {/* OCuLink */}
+                    {detailDevice.ports.oculink !== undefined && (
+                      <Box sx={{ mb: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', mb: 0.5 }}>OCuLink:</Typography>
+                        <Typography variant="body2" sx={{ ml: 2 }}>{detailDevice.ports.oculink}</Typography>
+                      </Box>
                     )}
                   </Grid>
                 )}

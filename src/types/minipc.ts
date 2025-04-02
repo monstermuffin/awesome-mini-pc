@@ -53,14 +53,31 @@ export interface MiniPC {
     additional_info?: string;
   };
   ports?: {
-    usb_a?: number;
-    usb_c?: number;
+    usb_a?: Array<{
+      count: number;
+      type: string;
+      speed?: string;
+    }> | number;
+    usb_c?: Array<{
+      type: string;
+      alt_mode?: string;
+      max_resolution?: string;
+    }> | number;
     usb_c_thunderbolt?: number;
-    hdmi?: number;
-    displayport?: number;
+    hdmi?: {
+      count: number;
+      version: string;
+      max_resolution?: string;
+    } | number;
+    displayport?: {
+      count: number;
+      version: string;
+      max_resolution?: string;
+    } | number;
     audio_jack?: number;
     sd_card_reader?: boolean;
     serial?: number;
+    oculink?: string;
     other?: string[];
   };
   dimensions?: {

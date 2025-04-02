@@ -69,15 +69,29 @@ const path = require('path');
  */
 
 /**
+ * @typedef {Object} GPU
+ * @property {string} model - GPU model name
+ * @property {string} [cpu_model] - Associated CPU model for integrated GPUs
+ */
+
+/**
+ * @typedef {Object} Expansion
+ * @property {Object[]} [pcie_slots] - PCIe slot configurations
+ * @property {Object[]} [oculink_ports] - OCuLink port configurations
+ */
+
+/**
  * @typedef {Object} MiniPCData
  * @property {string} id - Device ID
  * @property {string} brand - Device brand
  * @property {string} model - Device model
  * @property {string} release_date - Release year
  * @property {CPU} cpu - CPU information
+ * @property {GPU} [gpu] - GPU information
  * @property {Memory} memory - Memory information
  * @property {Storage[]} storage - Storage configurations
  * @property {Networking} networking - Networking information
+ * @property {Expansion} [expansion] - Expansion options
  * @property {Dimensions} [dimensions] - Physical dimensions
  * @property {string} [_sourcePath] - Source file path
  * @property {string} [_vendor] - Vendor directory name

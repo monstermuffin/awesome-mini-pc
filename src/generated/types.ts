@@ -4,9 +4,9 @@ export const CPU_BRANDS = ["AMD","Intel"] as const;
 export const MEMORY_TYPES = ["DDR4","DDR5"] as const;
 export const MEMORY_MODULE_TYPES = ["SO-DIMM"] as const;
 export const WIFI_STANDARDS = ["WiFi 6","WiFi 6E"] as const;
-export const ETHERNET_SPEEDS = ["10GbE","1GbE","2.5GbE"] as const;
-export const STORAGE_TYPES = ["M.2","SATA","U.2"] as const;
-export const STORAGE_INTERFACES = ["PCIe 3.0 x2","PCIe 3.0 x4","PCIe 4.0 x4","SATA III"] as const;
+export const ETHERNET_SPEEDS = ["1GbE","2.5GbE"] as const;
+export const STORAGE_TYPES = ["M.2","SATA"] as const;
+export const STORAGE_INTERFACES = ["PCIe 3.0 x4","PCIe 4.0 x1","PCIe 4.0 x4","SATA III"] as const;
 
 export type Brand = typeof BRANDS[number];
 export type CpuBrand = typeof CPU_BRANDS[number];

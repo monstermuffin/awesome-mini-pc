@@ -13,6 +13,7 @@ const VALID_ETHERNET_SPEEDS = ['100Mbps', '1GbE', '2.5GbE', '5GbE', '10GbE', 'No
 const VALID_PCIE_TYPES = ['x1', 'x4', 'x8', 'x16', 'Mini PCIe', 'M.2'];
 const VALID_PCIE_VERSIONS = ['PCIe 2.0', 'PCIe 3.0', 'PCIe 4.0', 'PCIe 5.0'];
 const VALID_CPU_SOCKETS = ['AM4', 'AM5', 'LGA 1700', 'LGA 1200', 'LGA 1151', 'SP3', 'sTRX4', 'sWRX8'];
+const VALID_OCULINK_VERSIONS = ['OCuLink 1.0', 'OCuLink 2.0'];
 
 /**
  * @typedef {Object} ValidationError
@@ -180,6 +181,36 @@ function validateRequiredFields(data, path, errors, deviceFile) {
       path: `${path}.storage`,
       critical: true
     });
+  }
+
+  // GPU validation
+  if (data.gpu) {
+    if (!data.gpu.model) {
+      errors.push({
+        deviceId: data.id || 'unknown',
+        file: deviceFile,
+        message: `Missing required GPU field: model`,
+        path: `${path}.gpu.model`,
+        critical: true
+      });
+    }
+  }
+
+  // Expansion validation
+  if (data.expansion) {
+    if (data.expansion.oculink_ports && Array.isArray(data.expansion.oculink_ports)) {
+      data.expansion.oculink_ports.forEach((port, index) => {
+        if (!port.version) {
+          errors.push({
+            deviceId: data.id || 'unknown',
+            file: deviceFile,
+            message: `Missing required OCuLink port[${index}] field: version`,
+            path: `${path}.expansion.oculink_ports[${index}].version`,
+            critical: true
+          });
+        }
+      });
+    }
   }
 }
 
@@ -508,6 +539,21 @@ function validateEnumValues(data, path, errors, deviceFile) {
       message: `Unknown cpu.socket.type: ${data.cpu.socket.type}. Known values: ${VALID_CPU_SOCKETS.join(', ')}`,
       path: `${path}.cpu.socket.type`,
       critical: false
+    });
+  }
+
+  // OCuLink version validation
+  if (data.expansion?.oculink_ports) {
+    data.expansion.oculink_ports.forEach((port, index) => {
+      if (port.version && !VALID_OCULINK_VERSIONS.includes(port.version)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `Unknown oculink_ports[${index}].version: ${port.version}. Known values: ${VALID_OCULINK_VERSIONS.join(', ')}`,
+          path: `${path}.expansion.oculink_ports[${index}].version`,
+          critical: false
+        });
+      }
     });
   }
 }
