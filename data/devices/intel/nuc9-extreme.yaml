@@ -34,12 +34,14 @@ expansion:
   additional_info: "Supports full-length, dual-slot GPU up to 8 inches (203mm)"
 networking:
   ethernet:
-    - chipset: Intel i219-LM
-      speed: "1GbE"
-      ports: 1
-    - chipset: Intel i210-AT
+    - ports: 1
+      speed: "10GbE"
+      chipset: "Intel X550-AT2"
+      interface: "RJ45"
+    - ports: 1
       speed: "2.5GbE"
-      ports: 1
+      chipset: "Intel i219-LM"
+      interface: "RJ45"
   wifi:
     chipset: Intel AX200
     standard: WiFi 6

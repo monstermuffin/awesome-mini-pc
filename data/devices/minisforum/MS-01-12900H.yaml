@@ -1,0 +1,93 @@
+id: minisforum-ms01-12900h
+brand: Minisforum
+model: MS-01
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i9-12900H"
+  cores: 14
+  threads: 20
+  base_clock: 2.5
+  boost_clock: 5.0
+  tdp: 45
+  architecture: "Alder Lake"
+gpu:
+  model: "Intel Iris Xe"
+
+memory:
+  type: "DDR5"
+  speed: 5200
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "NVMe"
+    interface: "PCIe 4.0 x4"
+    form_factor: "M.2 2280"
+    max_capacity: 0
+    alt_interface: "U.2"
+  - type: "NVMe"
+    interface: "PCIe 3.0 x4"
+    form_factor: "M.2 2280/22110"
+    max_capacity: 0
+  - type: "NVMe"
+    interface: "PCIe 3.0 x2"
+    form_factor: "M.2 2280/22110"
+    max_capacity: 0
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "10GbE"
+      chipset: "Intel X710"
+      interface: "SFP+"
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel I226-LM"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "M.2 2230"
+    bluetooth: "5.2"
+
+expansion:
+  pcie_slots:
+    - type: "x16"
+      version: "4.0"
+      full_height: false
+      length: "single-slot"
+      additional_info: "Operates at PCIe 4.0 x8 speed"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 2.0"
+  usb_c:
+    - count: 2
+      type: "USB4"
+      alt_mode: "DisplayPort"
+      max_resolution: "8K@30Hz"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+  sd_card_reader: false
+
+dimensions:
+  width: 196
+  depth: 189
+  height: 48
+  volume: 1.78
+
+power:
+  adapter_wattage: 0
+  dc_input: "19V" 

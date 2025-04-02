@@ -9,11 +9,12 @@ const VALID_MEMORY_TYPES = ['DDR3', 'DDR3L', 'DDR4', 'DDR5', 'LPDDR4', 'LPDDR4X'
 const VALID_MEMORY_MODULE_TYPES = ['SODIMM', 'DIMM', 'Soldered', 'SO-DIMM'];
 const VALID_STORAGE_TYPES = ['M.2', 'SATA', 'NVMe', '2.5"', 'mSATA', 'eMMC', 'microSD', 'U.2'];
 const VALID_WIFI_STANDARDS = ['WiFi 4', 'WiFi 5', 'WiFi 6', 'WiFi 6E', 'WiFi 7', 'None'];
-const VALID_ETHERNET_SPEEDS = ['100Mbps', '1GbE', '2.5GbE', '5GbE', '10GbE', 'None'];
+const VALID_ETHERNET_SPEEDS = ['100Mbps', '1GbE', '2.5GbE', '5GbE', '10GbE'];
 const VALID_PCIE_TYPES = ['x1', 'x4', 'x8', 'x16', 'Mini PCIe', 'M.2'];
 const VALID_PCIE_VERSIONS = ['PCIe 2.0', 'PCIe 3.0', 'PCIe 4.0', 'PCIe 5.0'];
 const VALID_CPU_SOCKETS = ['AM4', 'AM5', 'LGA 1700', 'LGA 1200', 'LGA 1151', 'SP3', 'sTRX4', 'sWRX8'];
 const VALID_OCULINK_VERSIONS = ['OCuLink 1.0', 'OCuLink 2.0'];
+const VALID_ETHERNET_INTERFACES = ['RJ45', 'SFP', 'SFP+', 'SFP28', '10GBASE-T'];
 
 /**
  * @typedef {Object} ValidationError
@@ -118,7 +119,7 @@ function validateRequiredFields(data, path, errors, deviceFile) {
       });
     } else {
       data.networking.ethernet.forEach((eth, index) => {
-        const requiredEthernetFields = ['chipset', 'speed', 'ports'];
+        const requiredEthernetFields = ['chipset', 'speed', 'ports', 'interface'];
         for (const field of requiredEthernetFields) {
           if (eth[field] === undefined) {
             errors.push({

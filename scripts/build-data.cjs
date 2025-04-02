@@ -45,6 +45,7 @@ const path = require('path');
  * @property {string} chipset - Ethernet chipset
  * @property {string} speed - Ethernet speed
  * @property {number} ports - Number of ports
+ * @property {string} interface - Interface type (e.g., "RJ45", "SFP+")
  */
 
 /**

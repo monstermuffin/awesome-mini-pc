@@ -39,6 +39,7 @@ export interface MiniPC {
       chipset: string;
       speed: string;
       ports: number;
+      interface: string;
     }>;
     wifi: {
       chipset: string;
@@ -99,4 +100,11 @@ export interface MiniPC {
   _sourcePath?: string; // Optional field for debugging
   _vendor?: string;
   _device?: string;
+}
+
+export interface NetworkingEthernet {
+  chipset: string;
+  speed: string;
+  ports: number;
+  interface: string;
 } 

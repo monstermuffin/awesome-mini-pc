@@ -609,37 +609,50 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   </TableCell>
                   <TableCell>
                     {(() => {
-                      // Group ethernet by speed and chipset
-                      const ethernetGroups: Record<string, number> = {};
+                      interface EthernetGroup {
+                        count: number;
+                        chipset: string;
+                        interface: string;
+                      }
+                      
+                      const ethernetGroups: Record<string, EthernetGroup> = {};
                       
                       device.networking.ethernet.forEach(eth => {
-                        const key = `${eth.speed} (${eth.chipset})`;
-                        ethernetGroups[key] = (ethernetGroups[key] || 0) + eth.ports;
+                        const key = eth.speed;
+                        if (!ethernetGroups[key]) {
+                          ethernetGroups[key] = { count: eth.ports, chipset: eth.chipset, interface: eth.interface };
+                        } else {
+                          ethernetGroups[key].count += eth.ports;
+                        }
                       });
                       
-                      return Object.entries(ethernetGroups).map(([key, count], index) => (
-                        <Typography key={index} variant="body2" sx={{ mb: 0.5 }}>
-                          <Box component="span" sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
-                            {count > 1 && (
-                              <Chip 
-                                label={`${count}×`} 
-                                size="small" 
-                                sx={{ 
-                                  height: 20, 
-                                  fontSize: '0.7rem',
-                                  bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
-                                  color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                                  fontWeight: 600,
-                                }} 
-                              />
-                            )}
-                            {key.split(' (')[0]}
-                          </Box>
-                          <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                            ({key.split(' (')[1]})
-                          </Box>
-                        </Typography>
-                      ));
+                      return (
+                        <>
+                          {Object.entries(ethernetGroups).map(([key, info]: [string, EthernetGroup], index: number) => (
+                            <Box key={index} sx={{ mb: 0.5 }}>
+                              <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
+                                {info.count > 1 && (
+                                  <Chip 
+                                    label={`${info.count}×`} 
+                                    size="small" 
+                                    sx={{ 
+                                      height: 20, 
+                                      fontSize: '0.7rem',
+                                      bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                      color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                      fontWeight: 600,
+                                    }} 
+                                  />
+                                )}
+                                {key}
+                              </Box>
+                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                {info.interface} • {info.chipset}
+                              </Typography>
+                            </Box>
+                          ))}
+                        </>
+                      );
                     })()}
                   </TableCell>
                   <TableCell>
@@ -652,9 +665,9 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       }}>
                         {device.networking.wifi.standard}
                       </Box>
-                      <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                        ({device.networking.wifi.chipset})
-                      </Box>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                        {device.networking.wifi.chipset}
+                      </Typography>
                     </Typography>
                     <Box sx={{ 
                       display: 'flex',
@@ -975,37 +988,50 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   }}>Ethernet</Typography>
                   
                   {(() => {
-                    // Group ethernet by speed and chipset
-                    const ethernetGroups: Record<string, number> = {};
+                    interface EthernetGroup {
+                      count: number;
+                      chipset: string;
+                      interface: string;
+                    }
+                    
+                    const ethernetGroups: Record<string, EthernetGroup> = {};
                     
                     detailDevice?.networking?.ethernet?.forEach(eth => {
-                      const key = `${eth.speed} (${eth.chipset})`;
-                      ethernetGroups[key] = (ethernetGroups[key] || 0) + eth.ports;
+                      const key = eth.speed;
+                      if (!ethernetGroups[key]) {
+                        ethernetGroups[key] = { count: eth.ports, chipset: eth.chipset, interface: eth.interface };
+                      } else {
+                        ethernetGroups[key].count += eth.ports;
+                      }
                     });
                     
-                    return Object.entries(ethernetGroups).map(([key, count], index) => (
-                      <Typography key={index} variant="body2" sx={{ mb: 0.5 }}>
-                        <Box component="span" sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {count > 1 && (
-                            <Chip 
-                              label={`${count}×`} 
-                              size="small" 
-                              sx={{ 
-                                height: 20, 
-                                fontSize: '0.7rem',
-                                bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
-                                color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                                fontWeight: 600,
-                              }} 
-                            />
-                          )}
-                          {key.split(' (')[0]}
-                        </Box>
-                        <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                          ({key.split(' (')[1]})
-                        </Box>
-                      </Typography>
-                    ));
+                    return (
+                      <>
+                        {Object.entries(ethernetGroups).map(([key, info]: [string, EthernetGroup], index: number) => (
+                          <Box key={index} sx={{ mb: 0.5 }}>
+                            <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
+                              {info.count > 1 && (
+                                <Chip 
+                                  label={`${info.count}×`} 
+                                  size="small" 
+                                  sx={{ 
+                                    height: 20, 
+                                    fontSize: '0.7rem',
+                                    bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                    color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                    fontWeight: 600,
+                                  }} 
+                                />
+                              )}
+                              {key}
+                            </Box>
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                              {info.interface} • {info.chipset}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </>
+                    );
                   })()}
                 </Grid>
                 
@@ -1033,9 +1059,9 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     }}>
                       {detailDevice.networking.wifi.standard}
                     </Box>
-                    <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.85rem' }}>
-                      ({detailDevice.networking.wifi.chipset})
-                    </Box>
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                      {detailDevice.networking.wifi.chipset}
+                    </Typography>
                   </Typography>
                   <Box sx={{ 
                     display: 'flex',

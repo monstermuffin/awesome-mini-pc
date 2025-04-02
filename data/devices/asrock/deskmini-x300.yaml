@@ -34,9 +34,10 @@ expansion:
   additional_info: "Requires optional riser card for PCIe expansion"
 networking:
   ethernet:
-    - chipset: Realtek RTL8111H
+    - ports: 1
       speed: "1GbE"
-      ports: 1
+      chipset: "Realtek RTL8111H"
+      interface: "RJ45"
   wifi:
     chipset: Intel AX200
     standard: WiFi 6

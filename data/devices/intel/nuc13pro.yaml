@@ -22,9 +22,10 @@ storage:
     interface: PCIe 4.0 x4
 networking:
   ethernet:
-    - chipset: Intel i226-V
-      speed: 2.5GbE
-      ports: 1
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
   wifi:
     chipset: Intel AX211
     standard: WiFi 6E
