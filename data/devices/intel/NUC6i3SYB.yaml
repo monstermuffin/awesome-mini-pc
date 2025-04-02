@@ -1,0 +1,70 @@
+id: intel-nuc6i3syb
+brand: Intel
+model: "NUC6i3SYB"
+release_date: "2015"
+
+cpu:
+  brand: Intel
+  model: "Core i3-6100U"
+  tdp: 15
+  cores: 2
+  threads: 4
+  base_clock: 2.3
+  boost_clock: 2.3
+
+gpu:
+  model: "Intel HD Graphics 520"
+
+memory:
+  slots: 2
+  type: DDR4
+  speed: 2133
+  module_type: "SO-DIMM"
+  max_capacity: 32
+
+storage:
+  - type: M.2
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+    alt_interface: "SATA"
+  - type: M.2
+    form_factor: "2242"
+    interface: "PCIe 3.0 x4"
+    alt_interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Intel I219-LM"
+      interface: "RJ45"
+  wifi:
+    chipset: "Intel Wireless-AC 8260"
+    standard: "WiFi 5"
+    bluetooth: "4.2"
+
+ports:
+  usb_a:
+    - type: "USB 3.0"
+      speed: "5Gbps"
+      count: 4
+  hdmi:
+    count: 1
+    version: "1.4b"
+    max_resolution: "4K@30Hz"
+  displayport:
+    count: 1
+    version: "1.2"
+    form_factor: "Mini DisplayPort"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+  ir_receiver: true
+
+dimensions:
+  width: 101.6
+  depth: 101.6
+  height: 51
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V/3.42A" 

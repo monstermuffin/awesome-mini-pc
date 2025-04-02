@@ -1,0 +1,73 @@
+id: intel-nuc6i7kyk
+brand: Intel
+model: "NUC6i7KYK"
+release_date: "2016"
+
+cpu:
+  brand: Intel
+  model: "Core i7-6770HQ"
+  tdp: 45
+  cores: 4
+  threads: 8
+  base_clock: 2.6
+  boost_clock: 3.5
+
+gpu:
+  model: "Intel Iris Pro Graphics 580"
+
+memory:
+  slots: 2
+  type: DDR4
+  speed: 2133
+  module_type: "SO-DIMM"
+  max_capacity: 32
+
+storage:
+  - type: M.2
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+    alt_interface: "SATA"
+  - type: M.2
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+    alt_interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Intel I219-LM"
+      interface: "RJ45"
+  wifi:
+    chipset: "Intel Wireless-AC 8260"
+    standard: "WiFi 5"
+    bluetooth: "4.2"
+
+ports:
+  usb_a:
+    - type: "USB 3.0"
+      speed: "5Gbps"
+      count: 4
+  usb_c:
+    - type: "USB 3.0"
+      count: 1
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.2"
+    form_factor: "Mini DisplayPort"
+    max_resolution: "4K@60Hz"
+  audio_jack: 2
+  sd_card_reader: true
+
+dimensions:
+  width: 211
+  depth: 116
+  height: 28
+
+power:
+  adapter_wattage: 120
+  dc_input: "19V/10A" 

@@ -2,6 +2,7 @@ id: minisforum-msa1-diy
 brand: Minisforum
 model: MS-A1
 release_date: "2024"
+
 cpu:
   brand: AMD
   model: "DIY"
@@ -9,12 +10,14 @@ cpu:
   socket:
     type: "AM5"
     supports_cpu_swap: true
+
 memory:
   slots: 2
   type: DDR5
   speed: 5200
   module_type: "SO-DIMM"
   max_capacity: 96
+
 storage:
   - type: M.2
     form_factor: "2280"
@@ -28,6 +31,7 @@ storage:
   - type: M.2
     form_factor: "2280"
     interface: "PCIe 4.0 x1"
+
 networking:
   ethernet:
     - ports: 2
@@ -38,9 +42,11 @@ networking:
     chipset: "Intel AX210"
     standard: "WiFi 6E"
     bluetooth: "5.2"
+
 expansion:
   oculink_ports:
     - version: "OCuLink 2.0"
+
 ports:
   usb_a:
     - type: "USB 3.2 Gen2"
@@ -66,10 +72,12 @@ ports:
   audio_jack: 1
   oculink: 1
   sd_card_reader: false
+
 dimensions:
   width: 189.5
   depth: 186
   height: 48
+
 power:
   adapter_wattage: 240
   dc_input: "19V/12.63A"

@@ -1,0 +1,68 @@
+id: intel-nuc5i3ryb-5005u
+brand: Intel
+model: "NUC5i3RYB"
+release_date: "2018"
+
+cpu:
+  brand: Intel
+  model: "Core i3-5005U"
+  tdp: 15
+  cores: 2
+  threads: 4
+  base_clock: 2.0
+  boost_clock: 2.0
+
+gpu:
+  model: "Intel HD Graphics 5500"
+
+memory:
+  slots: 2
+  type: DDR3L
+  speed: 1866
+  module_type: "SO-DIMM"
+  max_capacity: 16
+
+storage:
+  - type: M.2
+    form_factor: "2280"
+    interface: "PCIe 2.0 x4"
+  - type: M.2
+    form_factor: "2242"
+    interface: "PCIe 2.0 x4"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Intel I218-V"
+      interface: "RJ45"
+  wifi:
+    chipset: "Intel Wireless-AC 7265"
+    standard: "WiFi 5"
+    bluetooth: "4.0"
+
+ports:
+  usb_a:
+    - type: "USB 3.0"
+      speed: "5Gbps"
+      count: 4
+  hdmi:
+    count: 1
+    version: "1.4b"
+    max_resolution: "4K@30Hz"
+  displayport:
+    count: 1
+    version: "1.2"
+    form_factor: "Mini DisplayPort"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+  ir_receiver: true
+
+dimensions:
+  width: 101.6
+  depth: 101.6
+  height: 51
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V/3.42A" 

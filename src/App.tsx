@@ -30,7 +30,6 @@ type FilterState = {
   cpuArchitectures: Set<string>;
   cpuChipsets: Set<string>;
   cpuSockets: Set<string>;
-  hasSocketableCpu: boolean;
   memoryTypes: Set<string>;
   memoryModuleTypes: Set<string>;
   memorySlotsCount: Set<string>;
@@ -96,7 +95,6 @@ function App() {
     cpuArchitectures: new Set<string>(),
     cpuChipsets: new Set<string>(),
     cpuSockets: new Set<string>(),
-    hasSocketableCpu: false,
     memoryTypes: new Set<string>(),
     memoryModuleTypes: new Set<string>(),
     memorySlotsCount: new Set<string>(),
@@ -145,7 +143,7 @@ function App() {
       if (category === 'tdp' || category === 'cores' || category === 'memorySpeed' || 
           category === 'memoryCapacity' || category === 'deviceAge' || category === 'volume') {
         newFilters[category] = value as { min: number; max: number } | null;
-      } else if (category === 'hasExpansionSlots' || category === 'hasSocketableCpu') {
+      } else if (category === 'hasExpansionSlots') {
         newFilters[category] = checked as boolean;
       } else {
         const filterSet = new Set(prev[category] as Set<string>);
@@ -182,10 +180,6 @@ function App() {
     }
     if (selectedFilters.cpuSockets.size > 0 && 
         (!device.cpu.socket?.type || !selectedFilters.cpuSockets.has(device.cpu.socket.type))) {
-      return false;
-    }
-    if (selectedFilters.hasSocketableCpu && 
-        (!device.cpu.socket?.supports_cpu_swap)) {
       return false;
     }
     if (selectedFilters.memoryTypes.size > 0 && !selectedFilters.memoryTypes.has(device.memory.type)) {

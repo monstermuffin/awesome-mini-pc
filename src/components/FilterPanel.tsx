@@ -17,7 +17,6 @@ type FilterState = {
   cpuArchitectures: Set<string>;
   cpuChipsets: Set<string>;
   cpuSockets: Set<string>;
-  hasSocketableCpu: boolean;
   memoryTypes: Set<string>;
   memoryModuleTypes: Set<string>;
   memorySlotsCount: Set<string>;
@@ -233,9 +232,6 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
   // Extract all available CPU sockets from devices
   const cpuSockets = new Set<string>();
-  const hasSocketableDevices = devices.some(device => 
-    device.cpu.socket?.supports_cpu_swap
-  );
   
   devices.forEach(device => {
     if (device.cpu.socket?.type) cpuSockets.add(device.cpu.socket.type);
@@ -299,29 +295,13 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       </Typography>
 
       {cpuSockets.size > 0 && (
-        <>
-          <FilterGroup
-            title="CPU Socket"
-            options={cpuSockets}
-            selected={selectedFilters.cpuSockets}
-            devices={devices}
-            onSelect={(value, checked) => onFilterChange('cpuSockets', value, checked)}
-          />
-          
-          {hasSocketableDevices && (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={selectedFilters.hasSocketableCpu}
-                  onChange={(e) => onFilterChange('hasSocketableCpu', null, e.target.checked)}
-                  size="small"
-                />
-              }
-              label={<Typography variant="body2">Socketable CPU</Typography>}
-              sx={{ px: 2, py: 1 }}
-            />
-          )}
-        </>
+        <FilterGroup
+          title="CPU Socket"
+          options={cpuSockets}
+          selected={selectedFilters.cpuSockets}
+          devices={devices}
+          onSelect={(value, checked) => onFilterChange('cpuSockets', value, checked)}
+        />
       )}
 
       <FilterGroup
