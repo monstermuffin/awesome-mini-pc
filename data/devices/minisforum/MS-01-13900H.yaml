@@ -24,19 +24,16 @@ memory:
   module_type: "SODIMM"
 
 storage:
-  - type: "NVMe"
+  - type: "M.2"
+    form_factor: "2280"
     interface: "PCIe 4.0 x4"
-    form_factor: "M.2 2280"
-    max_capacity: 0
     alt_interface: "U.2"
-  - type: "NVMe"
+  - type: "M.2"
+    form_factor: "2280"
     interface: "PCIe 3.0 x4"
-    form_factor: "M.2 2280/22110"
-    max_capacity: 0
-  - type: "NVMe"
+  - type: "M.2"
+    form_factor: "2280"
     interface: "PCIe 3.0 x2"
-    form_factor: "M.2 2280/22110"
-    max_capacity: 0
 
 networking:
   ethernet:
