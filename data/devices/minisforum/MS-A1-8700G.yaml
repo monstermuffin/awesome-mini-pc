@@ -17,7 +17,8 @@ cpu:
     supports_cpu_swap: true
 
 gpu:
-  model: "AMD Radeon 780M"
+  - model: "AMD Radeon 780M"
+    type: "Integrated"
 
 memory:
   slots: 2

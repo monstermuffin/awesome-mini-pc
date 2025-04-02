@@ -14,7 +14,8 @@ cpu:
   architecture: "Broadwell"
 
 gpu:
-  model: "Intel HD Graphics 5500"
+  - model: "Intel HD Graphics 5500"
+    type: "Integrated"
 
 memory:
   slots: 2

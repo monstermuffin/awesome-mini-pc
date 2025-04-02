@@ -207,18 +207,25 @@ function validateRequiredFields(data, path, errors, deviceFile) {
             critical: true
           });
         }
+        // Require VRAM for discrete GPUs
+        if (gpu.type === 'Discrete' && !gpu.vram) {
+          errors.push({
+            deviceId: data.id || 'unknown',
+            file: deviceFile,
+            message: `Discrete GPU[${index}] must specify VRAM amount`,
+            path: `${path}.gpu[${index}].vram`,
+            critical: true
+          });
+        }
       });
     } else {
-      // For backward compatibility, convert single GPU object to array
-      if (!data.gpu.model) {
-        errors.push({
-          deviceId: data.id || 'unknown',
-          file: deviceFile,
-          message: `Missing required GPU field: model`,
-          path: `${path}.gpu.model`,
-          critical: true
-        });
-      }
+      errors.push({
+        deviceId: data.id || 'unknown',
+        file: deviceFile,
+        message: `GPU must be an array`,
+        path: `${path}.gpu`,
+        critical: true
+      });
     }
   }
 

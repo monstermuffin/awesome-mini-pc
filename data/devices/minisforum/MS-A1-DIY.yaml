@@ -13,7 +13,8 @@ cpu:
     supports_cpu_swap: true
 
 gpu:
-  model: "CPU Dependent"
+  - model: "CPU Dependent"
+    type: "Integrated"
 
 memory:
   slots: 2

@@ -12,8 +12,10 @@ cpu:
   boost_clock: 5.0
   tdp: 45
   architecture: "Alder Lake"
+
 gpu:
-  model: "Intel Iris Xe"
+  - model: "Intel Iris Xe"
+    type: "Integrated"
 
 memory:
   type: "DDR5"

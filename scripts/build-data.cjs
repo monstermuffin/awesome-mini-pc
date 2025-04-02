@@ -116,10 +116,30 @@ function validateMiniPC(data) {
 
   // Convert single GPU to array for consistency
   if (data.gpu && !Array.isArray(data.gpu)) {
-    data.gpu = [{
-      model: data.gpu.model,
-      type: data.gpu.type || 'Integrated' // Default to integrated for backward compatibility
-    }];
+    const oldGpu = /** @type {any} */ (data.gpu);
+    /** @type {GPU} */
+    const singleGpu = {
+      model: oldGpu.model,
+      type: oldGpu.type || 'Integrated' // Default to integrated for backward compatibility
+    };
+    data.gpu = [singleGpu];
+  }
+
+  // Validate GPU array if present
+  if (data.gpu) {
+    if (!Array.isArray(data.gpu)) {
+      throw new Error('GPU must be an array');
+    }
+    
+    data.gpu.forEach((gpu, index) => {
+      const gpuData = /** @type {GPU} */ (gpu);
+      if (!gpuData.model || !gpuData.type) {
+        throw new Error(`GPU at index ${index} is missing required fields: model or type`);
+      }
+      if (!['Integrated', 'Discrete'].includes(gpuData.type)) {
+        throw new Error(`GPU at index ${index} has invalid type: ${gpuData.type}. Must be 'Integrated' or 'Discrete'`);
+      }
+    });
   }
 
   // CPU validation
@@ -307,8 +327,10 @@ async function main() {
             const rawData = yaml.load(content);
             // Type check the loaded data
             if (typeof rawData === 'object' && rawData !== null) {
+              /** @type {any} */
+              const inputData = rawData;
               /** @type {MiniPCData} */
-              const data = rawData;
+              const data = inputData;
               if (validateMiniPC(data)) {
                 // Add metadata
                 data._sourcePath = `${vendor}/${file}`;

@@ -555,16 +555,21 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     )}
                   </TableCell>
                   <TableCell>
-                    {device.gpu && (
-                      <Typography variant="body2" component="div" sx={{ 
-                        fontWeight: 500,
-                        whiteSpace: 'normal',
-                        overflow: 'visible',
-                        lineHeight: 1.3,
-                      }}>
-                        {device.gpu.model}
-                      </Typography>
-                    )}
+                    {device.gpu && device.gpu.map((gpu, index) => (
+                      <Box key={index} sx={{ mb: index < device.gpu!.length - 1 ? 1 : 0 }}>
+                        <Typography variant="body2" component="div" sx={{ 
+                          fontWeight: 500,
+                          whiteSpace: 'normal',
+                          overflow: 'visible',
+                          lineHeight: 1.3,
+                        }}>
+                          {gpu.model}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                          {gpu.type}{gpu.vram && ` • ${gpu.vram} VRAM`}
+                        </Typography>
+                      </Box>
+                    ))}
                   </TableCell>
                   <TableCell align="right">
                     <Box sx={{ 
@@ -889,9 +894,17 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         borderRadius: 1,
                       }
                     }}>Graphics</Typography>
-                    <Typography variant="body2" sx={{ mb: 0.5 }}>
-                      {detailDevice.gpu.model}
-                    </Typography>
+                    {detailDevice.gpu.map((gpu, index) => (
+                      <Box key={index} sx={{ mb: 1 }}>
+                        <Typography variant="body2" sx={{ mb: 0.5 }}>
+                          {gpu.model}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                          Type: {gpu.type}
+                          {gpu.vram && ` • VRAM: ${gpu.vram}`}
+                        </Typography>
+                      </Box>
+                    ))}
                   </Grid>
                 )}
                 

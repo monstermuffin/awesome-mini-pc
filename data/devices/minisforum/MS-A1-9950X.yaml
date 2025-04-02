@@ -17,8 +17,8 @@ cpu:
     supports_cpu_swap: true
 
 gpu:
-  model: "AMD Radeon Graphics"
-
+  - model: "AMD Radeon Graphics"
+    type: "Integrated"
 memory:
   slots: 2
   type: DDR5

@@ -14,7 +14,8 @@ cpu:
   architecture: "Raptor Lake"
 
 gpu:
-  model: "Intel Iris Xe"
+  - model: "Intel Iris Xe"
+    type: "Integrated"
 
 memory:
   type: "DDR5"

@@ -14,7 +14,8 @@ cpu:
   architecture: "Skylake"
 
 gpu:
-  model: "Intel Iris Graphics 540"
+  - model: "Intel Iris Graphics 540"
+    type: "Integrated"
 
 memory:
   slots: 2

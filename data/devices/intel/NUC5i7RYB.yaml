@@ -14,7 +14,8 @@ cpu:
   architecture: "Broadwell"
 
 gpu:
-  model: "Intel Iris Graphics 6100"
+  - model: "Intel Iris Graphics 6100"
+    type: "Integrated"
 
 memory:
   slots: 2

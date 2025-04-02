@@ -18,9 +18,11 @@ export interface MiniPC {
       supports_cpu_swap: boolean;
     };
   };
-  gpu?: {
+  gpu?: Array<{
     model: string;
-  };
+    type: string; // 'Integrated' or 'Discrete'
+    vram?: string; // Optional VRAM amount for discrete GPUs
+  }>;
   memory: {
     max_capacity: number;
     slots: number;
