@@ -11,7 +11,7 @@ body:
   - type: input
     id: id
     attributes:
-      label: Device ID *
+      label: Device ID
       description: A unique identifier for the device (lowercase, use hyphens, e.g., intel-nuc6i7kyk). If this machine is a varient of another machine, use the parent id with a hypen for the variant (MS-A1-9950X).
       placeholder: brand-model-variant
     validations:
@@ -20,7 +20,7 @@ body:
   - type: input
     id: brand
     attributes:
-      label: Brand *
+      label: Brand
       description: The manufacturer of the machine
       placeholder: Intel, GMKTec, Minisforum, etc.
     validations:
@@ -29,7 +29,7 @@ body:
   - type: input
     id: model
     attributes:
-      label: Model *
+      label: Model
       description: The model name/number of the mini PC
       placeholder: NUC6i7KYK
     validations:
@@ -38,7 +38,7 @@ body:
   - type: input
     id: release_date
     attributes:
-      label: Release Date *
+      label: Release Date
       description: Year of release
       placeholder: "2023"
     validations:
@@ -51,7 +51,7 @@ body:
   - type: dropdown
     id: cpu_brand
     attributes:
-      label: CPU Brand *
+      label: CPU Brand
       options:
         - Intel
         - AMD
@@ -64,7 +64,7 @@ body:
   - type: input
     id: cpu_model
     attributes:
-      label: CPU Model *
+      label: CPU Model
       description: The specific model of the CPU (or "DIY" for configurable systems)
       placeholder: Core i7-6770HQ
     validations:
@@ -73,7 +73,7 @@ body:
   - type: input
     id: cpu_tdp
     attributes:
-      label: CPU TDP (Watts) *
+      label: CPU TDP (Watts)
       description: Thermal Design Power in watts
       placeholder: "45"
     validations:
@@ -134,12 +134,16 @@ body:
     attributes:
       value: "## GPU Information"
 
-  - type: input
-    id: gpu_model
+  - type: textarea
+    id: gpu_models
     attributes:
-      label: GPU Model
-      description: Integrated or discrete GPU model (or "CPU Dependent" for DIY systems)
-      placeholder: Intel Iris Pro Graphics 580
+      label: GPU Models
+      description: |
+        List all GPUs with their specifications:
+        - Type: Integrated, Model: Intel Iris Pro Graphics 580
+        - Type: Discrete, Model: NVIDIA RTX 3060, VRAM: 6GB
+      placeholder: |
+        - Type: Integrated, Model: Intel Iris Pro Graphics 580
     validations:
       required: false
 
@@ -150,7 +154,7 @@ body:
   - type: dropdown
     id: memory_type
     attributes:
-      label: Memory Type *
+      label: Memory Type
       options:
         - DDR3
         - DDR3L
@@ -165,7 +169,7 @@ body:
   - type: dropdown
     id: memory_module_type
     attributes:
-      label: Memory Module Type *
+      label: Memory Module Type
       options:
         - SODIMM
         - DIMM
@@ -177,7 +181,7 @@ body:
   - type: input
     id: memory_slots
     attributes:
-      label: Memory Slots *
+      label: Memory Slots
       description: Number of memory slots (0 if soldered only)
       placeholder: "2"
     validations:
@@ -186,7 +190,7 @@ body:
   - type: input
     id: memory_max
     attributes:
-      label: Maximum Memory Capacity (GB) *
+      label: Maximum Memory Capacity (GB)
       description: Maximum supported RAM in GB
       placeholder: "64"
     validations:
@@ -195,7 +199,7 @@ body:
   - type: input
     id: memory_speed
     attributes:
-      label: Memory Speed (MHz) *
+      label: Memory Speed (MHz)
       description: Maximum supported memory speed in MHz
       placeholder: "3200"
     validations:
@@ -223,7 +227,7 @@ body:
   - type: textarea
     id: storage_details
     attributes:
-      label: Storage Details *
+      label: Storage Details
       description: |
         Please provide details for each storage option in the following format:
         - Type: M.2, Form Factor: 2280, Interface: PCIe 4.0 x4
@@ -272,7 +276,7 @@ body:
   - type: input
     id: ethernet_ports
     attributes:
-      label: Number of Ethernet Ports *
+      label: Number of Ethernet Ports
       description: Number of ethernet ports
       placeholder: "1"
     validations:
@@ -281,7 +285,7 @@ body:
   - type: dropdown
     id: ethernet_speed
     attributes:
-      label: Ethernet Speed *
+      label: Ethernet Speed
       options:
         - 100Mbps
         - 1GbE
@@ -294,7 +298,7 @@ body:
   - type: input
     id: ethernet_chipset
     attributes:
-      label: Ethernet Chipset *
+      label: Ethernet Chipset
       description: The model of the Ethernet controller
       placeholder: Intel I225-V
     validations:
@@ -303,7 +307,7 @@ body:
   - type: dropdown
     id: ethernet_interface
     attributes:
-      label: Ethernet Interface *
+      label: Ethernet Interface
       options:
         - RJ45
         - SFP
@@ -333,7 +337,7 @@ body:
   - type: textarea
     id: usb_ports
     attributes:
-      label: USB Ports *
+      label: USB Ports
       description: |
         List all USB ports with their specifications:
         - Type: USB 3.2 Gen2, Speed: 10Gbps, Count: 2
@@ -346,11 +350,11 @@ body:
   - type: textarea
     id: display_ports
     attributes:
-      label: Display Ports *
+      label: Display Ports
       description: |
         List all display outputs with their specifications:
         - HDMI: Count: 1, Version: 2.1, Max Resolution: 8K@60Hz
-        - DisplayPort: Count: 1, Version: 2.0, Form Factor: Standard/Mini, Max Resolution: 4K@144Hz
+        - DisplayPort: Count: 1, Version: 2.0, Max Resolution: 4K@144Hz
       placeholder: |
         - HDMI: Count: 1, Version: 2.1, Max Resolution: 4K@60Hz
     validations:
@@ -383,29 +387,18 @@ body:
   - type: input
     id: dimensions
     attributes:
-      label: Dimensions (mm) *
-      description: |
-        Please provide dimensions in the following format:
-        Width: 211, Depth: 116, Height: 28
-      placeholder: "Width: 211, Depth: 116, Height: 28"
+      label: Dimensions (mm)
+      description: Width x Depth x Height in millimeters
+      placeholder: "211 x 116 x 28"
     validations:
       required: true
 
   - type: input
-    id: power_adapter_wattage
+    id: power_adapter
     attributes:
-      label: Power Adapter Wattage *
-      description: Power adapter wattage in watts
-      placeholder: "120"
-    validations:
-      required: true
-
-  - type: input
-    id: power_adapter_dc
-    attributes:
-      label: Power Adapter DC Input *
-      description: DC input specifications (voltage/amperage)
-      placeholder: "19V/6.32A"
+      label: Power Adapter
+      description: Power adapter specifications (Wattage and DC input)
+      placeholder: "120W (19V/6.32A)"
     validations:
       required: true
 

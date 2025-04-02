@@ -72,6 +72,8 @@ const path = require('path');
 /**
  * @typedef {Object} GPU
  * @property {string} model - GPU model name
+ * @property {string} type - GPU type (Integrated or Discrete)
+ * @property {string} [vram] - Video memory amount (for discrete GPUs)
  */
 
 /**
@@ -87,7 +89,7 @@ const path = require('path');
  * @property {string} model - Device model
  * @property {string} release_date - Release year
  * @property {CPU} cpu - CPU information
- * @property {GPU} [gpu] - GPU information
+ * @property {GPU[]} [gpu] - GPU information
  * @property {Memory} memory - Memory information
  * @property {Storage[]} storage - Storage configurations
  * @property {Networking} networking - Networking information
@@ -111,6 +113,14 @@ function validateMiniPC(data) {
 
   // Check if this is a DIY/barebones machine
   const isDIYMachine = data.cpu?.socket?.supports_cpu_swap === true;
+
+  // Convert single GPU to array for consistency
+  if (data.gpu && !Array.isArray(data.gpu)) {
+    data.gpu = [{
+      model: data.gpu.model,
+      type: data.gpu.type || 'Integrated' // Default to integrated for backward compatibility
+    }];
+  }
 
   // CPU validation
   if (!data.cpu || !data.cpu.brand || !data.cpu.model || !data.cpu.tdp) {

@@ -186,14 +186,39 @@ function validateRequiredFields(data, path, errors, deviceFile) {
 
   // GPU validation
   if (data.gpu) {
-    if (!data.gpu.model) {
-      errors.push({
-        deviceId: data.id || 'unknown',
-        file: deviceFile,
-        message: `Missing required GPU field: model`,
-        path: `${path}.gpu.model`,
-        critical: true
+    if (Array.isArray(data.gpu)) {
+      data.gpu.forEach((gpu, index) => {
+        if (!gpu.model || !gpu.type) {
+          errors.push({
+            deviceId: data.id || 'unknown',
+            file: deviceFile,
+            message: `Missing required GPU[${index}] fields: model or type`,
+            path: `${path}.gpu[${index}]`,
+            critical: true
+          });
+        }
+        // Validate GPU type
+        if (gpu.type && !['Integrated', 'Discrete'].includes(gpu.type)) {
+          errors.push({
+            deviceId: data.id || 'unknown',
+            file: deviceFile,
+            message: `Invalid GPU type: ${gpu.type}. Must be either 'Integrated' or 'Discrete'`,
+            path: `${path}.gpu[${index}].type`,
+            critical: true
+          });
+        }
       });
+    } else {
+      // For backward compatibility, convert single GPU object to array
+      if (!data.gpu.model) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `Missing required GPU field: model`,
+          path: `${path}.gpu.model`,
+          critical: true
+        });
+      }
     }
   }
 
