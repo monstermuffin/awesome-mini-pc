@@ -78,7 +78,6 @@ ports:
     version: "2.0"
     max_resolution: "4K@60Hz"
   audio_jack: 1
-  sd_card_reader: false
 
 dimensions:
   width: 196

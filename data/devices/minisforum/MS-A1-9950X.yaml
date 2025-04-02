@@ -79,7 +79,6 @@ ports:
     max_resolution: "4K@144Hz"
   audio_jack: 1
   oculink: 1
-  sd_card_reader: false
 
 dimensions:
   width: 189.5
