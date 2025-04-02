@@ -1,0 +1,404 @@
+name: Add a New PC
+description: Submit a new machine to be added to the database.
+title: "Add: [Brand] [Model]"
+labels: ["new-device"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to submit a machine! Please fill out the information below carefully.
+        All fields marked with * are required.
+
+  - type: input
+    id: id
+    attributes:
+      label: Device ID *
+      description: A unique identifier for the device (lowercase, use hyphens, e.g., intel-nuc6i7kyk). If this machine is a varient of another machine, use the parent id with a hypen for the variant (MS-A1-9950X).
+      placeholder: brand-model-variant
+    validations:
+      required: true
+
+  - type: input
+    id: brand
+    attributes:
+      label: Brand *
+      description: The manufacturer of the machine
+      placeholder: Intel, GMKTec, Minisforum, etc.
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Model *
+      description: The model name/number of the mini PC
+      placeholder: NUC6i7KYK
+    validations:
+      required: true
+
+  - type: input
+    id: release_date
+    attributes:
+      label: Release Date *
+      description: Year of release
+      placeholder: "2023"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "## CPU Information"
+
+  - type: dropdown
+    id: cpu_brand
+    attributes:
+      label: CPU Brand *
+      options:
+        - Intel
+        - AMD
+        - ARM
+        - Qualcomm
+        - Apple
+    validations:
+      required: true
+
+  - type: input
+    id: cpu_model
+    attributes:
+      label: CPU Model *
+      description: The specific model of the CPU (or "DIY" for configurable systems)
+      placeholder: Core i7-6770HQ
+    validations:
+      required: true
+
+  - type: input
+    id: cpu_tdp
+    attributes:
+      label: CPU TDP (Watts) *
+      description: Thermal Design Power in watts
+      placeholder: "45"
+    validations:
+      required: true
+
+  - type: input
+    id: cpu_cores
+    attributes:
+      label: CPU Cores
+      description: Number of CPU cores (not required for DIY systems)
+      placeholder: "4"
+
+  - type: input
+    id: cpu_threads
+    attributes:
+      label: CPU Threads
+      description: Number of CPU threads (not required for DIY systems)
+      placeholder: "8"
+
+  - type: input
+    id: cpu_base_clock
+    attributes:
+      label: Base Clock (GHz)
+      description: Base clock speed in GHz (not required for DIY systems)
+      placeholder: "2.6"
+
+  - type: input
+    id: cpu_boost_clock
+    attributes:
+      label: Boost Clock (GHz)
+      description: Maximum boost clock speed in GHz (not required for DIY systems)
+      placeholder: "3.5"
+
+  - type: dropdown
+    id: cpu_socket_type
+    attributes:
+      label: CPU Socket Type
+      description: Required only for DIY/configurable systems
+      options:
+        - AM4
+        - AM5
+        - LGA 1700
+        - LGA 1200
+        - LGA 1151
+        - SP3
+        - sTRX4
+        - sWRX8
+        - N/A (Non-DIY system)
+
+  - type: markdown
+    attributes:
+      value: "## GPU Information"
+
+  - type: input
+    id: gpu_model
+    attributes:
+      label: GPU Model
+      description: Integrated or discrete GPU model (or "CPU Dependent" for DIY systems)
+      placeholder: Intel Iris Pro Graphics 580
+
+  - type: markdown
+    attributes:
+      value: "## Memory Information"
+
+  - type: dropdown
+    id: memory_type
+    attributes:
+      label: Memory Type *
+      options:
+        - DDR3
+        - DDR3L
+        - DDR4
+        - DDR5
+        - LPDDR4
+        - LPDDR4X
+        - LPDDR5
+    validations:
+      required: true
+
+  - type: dropdown
+    id: memory_module_type
+    attributes:
+      label: Memory Module Type *
+      options:
+        - SODIMM
+        - DIMM
+        - Soldered
+        - SO-DIMM
+    validations:
+      required: true
+
+  - type: input
+    id: memory_slots
+    attributes:
+      label: Memory Slots *
+      description: Number of memory slots (0 if soldered only)
+      placeholder: "2"
+    validations:
+      required: true
+
+  - type: input
+    id: memory_max
+    attributes:
+      label: Maximum Memory Capacity (GB) *
+      description: Maximum supported RAM in GB
+      placeholder: "64"
+    validations:
+      required: true
+
+  - type: input
+    id: memory_speed
+    attributes:
+      label: Memory Speed (MHz) *
+      description: Maximum supported memory speed in MHz
+      placeholder: "3200"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "## Storage Information"
+
+  - type: checkboxes
+    id: storage_types
+    attributes:
+      label: Storage Types *
+      description: Select all supported storage types
+      options:
+        - label: M.2
+        - label: SATA
+        - label: NVMe
+        - label: 2.5"
+        - label: mSATA
+        - label: eMMC
+        - label: microSD
+        - label: U.2
+    validations:
+      required: true
+
+  - type: textarea
+    id: storage_details
+    attributes:
+      label: Storage Details *
+      description: |
+        Please provide details for each storage option in the following format:
+        - Type: M.2, Form Factor: 2280, Interface: PCIe 4.0 x4
+        - Type: M.2, Form Factor: 2280, Interface: PCIe 3.0 x4, Alt Interface: SATA
+        - Type: SATA, Form Factor: 2.5"
+      placeholder: |
+        - Type: M.2, Form Factor: 2280, Interface: PCIe 4.0 x4
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "## Networking"
+
+  - type: dropdown
+    id: wifi_standard
+    attributes:
+      label: WiFi Standard *
+      options:
+        - WiFi 4
+        - WiFi 5
+        - WiFi 6
+        - WiFi 6E
+        - WiFi 7
+        - None
+    validations:
+      required: true
+
+  - type: input
+    id: wifi_chipset
+    attributes:
+      label: WiFi Chipset *
+      description: The model of the WiFi chipset
+      placeholder: Intel AX200
+    validations:
+      required: true
+
+  - type: input
+    id: bluetooth
+    attributes:
+      label: Bluetooth Version *
+      description: Bluetooth version (e.g., 5.2)
+      placeholder: "5.2"
+    validations:
+      required: true
+
+  - type: input
+    id: ethernet_ports
+    attributes:
+      label: Number of Ethernet Ports *
+      description: Number of ethernet ports
+      placeholder: "1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ethernet_speed
+    attributes:
+      label: Ethernet Speed *
+      options:
+        - 100Mbps
+        - 1GbE
+        - 2.5GbE
+        - 5GbE
+        - 10GbE
+    validations:
+      required: true
+
+  - type: input
+    id: ethernet_chipset
+    attributes:
+      label: Ethernet Chipset *
+      description: The model of the Ethernet controller
+      placeholder: Intel I225-V
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ethernet_interface
+    attributes:
+      label: Ethernet Interface *
+      options:
+        - RJ45
+        - SFP
+        - SFP+
+        - SFP28
+        - 10GBASE-T
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: "## Expansion"
+
+  - type: input
+    id: oculink_ports
+    attributes:
+      label: OCuLink Ports
+      description: Number and version of OCuLink ports (e.g., 1x OCuLink 2.0)
+      placeholder: "1x OCuLink 2.0"
+
+  - type: markdown
+    attributes:
+      value: "## Ports"
+
+  - type: textarea
+    id: usb_ports
+    attributes:
+      label: USB Ports *
+      description: |
+        List all USB ports with their specifications:
+        - Type: USB 3.2 Gen2, Speed: 10Gbps, Count: 2
+        - Type: USB4, Alt Mode: DisplayPort 2.0, Max Resolution: 4K@144Hz
+      placeholder: |
+        - Type: USB 3.2 Gen2, Speed: 10Gbps, Count: 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: display_ports
+    attributes:
+      label: Display Ports *
+      description: |
+        List all display outputs with their specifications:
+        - HDMI: Count: 1, Version: 2.1, Max Resolution: 8K@60Hz
+        - DisplayPort: Count: 1, Version: 2.0, Max Resolution: 4K@144Hz
+      placeholder: |
+        - HDMI: Count: 1, Version: 2.1, Max Resolution: 4K@60Hz
+    validations:
+      required: true
+
+  - type: input
+    id: audio_jacks
+    attributes:
+      label: Audio Jacks
+      description: Number of audio jacks
+      placeholder: "2"
+
+  - type: dropdown
+    id: sd_card_reader
+    attributes:
+      label: SD Card Reader
+      options:
+        - "Yes"
+        - "No"
+
+  - type: markdown
+    attributes:
+      value: "## Physical Specifications"
+
+  - type: input
+    id: dimensions
+    attributes:
+      label: Dimensions (mm) *
+      description: Width x Depth x Height in millimeters
+      placeholder: "211 x 116 x 28"
+    validations:
+      required: true
+
+  - type: input
+    id: power_adapter
+    attributes:
+      label: Power Adapter *
+      description: Power adapter specifications (Wattage and DC input)
+      placeholder: "120W (19V/6.32A)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Additional Information
+      description: Any other relevant information about the mini PC
+      placeholder: Special features, cooling system details, etc.
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Submission Confirmation
+      options:
+        - label: I have verified all the information provided is accurate
+          required: true
+        - label: I understand this submission will be reviewed before being added
+          required: true 
