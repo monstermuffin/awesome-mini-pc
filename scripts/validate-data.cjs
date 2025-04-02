@@ -49,11 +49,11 @@ function validateRequiredFields(data, path, errors, deviceFile) {
   
   // CPU required fields
   if (data.cpu) {
-    const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'boost_clock', 'tdp'];
+    const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'boost_clock', 'tdp', 'architecture'];
     const isDIYMachine = data.cpu.socket?.supports_cpu_swap === true;
 
-    // For DIY machines, only brand, model, and tdp are required
-    const fieldsToCheck = isDIYMachine ? ['brand', 'model', 'tdp'] : requiredCpuFields;
+    // For DIY machines, only brand, model, tdp and architecture are required
+    const fieldsToCheck = isDIYMachine ? ['brand', 'model', 'tdp', 'architecture'] : requiredCpuFields;
 
     for (const field of fieldsToCheck) {
       if (data.cpu[field] === undefined) {

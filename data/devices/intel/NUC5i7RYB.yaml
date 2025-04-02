@@ -11,6 +11,7 @@ cpu:
   threads: 4
   base_clock: 3.1
   boost_clock: 3.4
+  architecture: "Broadwell"
 
 gpu:
   model: "Intel Iris Graphics 6100"

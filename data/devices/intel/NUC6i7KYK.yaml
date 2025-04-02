@@ -11,6 +11,7 @@ cpu:
   threads: 8
   base_clock: 2.6
   boost_clock: 3.5
+  architecture: "Skylake"
 
 gpu:
   model: "Intel Iris Pro Graphics 580"

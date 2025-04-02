@@ -11,6 +11,7 @@ cpu:
   base_clock: 3.2
   boost_clock: 5.4
   tdp: 65
+  architecture: "Zen 4"
   socket:
     type: "AM5"
     supports_cpu_swap: true

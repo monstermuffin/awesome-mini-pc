@@ -11,6 +11,7 @@ cpu:
   threads: 4
   base_clock: 2.0
   boost_clock: 2.0
+  architecture: "Broadwell"
 
 gpu:
   model: "Intel HD Graphics 5500"

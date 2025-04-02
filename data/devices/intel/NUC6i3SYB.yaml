@@ -11,6 +11,7 @@ cpu:
   threads: 4
   base_clock: 2.3
   boost_clock: 2.3
+  architecture: "Skylake"
 
 gpu:
   model: "Intel HD Graphics 520"
