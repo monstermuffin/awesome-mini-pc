@@ -71,7 +71,6 @@ const path = require('path');
 /**
  * @typedef {Object} GPU
  * @property {string} model - GPU model name
- * @property {string} [cpu_model] - Associated CPU model for integrated GPUs
  */
 
 /**
@@ -209,8 +208,11 @@ function extractMetadata(devices) {
     metadata.tdpRange.min = Math.min(metadata.tdpRange.min, pc.cpu.tdp);
     metadata.tdpRange.max = Math.max(metadata.tdpRange.max, pc.cpu.tdp);
     
-    metadata.coreRange.min = Math.min(metadata.coreRange.min, pc.cpu.cores);
-    metadata.coreRange.max = Math.max(metadata.coreRange.max, pc.cpu.cores);
+    // Only include core counts from non-DIY machines
+    if (!pc.cpu.socket?.supports_cpu_swap) {
+      metadata.coreRange.min = Math.min(metadata.coreRange.min, pc.cpu.cores);
+      metadata.coreRange.max = Math.max(metadata.coreRange.max, pc.cpu.cores);
+    }
     
     metadata.memorySpeedRange.min = Math.min(metadata.memorySpeedRange.min, pc.memory.speed);
     metadata.memorySpeedRange.max = Math.max(metadata.memorySpeedRange.max, pc.memory.speed);

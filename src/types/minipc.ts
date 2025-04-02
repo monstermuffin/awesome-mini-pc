@@ -18,6 +18,9 @@ export interface MiniPC {
       supports_cpu_swap: boolean;
     };
   };
+  gpu?: {
+    model: string;
+  };
   memory: {
     max_capacity: number;
     slots: number;

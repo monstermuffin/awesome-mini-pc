@@ -312,47 +312,6 @@ function validateDataTypes(data, path, errors, deviceFile) {
           critical: true
         });
       }
-    } else {
-      // For DIY machines, these fields should be 0 or undefined
-      if (data.cpu.cores !== 0 && data.cpu.cores !== undefined) {
-        errors.push({
-          deviceId: data.id || 'unknown',
-          file: deviceFile,
-          message: `DIY machine should have cpu.cores set to 0 or undefined`,
-          path: `${path}.cpu.cores`,
-          critical: true
-        });
-      }
-      
-      if (data.cpu.threads !== 0 && data.cpu.threads !== undefined) {
-        errors.push({
-          deviceId: data.id || 'unknown',
-          file: deviceFile,
-          message: `DIY machine should have cpu.threads set to 0 or undefined`,
-          path: `${path}.cpu.threads`,
-          critical: true
-        });
-      }
-      
-      if (data.cpu.base_clock !== 0 && data.cpu.base_clock !== undefined) {
-        errors.push({
-          deviceId: data.id || 'unknown',
-          file: deviceFile,
-          message: `DIY machine should have cpu.base_clock set to 0 or undefined`,
-          path: `${path}.cpu.base_clock`,
-          critical: true
-        });
-      }
-      
-      if (data.cpu.boost_clock !== 0 && data.cpu.boost_clock !== undefined) {
-        errors.push({
-          deviceId: data.id || 'unknown',
-          file: deviceFile,
-          message: `DIY machine should have cpu.boost_clock set to 0 or undefined`,
-          path: `${path}.cpu.boost_clock`,
-          critical: true
-        });
-      }
     }
 
     // TDP is always required and must be positive

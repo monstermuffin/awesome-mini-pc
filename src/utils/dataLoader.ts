@@ -73,9 +73,15 @@ export async function loadMiniPCData(): Promise<{ devices: MiniPC[]; filterOptio
     // Process devices to add missing fields required by the updated schema
     const enhancedDevices = enhanceDataForCompat(generatedData.devices);
     
+    // If there are no non-DIY machines, set core range to 0
+    const metadata = { ...generatedData.metadata };
+    if (metadata.coreRange.min === Infinity || metadata.coreRange.max === -Infinity) {
+      metadata.coreRange = { min: 0, max: 0 };
+    }
+    
     return {
       devices: enhancedDevices,
-      filterOptions: convertToFilterOptions(generatedData.metadata),
+      filterOptions: convertToFilterOptions(metadata),
     };
   } catch (error) {
     console.error('Error loading Mini PC data:', error);

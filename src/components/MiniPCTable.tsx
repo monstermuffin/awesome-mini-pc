@@ -239,6 +239,18 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     minWidth: 150,
                   }}
                 >{renderSortLabel('CPU', 'cpu.model')}</TableCell>
+                <TableCell
+                  sx={{ 
+                    background: theme => theme.palette.mode === 'dark' 
+                      ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
+                      : 'linear-gradient(180deg, rgba(33,150,243,0.2) 0%, rgba(33,150,243,0.1) 100%)',
+                    fontWeight: 'bold',
+                    color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
+                    borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                    width: 120,
+                    minWidth: 100,
+                  }}
+                >GPU</TableCell>
                 <TableCell 
                   align="right"
                   sx={{ 
@@ -444,14 +456,13 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     }}>
                       {device.cpu.brand} {device.cpu.model}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{
-                      whiteSpace: 'normal',
-                      overflow: 'visible',
-                      display: 'block',
-                      lineHeight: 1.3,
-                      mb: 0.3
-                    }}>
-                      {device.cpu.base_clock}GHz - {device.cpu.boost_clock}GHz
+                    {device.cpu.model !== 'DIY' && (
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.3 }}>
+                        {device.cpu.cores} cores ({device.cpu.threads} threads) • {device.cpu.base_clock}GHz - {device.cpu.boost_clock}GHz
+                      </Typography>
+                    )}
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.3 }}>
+                      TDP: {device.cpu.tdp}W
                     </Typography>
                     {device.cpu.chipset && (
                       <Typography variant="caption" color="text.secondary" component="div" sx={{
@@ -492,12 +503,24 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                       />
                     )}
                   </TableCell>
+                  <TableCell>
+                    {device.gpu && (
+                      <Typography variant="body2" component="div" sx={{ 
+                        fontWeight: 500,
+                        whiteSpace: 'normal',
+                        overflow: 'visible',
+                        lineHeight: 1.3,
+                      }}>
+                        {device.gpu.model}
+                      </Typography>
+                    )}
+                  </TableCell>
                   <TableCell align="right">
                     <Box sx={{ 
                       fontWeight: 'medium', 
                       color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2' 
                     }}>
-                      {device.cpu.cores}
+                      {device.cpu.model !== 'DIY' && device.cpu.cores}
                     </Box>
                   </TableCell>
                   <TableCell align="right">
@@ -783,12 +806,11 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
                     {detailDevice.cpu.brand} {detailDevice.cpu.model}
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    Cores: {detailDevice.cpu.cores} (Threads: {detailDevice.cpu.threads})
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    Clock: {detailDevice.cpu.base_clock}GHz - {detailDevice.cpu.boost_clock}GHz
-                  </Typography>
+                  {detailDevice.cpu.model !== 'DIY' && (
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                      Cores: {detailDevice.cpu.cores} (Threads: {detailDevice.cpu.threads})
+                    </Typography>
+                  )}
                   <Typography variant="body2" sx={{ mb: 0.5 }}>TDP: {detailDevice.cpu.tdp}W</Typography>
                   {detailDevice.cpu.chipset && (
                     <Typography variant="body2" sx={{ mb: 0.5 }}>Chipset: {detailDevice.cpu.chipset}</Typography>
@@ -844,6 +866,28 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                     Max Capacity: {detailDevice.memory.max_capacity}GB
                   </Typography>
                 </Grid>
+                
+                {detailDevice?.gpu && (
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
+                      color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      '&::before': {
+                        content: '""',
+                        display: 'block',
+                        width: 3,
+                        height: 16,
+                        backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                        marginRight: 1,
+                        borderRadius: 1,
+                      }
+                    }}>Graphics</Typography>
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                      {detailDevice.gpu.model}
+                    </Typography>
+                  </Grid>
+                )}
                 
                 <Grid item xs={12} sx={{ 
                   pt: 2, 
@@ -1362,7 +1406,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                             PCIe {slot.type} {slot.version}
                           </Typography>
                           {(slot.full_height !== undefined || slot.length) && (
-                            <Typography variant="body2">
+                            <Typography variant="body2" sx={{ mb: 0.5 }}>
                               {slot.full_height ? 'Full-height' : 'Low-profile'} 
                               {slot.length && `, ${slot.length}`}
                             </Typography>

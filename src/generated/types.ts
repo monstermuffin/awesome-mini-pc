@@ -23,7 +23,7 @@ export const RANGES = {
     "max": 65
   },
   "cores": {
-    "min": 0,
+    "min": 6,
     "max": 12
   },
   "memorySpeed": {
