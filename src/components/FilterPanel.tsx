@@ -296,7 +296,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
 
       {cpuSockets.size > 0 && (
         <FilterGroup
-          title="CPU Socket"
+          title="CPU Socket (Socketable CPUs)"
           options={cpuSockets}
           selected={selectedFilters.cpuSockets}
           devices={devices}
