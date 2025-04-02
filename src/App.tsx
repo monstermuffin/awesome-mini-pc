@@ -63,27 +63,127 @@ function App() {
     palette: {
       mode: darkMode ? 'dark' : 'light',
       primary: {
-        main: '#2196f3',
+        main: '#1976d2',
+        light: '#42a5f5',
+        dark: '#1565c0',
       },
       secondary: {
-        main: '#f50057',
+        main: '#424242',
+        light: '#616161',
+        dark: '#212121',
       },
       background: {
-        default: darkMode ? '#121212' : '#f5f5f5',
-        paper: darkMode ? '#1e1e1e' : '#ffffff',
+        default: darkMode ? '#1a1f2b' : '#f0f2f5',
+        paper: darkMode ? '#242935' : '#ffffff',
+      },
+      text: {
+        primary: darkMode ? '#e3e8ef' : '#1a1f2b',
+        secondary: darkMode ? '#b0b7c5' : '#4b5563',
       },
     },
+    shape: {
+      borderRadius: 0,
+    },
     components: {
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            background: darkMode 
+              ? '#1e1e1e'
+              : '#ffffff',
+            borderBottom: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.1)'}`,
+            boxShadow: darkMode ? 'none' : '0 1px 3px rgba(0,0,0,0.05)',
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+            fontWeight: 500,
+            borderRadius: 0,
+            '&.MuiButton-contained': {
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+              },
+            },
+          },
+        },
+      },
+      MuiIconButton: {
+        styleOverrides: {
+          root: {
+            color: darkMode ? '#e3e8ef' : '#4b5563',
+            '&:hover': {
+              backgroundColor: darkMode 
+                ? 'rgba(255, 255, 255, 0.05)' 
+                : 'rgba(0, 0, 0, 0.08)',
+            },
+          },
+        },
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            borderRadius: 0,
+            backgroundImage: 'none',
+            border: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.1)'}`,
+          },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            borderRadius: 0,
+            border: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.1)'}`,
+            boxShadow: darkMode ? 'none' : '0 1px 3px rgba(0,0,0,0.05)',
+          },
+        },
+      },
       MuiTableCell: {
         styleOverrides: {
           root: {
-            padding: '8px 16px',
+            borderBottom: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.1)'}`,
           },
           head: {
             fontWeight: 600,
-            whiteSpace: 'nowrap',
+            color: darkMode ? '#e3e8ef' : '#1a1f2b',
+            backgroundColor: darkMode ? '#242935' : '#f8fafc',
           },
         },
+      },
+      MuiTableRow: {
+        styleOverrides: {
+          root: {
+            '&:hover': {
+              backgroundColor: darkMode 
+                ? 'rgba(255, 255, 255, 0.03)' 
+                : 'rgba(0, 0, 0, 0.04)',
+            },
+          },
+        },
+      },
+    },
+    typography: {
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      h1: {
+        fontSize: '1.75rem',
+        fontWeight: 600,
+        letterSpacing: '-0.01em',
+      },
+      h2: {
+        fontSize: '1.5rem',
+        fontWeight: 600,
+        letterSpacing: '-0.01em',
+      },
+      body1: {
+        fontSize: '0.875rem',
+        letterSpacing: '0.01em',
+      },
+      body2: {
+        fontSize: '0.8125rem',
+        letterSpacing: '0.01em',
       },
     },
   });
@@ -287,7 +387,7 @@ function App() {
     <Drawer
       variant={isMobile ? "temporary" : "persistent"}
       anchor="left"
-      open={isMobile ? drawerOpen : drawerOpen}
+      open={drawerOpen}
       onClose={handleDrawerToggle}
       sx={{
         width: drawerOpen ? 280 : 0,
@@ -296,16 +396,15 @@ function App() {
           width: 280,
           boxSizing: 'border-box',
           backgroundColor: theme.palette.background.default,
-          borderRight: `1px solid ${theme.palette.divider}`,
-          height: 'calc(100% - 64px)',
-          top: 64,
+          borderRight: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'}`,
+          height: '100%',
           transition: theme.transitions.create(['width', 'transform'], {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
           }),
-          boxShadow: drawerOpen ? (theme.palette.mode === 'dark' 
-            ? '4px 0 10px rgba(0,0,0,0.2)' 
-            : '4px 0 10px rgba(0,0,0,0.1)') : 'none',
+          boxShadow: drawerOpen ? (darkMode 
+            ? '4px 0 10px rgba(0,0,0,0.15)' 
+            : '4px 0 10px rgba(0,0,0,0.08)') : 'none',
           overflowX: 'hidden',
         },
       }}
@@ -314,24 +413,23 @@ function App() {
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'space-between',
-        p: 1,
-        borderBottom: `1px solid ${theme.palette.divider}`,
-        transition: 'all 0.2s ease',
-        background: theme.palette.mode === 'dark' 
-          ? 'linear-gradient(to right, rgba(26,35,126,0.1), rgba(13,71,161,0.1))'
-          : 'linear-gradient(to right, rgba(66,165,245,0.1), rgba(25,118,210,0.1))',
+        p: 2,
+        borderBottom: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'}`,
+        backgroundColor: theme.palette.background.paper,
       }}>
         <Typography variant="h6" sx={{ 
-          pl: 1,
           fontWeight: 500,
-          opacity: drawerOpen ? 1 : 0,
-          transition: 'opacity 0.3s ease'
-        }}>Filters</Typography>
+          color: theme.palette.text.primary,
+        }}>
+          Filters
+        </Typography>
         <IconButton 
           onClick={handleDrawerToggle}
           sx={{
-            transition: 'transform 0.3s ease',
-            transform: drawerOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+            color: theme.palette.text.primary,
+            '&:hover': {
+              backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+            },
           }}
         >
           <ChevronLeftIcon />
@@ -351,68 +449,80 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ 
-        display: 'flex',
-        overflow: 'hidden',
-        width: '100%',
-        height: '100vh',
-      }}>
-        <AppBar position="fixed" elevation={0} sx={{ 
-          background: theme.palette.mode === 'dark' 
-            ? 'linear-gradient(45deg, #1a237e 30%, #0d47a1 90%)'
-            : 'linear-gradient(45deg, #42a5f5 30%, #1976d2 90%)',
-          zIndex: theme.zIndex.drawer + 1,
-          transition: 'all 0.3s ease-in-out',
-          backdropFilter: 'blur(8px)',
-          boxShadow: theme.palette.mode === 'dark' 
-            ? '0 4px 20px 0 rgba(0,0,0,0.14), 0 7px 10px -5px rgba(26,35,126,0.4)'
-            : '0 4px 20px 0 rgba(0,0,0,0.12), 0 7px 8px -5px rgba(33,150,243,0.3)'
-        }}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="toggle filters"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ 
-                mr: 2,
-                opacity: drawerOpen ? 0.8 : 1,
-                transform: drawerOpen ? 'translateX(2px)' : 'translateX(0)',
-                transition: 'all 0.2s ease-in-out'
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h5" component="h1" sx={{ 
-              flexGrow: 1, 
-              fontWeight: 600,
-              background: theme.palette.mode === 'dark'
-                ? 'linear-gradient(to right, #fff, #e0e0e0)'
-                : 'linear-gradient(to right, #fff, #fff)', 
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: theme.palette.mode === 'dark' ? 'transparent' : 'white',
-            }}>
-              Awesome Mini PC
-            </Typography>
-            <Tooltip title="View on GitHub">
-              <IconButton 
-                color="inherit" 
-                component={Link}
-                href="https://github.com/monstermuffin/awesome-mini-pc"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{ mr: 1 }}
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <AppBar 
+          position="sticky" 
+          elevation={0}
+        >
+          <Toolbar sx={{ 
+            height: 64,
+            px: { xs: 2, md: 3 },
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ 
+                  mr: 2,
+                  '&:hover': {
+                    backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                  },
+                }}
               >
-                <GitHubIcon />
+                <MenuIcon />
               </IconButton>
-            </Tooltip>
-            <IconButton 
-              color="inherit" 
-              onClick={() => setDarkMode(!darkMode)}
-              sx={{ ml: 1 }}
-            >
-              {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
+              <Typography 
+                variant="h1" 
+                component="h1"
+                sx={{
+                  fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                  fontWeight: 600,
+                  color: theme.palette.text.primary,
+                }}
+              >
+                Awesome Mini PCs
+              </Typography>
+            </Box>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1,
+              ml: 'auto', // Push to right
+            }}>
+              <Tooltip title="Toggle dark mode">
+                <IconButton 
+                  onClick={() => setDarkMode(!darkMode)} 
+                  color="inherit"
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                    },
+                  }}
+                >
+                  {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="View on GitHub">
+                <IconButton
+                  component={Link}
+                  href="https://github.com/yourusername/awesome-mini-pcs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="inherit"
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                    },
+                  }}
+                >
+                  <GitHubIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Toolbar>
         </AppBar>
         {filterDrawer}
