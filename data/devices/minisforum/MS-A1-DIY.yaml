@@ -11,6 +11,9 @@ cpu:
     type: "AM5"
     supports_cpu_swap: true
 
+gpu:
+  model: "CPU Dependent"
+
 memory:
   slots: 2
   type: DDR5
