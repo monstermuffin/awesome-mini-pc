@@ -509,7 +509,7 @@ function App() {
               <Tooltip title="View on GitHub">
                 <IconButton
                   component={Link}
-                  href="https://github.com/yourusername/awesome-mini-pcs"
+                  href="https://github.com/monstermuffin/awesome-mini-pc/"
                   target="_blank"
                   rel="noopener noreferrer"
                   color="inherit"

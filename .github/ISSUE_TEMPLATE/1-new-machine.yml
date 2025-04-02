@@ -108,6 +108,13 @@ body:
       description: Maximum boost clock speed in GHz (not required for DIY systems)
       placeholder: "3.5"
 
+  - type: input
+    id: cpu_architecture
+    attributes:
+      label: CPU Architecture
+      description: The CPU microarchitecture (e.g., Skylake, Zen 3)
+      placeholder: "Skylake"
+
   - type: dropdown
     id: cpu_socket_type
     attributes:
@@ -134,6 +141,8 @@ body:
       label: GPU Model
       description: Integrated or discrete GPU model (or "CPU Dependent" for DIY systems)
       placeholder: Intel Iris Pro Graphics 580
+    validations:
+      required: false
 
   - type: markdown
     attributes:
@@ -201,7 +210,7 @@ body:
     id: storage_types
     attributes:
       label: Storage Types *
-      description: Select all supported storage types
+      description: Select all supported storage types (at least one must be selected)
       options:
         - label: M.2
         - label: SATA
@@ -211,8 +220,6 @@ body:
         - label: eMMC
         - label: microSD
         - label: U.2
-    validations:
-      required: true
 
   - type: textarea
     id: storage_details
@@ -242,27 +249,26 @@ body:
         - WiFi 6
         - WiFi 6E
         - WiFi 7
-        - None
     validations:
-      required: true
+      required: false
 
   - type: input
     id: wifi_chipset
     attributes:
-      label: WiFi Chipset *
-      description: The model of the WiFi chipset
+      label: WiFi Chipset
+      description: The model of the WiFi chipset (if WiFi is present)
       placeholder: Intel AX200
     validations:
-      required: true
+      required: false
 
   - type: input
     id: bluetooth
     attributes:
-      label: Bluetooth Version *
-      description: Bluetooth version (e.g., 5.2)
+      label: Bluetooth Version
+      description: Bluetooth version if available (e.g., 5.2)
       placeholder: "5.2"
     validations:
-      required: true
+      required: false
 
   - type: input
     id: ethernet_ports
@@ -316,8 +322,10 @@ body:
     id: oculink_ports
     attributes:
       label: OCuLink Ports
-      description: Number and version of OCuLink ports (e.g., 1x OCuLink 2.0)
+      description: Number and version of OCuLink ports if present (e.g., 1x OCuLink 2.0)
       placeholder: "1x OCuLink 2.0"
+    validations:
+      required: false
 
   - type: markdown
     attributes:
@@ -343,7 +351,7 @@ body:
       description: |
         List all display outputs with their specifications:
         - HDMI: Count: 1, Version: 2.1, Max Resolution: 8K@60Hz
-        - DisplayPort: Count: 1, Version: 2.0, Max Resolution: 4K@144Hz
+        - DisplayPort: Count: 1, Version: 2.0, Form Factor: Standard/Mini, Max Resolution: 4K@144Hz
       placeholder: |
         - HDMI: Count: 1, Version: 2.1, Max Resolution: 4K@60Hz
     validations:
@@ -353,16 +361,21 @@ body:
     id: audio_jacks
     attributes:
       label: Audio Jacks
-      description: Number of audio jacks
-      placeholder: "2"
+      description: Number of audio jacks (if present)
+      placeholder: "1"
+    validations:
+      required: false
 
   - type: dropdown
     id: sd_card_reader
     attributes:
       label: SD Card Reader
+      description: Whether the system has an SD card reader
       options:
         - "Yes"
         - "No"
+    validations:
+      required: false
 
   - type: markdown
     attributes:
@@ -372,17 +385,28 @@ body:
     id: dimensions
     attributes:
       label: Dimensions (mm) *
-      description: Width x Depth x Height in millimeters
-      placeholder: "211 x 116 x 28"
+      description: |
+        Please provide dimensions in the following format:
+        Width: 211, Depth: 116, Height: 28
+      placeholder: "Width: 211, Depth: 116, Height: 28"
     validations:
       required: true
 
   - type: input
-    id: power_adapter
+    id: power_adapter_wattage
     attributes:
-      label: Power Adapter *
-      description: Power adapter specifications (Wattage and DC input)
-      placeholder: "120W (19V/6.32A)"
+      label: Power Adapter Wattage *
+      description: Power adapter wattage in watts
+      placeholder: "120"
+    validations:
+      required: true
+
+  - type: input
+    id: power_adapter_dc
+    attributes:
+      label: Power Adapter DC Input *
+      description: DC input specifications (voltage/amperage)
+      placeholder: "19V/6.32A"
     validations:
       required: true
 
