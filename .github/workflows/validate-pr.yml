@@ -40,12 +40,11 @@ jobs:
               const output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
               console.log('Validation output:', output);
               
-              // Validation passed
-              await github.rest.pulls.createReview({
+              // Validation passed - add success comment
+              await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
-                event: 'APPROVE',
+                issue_number: context.payload.pull_request.number,
                 body: '✅ Data validation passed! All device files are correctly formatted.\n\nThis PR is now ready for manual review and merge.'
               });
               
@@ -113,12 +112,11 @@ jobs:
                 });
               }
               
-              // Comment on PR
-              await github.rest.pulls.createReview({
+              // Comment on PR instead of creating a review
+              await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
-                event: 'REQUEST_CHANGES',
+                issue_number: context.payload.pull_request.number,
                 body: errorMessage
               });
 
