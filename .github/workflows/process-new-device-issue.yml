@@ -23,7 +23,17 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const issueBody = github.context.payload.issue.body;
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            
+            const issueBody = issue.data.body;
+            if (!issueBody) {
+              throw new Error('Issue body is empty');
+            }
+
             const lines = issueBody.split('\n');
             const data = {};
             let currentKey = null;
