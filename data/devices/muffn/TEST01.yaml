@@ -1,0 +1,55 @@
+id: TEST01
+brand: muffn
+model: test01
+release_date: 2025
+cpu:
+  brand: Apple
+  model: M1 Pro
+  tdp: 50
+  cores: 5
+  threads: 3
+  base_clock_ghz: 1.2
+  boost_clock_ghz: 6.7
+  architecture: M1
+memory:
+  type: LPDDR5
+  module_type: Soldered
+  slots: 0
+  max_capacity_gb: 128
+  speed_mhz: 5600
+gpu:
+  - type: Integrated
+    model: Apple M1
+storage:
+  - type: M.2
+    form_factor: '2280'
+    interface: PCIe 4.0 x4
+networking:
+  wifi:
+    standard: WiFi 6E
+    chipset: Apple Something
+    bluetooth: '5.2'
+  ethernet:
+    - type: 2.5GbE
+      chipset: Intel I225-V
+      interface: RJ45
+ports:
+  usb:
+    - type: USB 3.2 Gen2
+      speed: 10Gbps
+      count: '2'
+    - type: USB4
+      count: '2'
+      alt_mode: DisplayPort
+      max_resolution: 8K@30Hz
+      thunderbolt: '4'
+  display:
+    - count: '1'
+      version: '2.1'
+      form_factor: Full-size
+      max_resolution: 8K@60Hz
+physical:
+  dimensions: 211 x 166 x 28
+  power_adapter: 120W (12v/50A)
+  audio_jacks: 1
+  sd_card_reader: true
