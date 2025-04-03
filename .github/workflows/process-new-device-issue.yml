@@ -24,7 +24,9 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install js-yaml
+        run: |
+          npm install js-yaml
+          npm install
 
       - name: Parse Issue Form and Create YAML
         id: parse_issue
@@ -32,6 +34,7 @@ jobs:
         with:
           script: |
             const yaml = require('js-yaml');
+            const validateData = require('./scripts/validate-data.cjs');
             
             async function createPR() {
               const issue = await github.rest.issues.get({
@@ -51,7 +54,7 @@ jobs:
               
               // Field mapping from form fields to YAML fields
               const fieldMapping = {
-                'Device ID': 'device_id',
+                'Device ID': 'id',
                 'Brand': 'brand',
                 'Model': 'model',
                 'Release Date': 'release_date',
@@ -60,16 +63,16 @@ jobs:
                 'CPU TDP (Watts)': 'cpu_tdp',
                 'CPU Cores': 'cpu_cores',
                 'CPU Threads': 'cpu_threads',
-                'Base Clock (GHz)': 'base_clock_ghz',
-                'Boost Clock (GHz)': 'boost_clock_ghz',
+                'Base Clock (GHz)': 'base_clock',
+                'Boost Clock (GHz)': 'boost_clock',
                 'CPU Architecture': 'cpu_architecture',
                 'CPU Socket Type': 'cpu_socket_type',
                 'GPU Models': 'gpu_models',
                 'Memory Type': 'memory_type',
                 'Memory Module Type': 'memory_module_type',
                 'Memory Slots': 'memory_slots',
-                'Maximum Memory Capacity (GB)': 'maximum_memory_capacity_gb',
-                'Memory Speed (MHz)': 'memory_speed_mhz',
+                'Maximum Memory Capacity (GB)': 'max_capacity',
+                'Memory Speed (MHz)': 'memory_speed',
                 'Storage Details': 'storage_details',
                 'WiFi Standard': 'wifi_standard',
                 'WiFi Chipset': 'wifi_chipset',
@@ -133,35 +136,36 @@ jobs:
                 }
               }
 
-              // Convert data to YAML format
-              const deviceData = {
-                id: data.device_id,
+              // Create validation structure
+              const validationData = {
+                id: `${data.brand.toLowerCase()}-${data.id.toLowerCase()}`,
                 brand: data.brand,
                 model: data.model,
-                release_date: parseInt(data.release_date),
+                release_date: data.release_date,
+
                 cpu: {
                   brand: data.cpu_brand,
                   model: data.cpu_model,
                   tdp: parseInt(data.cpu_tdp),
-                  cores: data.cpu_cores ? parseInt(data.cpu_cores) : undefined,
-                  threads: data.cpu_threads ? parseInt(data.cpu_threads) : undefined,
-                  base_clock_ghz: data.base_clock_ghz ? parseFloat(data.base_clock_ghz) : undefined,
-                  boost_clock_ghz: data.boost_clock_ghz ? parseFloat(data.boost_clock_ghz) : undefined,
-                  architecture: data.cpu_architecture,
-                  socket_type: data.cpu_socket_type !== 'None' ? data.cpu_socket_type : undefined
-                },
-                memory: {
-                  type: data.memory_type,
-                  module_type: data.memory_module_type,
-                  slots: parseInt(data.memory_slots),
-                  max_capacity_gb: parseInt(data.maximum_memory_capacity_gb),
-                  speed_mhz: parseInt(data.memory_speed_mhz)
+                  cores: parseInt(data.cpu_cores),
+                  threads: parseInt(data.cpu_threads),
+                  base_clock: parseFloat(data.base_clock),
+                  boost_clock: parseFloat(data.boost_clock),
+                  architecture: data.cpu_architecture
                 }
               };
 
-              // Parse GPU models if present
+              // Add CPU socket if specified
+              if (data.cpu_socket_type && data.cpu_socket_type !== 'None') {
+                validationData.cpu.socket = {
+                  type: data.cpu_socket_type,
+                  supports_cpu_swap: true
+                };
+              }
+
+              // Parse GPU models
               if (data.gpu_models) {
-                deviceData.gpu = data.gpu_models.split('\n')
+                validationData.gpu = data.gpu_models.split('\n')
                   .filter(line => line.trim().startsWith('Type:'))
                   .map(line => {
                     const parts = line.split(',').map(p => p.trim());
@@ -176,28 +180,35 @@ jobs:
                   });
               }
 
+              // Memory configuration
+              validationData.memory = {
+                slots: parseInt(data.memory_slots),
+                type: data.memory_type,
+                speed: parseInt(data.memory_speed),
+                module_type: data.memory_module_type,
+                max_capacity: parseInt(data.max_capacity)
+              };
+
               // Parse storage details
               if (data.storage_details) {
-                deviceData.storage = data.storage_details.split('\n')
+                validationData.storage = data.storage_details.split('\n')
                   .filter(line => line.trim().startsWith('Type:'))
                   .map(line => {
                     const parts = line.split(',').map(p => p.trim());
                     const storage = {};
                     parts.forEach(part => {
                       const [key, value] = part.split(':').map(s => s.trim());
-                      storage[key.toLowerCase().replace(/ /g, '_')] = value;
+                      const key_lower = key.toLowerCase();
+                      if (key_lower === 'type') storage.type = value;
+                      if (key_lower === 'form factor') storage.form_factor = value;
+                      if (key_lower === 'interface') storage.interface = value;
                     });
                     return storage;
                   });
               }
 
-              // Add networking if present
-              deviceData.networking = {
-                wifi: data.wifi_standard ? {
-                  standard: data.wifi_standard,
-                  chipset: data.wifi_chipset,
-                  bluetooth: data.bluetooth_version
-                } : undefined,
+              // Networking configuration
+              validationData.networking = {
                 ethernet: data.ethernet_ports ? data.ethernet_ports.split('\n')
                   .filter(line => line.trim().startsWith('Type:'))
                   .map(line => {
@@ -205,69 +216,152 @@ jobs:
                     const eth = {};
                     parts.forEach(part => {
                       const [key, value] = part.split(':').map(s => s.trim());
-                      eth[key.toLowerCase().replace(/ /g, '_')] = value;
+                      const key_lower = key.toLowerCase();
+                      if (key_lower === 'type') eth.speed = value;
+                      if (key_lower === 'chipset') eth.chipset = value;
+                      if (key_lower === 'interface') eth.interface = value;
                     });
+                    eth.ports = 1; // Default to 1 port per entry
                     return eth;
-                  }) : []
+                  }) : [],
+                wifi: data.wifi_standard ? {
+                  chipset: data.wifi_chipset,
+                  standard: data.wifi_standard,
+                  bluetooth: data.bluetooth_version
+                } : undefined
               };
 
-              // Add ports and interfaces
+              // Ports configuration
+              validationData.ports = {};
+
+              // USB ports
               if (data.usb_ports) {
-                deviceData.ports = {
-                  usb: data.usb_ports.split('\n')
-                    .filter(line => line.trim().startsWith('Type:'))
-                    .map(line => {
-                      const parts = line.split(',').map(p => p.trim());
-                      const usb = {};
-                      parts.forEach(part => {
-                        const [key, value] = part.split(':').map(s => s.trim());
-                        usb[key.toLowerCase().replace(/ /g, '_')] = value;
-                      });
-                      return usb;
-                    })
-                };
+                const usb_a = [];
+                const usb_c = [];
+
+                data.usb_ports.split('\n')
+                  .filter(line => line.trim().startsWith('Type:'))
+                  .forEach(line => {
+                    const parts = line.split(',').map(p => p.trim());
+                    const port = {};
+                    parts.forEach(part => {
+                      const [key, value] = part.split(':').map(s => s.trim());
+                      const key_lower = key.toLowerCase();
+                      if (key_lower === 'type') port.type = value;
+                      if (key_lower === 'speed') port.speed = value;
+                      if (key_lower === 'count') port.count = parseInt(value);
+                      if (key_lower === 'alt mode') port.alt_mode = value;
+                      if (key_lower === 'max resolution') port.max_resolution = value;
+                      if (key_lower === 'thunderbolt') port.thunderbolt_version = value;
+                    });
+
+                    // Determine if it's USB-A or USB-C based on the type
+                    if (port.type.toLowerCase().includes('usb4') || port.type.toLowerCase().includes('type-c')) {
+                      usb_c.push(port);
+                    } else {
+                      usb_a.push(port);
+                    }
+                  });
+
+                if (usb_a.length > 0) validationData.ports.usb_a = usb_a;
+                if (usb_c.length > 0) validationData.ports.usb_c = usb_c;
               }
 
+              // Display ports
               if (data.display_ports) {
-                if (!deviceData.ports) deviceData.ports = {};
-                deviceData.ports.display = data.display_ports.split('\n')
+                const display_ports = data.display_ports.split('\n')
                   .filter(line => line.includes('Version:') || line.includes('Count:'))
                   .map(line => {
                     const parts = line.split(',').map(p => p.trim());
-                    const display = {};
+                    const port = {};
                     parts.forEach(part => {
                       const [key, value] = part.split(':').map(s => s.trim());
-                      display[key.toLowerCase().replace(/ /g, '_')] = value;
+                      const key_lower = key.toLowerCase();
+                      if (key_lower === 'count') port.count = parseInt(value);
+                      if (key_lower === 'version') port.version = value;
+                      if (key_lower === 'form factor') port.form_factor = value;
+                      if (key_lower === 'max resolution') port.max_resolution = value;
                     });
-                    return display;
+                    return port;
                   });
+
+                // Split into HDMI and DisplayPort based on the first word
+                const hdmi = display_ports.filter(p => p.type?.toLowerCase().includes('hdmi'));
+                const dp = display_ports.filter(p => !p.type?.toLowerCase().includes('hdmi'));
+
+                if (hdmi.length > 0) validationData.ports.hdmi = hdmi[0];
+                if (dp.length > 0) validationData.ports.displayport = dp[0];
               }
 
-              // Add physical specifications
-              deviceData.physical = {
-                dimensions: data.dimensions,
-                power_adapter: data.power_adapter
-              };
-
+              // Audio and SD card reader
               if (data.audio_jacks) {
-                deviceData.physical.audio_jacks = parseInt(data.audio_jacks);
+                validationData.ports.audio_jack = parseInt(data.audio_jacks);
               }
 
               if (data.sd_card_reader) {
-                deviceData.physical.sd_card_reader = data.sd_card_reader === 'Yes';
+                validationData.ports.sd_card_reader = data.sd_card_reader === 'Yes';
               }
 
-              // Add additional info if present
-              if (data.additional_info && data.additional_info !== '_No response_') {
-                deviceData.additional_info = data.additional_info;
+              // Physical specifications
+              if (data.dimensions) {
+                const [width, depth, height] = data.dimensions.split('x').map(d => parseInt(d.trim()));
+                validationData.dimensions = {
+                  width,
+                  depth,
+                  height
+                };
               }
 
-              const yamlString = yaml.dump(deviceData, { indent: 2, skipInvalid: true });
+              // Power adapter
+              if (data.power_adapter) {
+                const match = data.power_adapter.match(/(\d+)W.*?(\d+)v.*?(\d+)A/i);
+                if (match) {
+                  validationData.power = {
+                    adapter_wattage: parseInt(match[1]),
+                    dc_input: `${match[2]}V/${match[3]}A`
+                  };
+                } else {
+                  validationData.power = {
+                    adapter_wattage: parseInt(data.power_adapter)
+                  };
+                }
+              }
+
+              // Before creating the file, validate the data
+              const validationErrors = [];
+              validateData.validateRequiredFields(validationData, '', validationErrors, `${data.brand}/${data.id}.yaml`);
+              validateData.validateFieldValues(validationData, '', validationErrors, `${data.brand}/${data.id}.yaml`);
+
+              if (validationErrors.length > 0) {
+                // Format validation errors for the comment
+                const errorMessages = validationErrors
+                  .map(err => `- ${err.message} (${err.path})${err.critical ? ' [CRITICAL]' : ''}`)
+                  .join('\n');
+
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: `### Validation Errors Found\n\nThe following errors were found in your device submission:\n\n${errorMessages}\n\nPlease fix these issues and update your submission. The automation will try again when you update the issue.`
+                });
+
+                // Remove the label to allow for retrying
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  name: 'new-device'
+                });
+
+                throw new Error('Validation failed');
+              }
+
+              const yamlString = yaml.dump(validationData, { indent: 2, skipInvalid: true });
               
               // Use the GitHub API to create/update the file
               const brand = data.brand.toLowerCase();
-              const filePath = `data/devices/${brand}/${data.device_id}.yaml`;
-              const branchName = `new-device/${data.device_id}`;
+              const filePath = `data/devices/${brand}/${data.id}.yaml`;
+              const branchName = `new-device/${data.id}`;
 
               // Get the current main branch SHA
               const mainRef = await github.rest.git.getRef({
