@@ -12,7 +12,7 @@ body:
     id: id
     attributes:
       label: Device ID
-      description: A unique identifier for the device (lowercase, use hyphens, e.g., intel-nuc6i7kyk). If this machine is a varient of another machine, use the parent id with a hypen for the variant (MS-A1-9950X).
+      description: A unique identifier for the device (lowercase, use hyphens, e.g., intel-nuc6i7kyk). If this machine is a variant of another machine, use the parent id with a hypen for the variant (MS-A1-9950X).
       placeholder: brand-model-variant
     validations:
       required: true
@@ -139,7 +139,7 @@ body:
     attributes:
       label: GPU Models
       description: |
-        List all GPUs with their specifications:
+        List all GPUs, one per line, using the following format:
         - Type: Integrated, Model: Intel Iris Pro Graphics 580
         - Type: Discrete, Model: NVIDIA RTX 3060, VRAM: 6GB
       placeholder: |
