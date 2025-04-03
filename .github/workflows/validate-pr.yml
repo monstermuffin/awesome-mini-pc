@@ -34,12 +34,13 @@ jobs:
               const output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
               console.log('Validation output:', output);
               
-              // If we get here, validation passed
-              await github.rest.issues.createComment({
+              // Validation passed
+              await github.rest.pulls.createReview({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: '✅ Data validation passed! All device files are correctly formatted.'
+                pull_number: context.payload.pull_request.number,
+                event: 'APPROVE',
+                body: '✅ Data validation passed! All device files are correctly formatted.\n\nThis PR is now ready for manual review and merge.'
               });
               
             } catch (error) {
@@ -77,7 +78,11 @@ jobs:
                 }
                 
                 // Add help section
-                errorMessage += '\n### Common Fixes\n';
+                errorMessage += '\n### How to Fix\n';
+                errorMessage += '1. Review the errors above\n';
+                errorMessage += '2. Edit your original issue to fix the reported problems\n';
+                errorMessage += '3. The automation will automatically create a new PR with your changes\n\n';
+                errorMessage += '### Common Fixes\n';
                 errorMessage += '- Make sure all required fields are present\n';
                 errorMessage += '- Check that values match the allowed options (e.g., CPU brands, memory types)\n';
                 errorMessage += '- Verify the format of numeric values (e.g., memory capacity, CPU speeds)\n';
@@ -87,13 +92,44 @@ jobs:
                 // Fallback for non-JSON output
                 errorMessage += '```\n' + errorOutput + '\n```\n';
               }
+
+              // Get the linked issue number from the PR body
+              const issueMatch = context.payload.pull_request.body.match(/#(\d+)/);
+              if (issueMatch) {
+                const issueNumber = parseInt(issueMatch[1]);
+                
+                // Comment on the original issue
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: `### Validation Failed in PR #${context.payload.pull_request.number}\n\n${errorMessage}\n\nPlease edit your issue with the corrections. A new PR will be created automatically with your changes.`
+                });
+              }
               
-              // Post comment with validation results
-              await github.rest.issues.createComment({
+              // Comment on PR
+              await github.rest.pulls.createReview({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
+                pull_number: context.payload.pull_request.number,
+                event: 'REQUEST_CHANGES',
                 body: errorMessage
+              });
+
+              // Close PR
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                state: 'closed'
+              });
+
+              // Delete branch
+              const branchName = context.payload.pull_request.head.ref;
+              await github.rest.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `heads/${branchName}`
               });
               
               // Fail the check

@@ -4,10 +4,11 @@ on:
   issues:
     types:
       - labeled
+      - edited
 
 jobs:
   create_device_yaml:
-    if: github.event.label.name == 'new-device'
+    if: github.event.label.name == 'new-device' || (github.event.action == 'edited' && contains(github.event.issue.labels.*.name, 'new-device'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -34,7 +35,6 @@ jobs:
         with:
           script: |
             const yaml = require('js-yaml');
-            const validateData = require('./scripts/validate-data.cjs');
             
             async function createPR() {
               const issue = await github.rest.issues.get({
@@ -327,35 +327,7 @@ jobs:
                 }
               }
 
-              // Before creating the file, validate the data
-              const validationErrors = [];
-              validateData.validateRequiredFields(validationData, '', validationErrors, `${data.brand}/${data.id}.yaml`);
-              validateData.validateFieldValues(validationData, '', validationErrors, `${data.brand}/${data.id}.yaml`);
-
-              if (validationErrors.length > 0) {
-                // Format validation errors for the comment
-                const errorMessages = validationErrors
-                  .map(err => `- ${err.message} (${err.path})${err.critical ? ' [CRITICAL]' : ''}`)
-                  .join('\n');
-
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  body: `### Validation Errors Found\n\nThe following errors were found in your device submission:\n\n${errorMessages}\n\nPlease fix these issues and update your submission. The automation will try again when you update the issue.`
-                });
-
-                // Remove the label to allow for retrying
-                await github.rest.issues.removeLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  name: 'new-device'
-                });
-
-                throw new Error('Validation failed');
-              }
-
+              // Remove validation section and directly create PR
               const yamlString = yaml.dump(validationData, { indent: 2, skipInvalid: true });
               
               // Use the GitHub API to create/update the file
@@ -417,7 +389,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `Thank you for your submission! A Pull Request has been created: #${pr.data.number}`
+                body: `Thank you for your submission! A Pull Request has been created: #${pr.data.number}\n\nThe PR will now be automatically validated. If any issues are found, they will be reported in the PR and here.`
               });
             }
             
