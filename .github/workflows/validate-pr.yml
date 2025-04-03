@@ -2,6 +2,7 @@ name: Validate PR Data
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened]
     paths:
       - 'data/devices/**/*.yaml'
       - 'data/devices/**/*.yml'
@@ -9,6 +10,11 @@ on:
 jobs:
   validate_data:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
