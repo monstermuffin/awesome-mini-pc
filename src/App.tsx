@@ -12,12 +12,15 @@ import {
   Drawer,
   Link,
   Tooltip,
+  TextField,
+  InputAdornment,
 } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import SearchIcon from '@mui/icons-material/Search';
 import { loadMiniPCData } from './utils/dataLoader';
 import type { MiniPC } from './types/minipc';
 import type { FilterOptions } from './utils/dataLoader';
@@ -57,6 +60,8 @@ function App() {
   const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   // Create theme based on dark mode preference
   const theme = createTheme({
@@ -259,11 +264,31 @@ function App() {
     });
   };
 
-  // Filter devices based on selected filters
-  const filteredDevices = devices.filter(device => {
+  // Add search handler function
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleMobileSearchToggle = () => {
+    setMobileSearchOpen(!mobileSearchOpen);
+  };
+
+  // Combined filtering logic for both search and filters
+  const filteredDevices = devices.filter((device) => {
+    // Apply search filter first
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch = 
+        device.brand.toLowerCase().includes(searchLower) ||
+        device.model.toLowerCase().includes(searchLower);
+      
+      if (!matchesSearch) return false;
+    }
+
     // Skip filtering if filterOptions is not loaded yet
     if (!filterOptions) return true;
 
+    // Apply all other filters
     if (selectedFilters.brands.size > 0 && !selectedFilters.brands.has(device.brand)) {
       return false;
     }
@@ -460,69 +485,185 @@ function App() {
             display: 'flex',
             justifyContent: 'space-between',
           }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                sx={{ 
-                  mr: 2,
-                  '&:hover': {
-                    backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                  },
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography 
-                variant="h1" 
-                component="h1"
-                sx={{
-                  fontSize: { xs: '1.25rem', sm: '1.5rem' },
-                  fontWeight: 600,
-                  color: theme.palette.text.primary,
-                }}
-              >
-                Awesome Mini PCs
-              </Typography>
-            </Box>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 1,
-              ml: 'auto', // Push to right
-            }}>
-              <Tooltip title="Toggle dark mode">
-                <IconButton 
-                  onClick={() => setDarkMode(!darkMode)} 
-                  color="inherit"
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                    },
-                  }}
-                >
-                  {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="View on GitHub">
+            {/* Mobile search bar - shown when search is active */}
+            {mobileSearchOpen ? (
+              <Box sx={{ 
+                display: { xs: 'flex', md: 'none' },
+                flex: 1,
+                alignItems: 'center',
+              }}>
                 <IconButton
-                  component={Link}
-                  href="https://github.com/monstermuffin/awesome-mini-pc/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   color="inherit"
+                  onClick={handleMobileSearchToggle}
+                  sx={{ mr: 1 }}
+                >
+                  <ChevronLeftIcon />
+                </IconButton>
+                <TextField
+                  size="small"
+                  fullWidth
+                  autoFocus
+                  placeholder="Search mini PCs..."
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={{ color: 'text.secondary' }} />
+                      </InputAdornment>
+                    ),
+                  }}
                   sx={{
-                    '&:hover': {
-                      backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: theme => theme.palette.mode === 'dark' 
+                        ? 'rgba(255, 255, 255, 0.05)'
+                        : 'rgba(0, 0, 0, 0.04)',
+                      '&:hover': {
+                        backgroundColor: theme => theme.palette.mode === 'dark'
+                          ? 'rgba(255, 255, 255, 0.08)'
+                          : 'rgba(0, 0, 0, 0.06)',
+                      },
+                      '& fieldset': {
+                        borderColor: 'transparent',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: 'transparent',
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: theme => theme.palette.primary.main,
+                      },
+                    },
+                    '& .MuiInputBase-input': {
+                      color: theme => theme.palette.text.primary,
                     },
                   }}
-                >
-                  <GitHubIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
+                />
+              </Box>
+            ) : (
+              <>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    onClick={handleDrawerToggle}
+                    sx={{ 
+                      mr: 2,
+                      '&:hover': {
+                        backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                      },
+                    }}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Typography 
+                    variant="h1" 
+                    component="h1"
+                    sx={{
+                      fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                      fontWeight: 600,
+                      color: theme.palette.text.primary,
+                    }}
+                  >
+                    Awesome Mini PCs
+                  </Typography>
+                </Box>
+                {/* Desktop search field */}
+                <Box sx={{ 
+                  display: { xs: 'none', md: 'flex' },
+                  flex: 1,
+                  mx: 3,
+                  maxWidth: 500,
+                }}>
+                  <TextField
+                    size="small"
+                    fullWidth
+                    placeholder="Search mini PCs..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon sx={{ color: 'text.secondary' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: theme => theme.palette.mode === 'dark' 
+                          ? 'rgba(255, 255, 255, 0.05)'
+                          : 'rgba(0, 0, 0, 0.04)',
+                        '&:hover': {
+                          backgroundColor: theme => theme.palette.mode === 'dark'
+                            ? 'rgba(255, 255, 255, 0.08)'
+                            : 'rgba(0, 0, 0, 0.06)',
+                        },
+                        '& fieldset': {
+                          borderColor: 'transparent',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'transparent',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: theme => theme.palette.primary.main,
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        color: theme => theme.palette.text.primary,
+                      },
+                    }}
+                  />
+                </Box>
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 1,
+                  ml: 'auto',
+                }}>
+                  {/* Mobile search button */}
+                  <IconButton
+                    sx={{ 
+                      display: { xs: 'flex', md: 'none' },
+                      '&:hover': {
+                        backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                      },
+                    }}
+                    onClick={handleMobileSearchToggle}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                  <Tooltip title="Toggle dark mode">
+                    <IconButton 
+                      onClick={() => setDarkMode(!darkMode)} 
+                      color="inherit"
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                        },
+                      }}
+                    >
+                      {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="View on GitHub">
+                    <IconButton
+                      component={Link}
+                      href="https://github.com/monstermuffin/awesome-mini-pc/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      color="inherit"
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                        },
+                      }}
+                    >
+                      <GitHubIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </>
+            )}
           </Toolbar>
         </AppBar>
         {filterDrawer}
