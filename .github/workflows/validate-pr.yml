@@ -40,13 +40,26 @@ jobs:
               const output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
               console.log('Validation output:', output);
               
-              // Validation passed - add success comment
+              // Validation passed - add success comment to PR
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.pull_request.number,
                 body: '✅ Data validation passed! All device files are correctly formatted.\n\nThis PR is now ready for manual review and merge.'
               });
+
+              // Get the linked issue number from the PR body and comment
+              const issueMatch = context.payload.pull_request.body.match(/#(\d+)/);
+              if (issueMatch) {
+                const issueNumber = parseInt(issueMatch[1]);
+                
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: `### Validation Successful! 🎉\n\nYour device submission has passed all validation checks in PR #${context.payload.pull_request.number}.\n\nChanges will be reviewed and merged into the database.`
+                });
+              }
               
             } catch (error) {
               // Parse the error output to extract validation errors
