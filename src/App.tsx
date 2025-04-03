@@ -603,7 +603,7 @@ function App() {
                   <MenuIcon />
                 </IconButton>
                 <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                  Awesome Mini PCs
+                  Awesome Mini PC
                 </Typography>
 
                 <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 2, ml: 4 }}>
@@ -684,7 +684,7 @@ function App() {
                   </IconButton>
                   <IconButton
                     component={Link}
-                    href="https://github.com/kobalski/awesome-mini-pcs"
+                    href="https://github.com/monstermuffin/awesome-mini-pcs"
                     target="_blank"
                     rel="noopener noreferrer"
                     color="inherit"
