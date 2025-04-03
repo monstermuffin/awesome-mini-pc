@@ -1,0 +1,46 @@
+name: Close Device Issue
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+    paths:
+      - 'data/devices/**/*.yaml'
+      - 'data/devices/**/*.yml'
+
+jobs:
+  close_issue:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      
+    steps:
+      - name: Close linked issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Get the linked issue number from the PR body
+            const issueMatch = context.payload.pull_request.body.match(/#(\d+)/);
+            if (issueMatch) {
+              const issueNumber = parseInt(issueMatch[1]);
+              
+              // Comment on the issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `🎉 Your device submission has been merged!\n\n` +
+                      `The device data has been added the database and will be visible on the website after the next deployment.\n\n` +
+                      `Thank you for contributing to the Awesome Mini PC database.`
+              });
+              
+              // Close the issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                state: 'closed'
+              });
+            } 

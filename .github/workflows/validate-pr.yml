@@ -57,7 +57,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issueNumber,
-                  body: `### Validation Successful! 🎉\n\nYour device submission has passed all validation checks in PR #${context.payload.pull_request.number}.\n\nChanges will be reviewed and merged into the database.`
+                  body: `### ✅ Validation Successful! \n\nYour device submission has passed all validation checks in PR #${context.payload.pull_request.number}.\n\nChanges will be reviewed and merged into the database.`
                 });
               }
               
