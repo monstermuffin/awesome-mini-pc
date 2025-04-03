@@ -14,6 +14,7 @@ import {
   Tooltip,
   TextField,
   InputAdornment,
+  Button,
 } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -21,6 +22,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import SearchIcon from '@mui/icons-material/Search';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { loadMiniPCData } from './utils/dataLoader';
 import type { MiniPC } from './types/minipc';
 import type { FilterOptions } from './utils/dataLoader';
@@ -62,6 +65,12 @@ function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [selectedDevices, setSelectedDevices] = useState<Set<string>>(new Set());
+  const [isCompareMode, setIsCompareMode] = useState(false);
+
+  const handleThemeToggle = () => {
+    setDarkMode(!darkMode);
+  };
 
   // Create theme based on dark mode preference
   const theme = createTheme({
@@ -408,6 +417,27 @@ function App() {
     setDrawerOpen(!drawerOpen);
   };
 
+  const handleDeviceSelect = (deviceId: string) => {
+    setSelectedDevices(prev => {
+      const newSelection = new Set(prev);
+      if (newSelection.has(deviceId)) {
+        newSelection.delete(deviceId);
+      } else {
+        newSelection.add(deviceId);
+      }
+      return newSelection;
+    });
+  };
+
+  const handleCompareClick = () => {
+    setIsCompareMode(true);
+  };
+
+  const handleResetComparison = () => {
+    setSelectedDevices(new Set());
+    setIsCompareMode(false);
+  };
+
   const filterDrawer = (
     <Drawer
       variant={isMobile ? "temporary" : "persistent"}
@@ -474,196 +504,105 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <AppBar 
-          position="sticky" 
-          elevation={0}
-        >
-          <Toolbar sx={{ 
-            height: 64,
-            px: { xs: 2, md: 3 },
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}>
-            {/* Mobile search bar - shown when search is active */}
-            {mobileSearchOpen ? (
-              <Box sx={{ 
-                display: { xs: 'flex', md: 'none' },
-                flex: 1,
-                alignItems: 'center',
-              }}>
-                <IconButton
-                  color="inherit"
-                  onClick={handleMobileSearchToggle}
-                  sx={{ mr: 1 }}
-                >
-                  <ChevronLeftIcon />
-                </IconButton>
-                <TextField
-                  size="small"
-                  fullWidth
-                  autoFocus
-                  placeholder="Search mini PCs..."
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon sx={{ color: 'text.secondary' }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: theme => theme.palette.mode === 'dark' 
-                        ? 'rgba(255, 255, 255, 0.05)'
-                        : 'rgba(0, 0, 0, 0.04)',
-                      '&:hover': {
-                        backgroundColor: theme => theme.palette.mode === 'dark'
-                          ? 'rgba(255, 255, 255, 0.08)'
-                          : 'rgba(0, 0, 0, 0.06)',
-                      },
-                      '& fieldset': {
-                        borderColor: 'transparent',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: theme => theme.palette.primary.main,
-                      },
-                    },
-                    '& .MuiInputBase-input': {
-                      color: theme => theme.palette.text.primary,
-                    },
-                  }}
-                />
-              </Box>
-            ) : (
-              <>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    edge="start"
-                    onClick={handleDrawerToggle}
-                    sx={{ 
-                      mr: 2,
-                      '&:hover': {
-                        backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                      },
-                    }}
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                  <Typography 
-                    variant="h1" 
-                    component="h1"
-                    sx={{
-                      fontSize: { xs: '1.25rem', sm: '1.5rem' },
-                      fontWeight: 600,
-                      color: theme.palette.text.primary,
-                    }}
-                  >
-                    Awesome Mini PCs
-                  </Typography>
-                </Box>
-                {/* Desktop search field */}
-                <Box sx={{ 
-                  display: { xs: 'none', md: 'flex' },
-                  flex: 1,
-                  mx: 3,
-                  maxWidth: 500,
-                }}>
-                  <TextField
+      <Box sx={{ display: 'flex', height: '100vh' }}>
+        <AppBar position="fixed" color="default" elevation={0}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
+              Awesome Mini PCs
+            </Typography>
+
+            <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 2, ml: 4 }}>
+              {selectedDevices.size > 0 && (
+                <>
+                  <Button
+                    variant="contained"
+                    startIcon={<CompareArrowsIcon />}
+                    onClick={handleCompareClick}
+                    disabled={isCompareMode}
                     size="small"
-                    fullWidth
-                    placeholder="Search mini PCs..."
+                  >
+                    Compare ({selectedDevices.size})
+                  </Button>
+                  {isCompareMode ? (
+                    <Button
+                      variant="outlined"
+                      startIcon={<RestartAltIcon />}
+                      onClick={handleResetComparison}
+                      size="small"
+                      sx={{
+                        borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
+                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                        '&:hover': {
+                          borderColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                          backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.08)' : 'rgba(25,118,210,0.08)',
+                        }
+                      }}
+                    >
+                      Reset Comparison
+                    </Button>
+                  ) : (
+                    <Tooltip title="Reset Selection">
+                      <IconButton
+                        onClick={handleResetComparison}
+                        color="inherit"
+                        size="small"
+                      >
+                        <RestartAltIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </>
+              )}
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {!isMobile && (
+                <Box sx={{ position: 'relative', mr: 2 }}>
+                  <TextField
+                    placeholder="Search..."
+                    size="small"
                     value={searchQuery}
                     onChange={handleSearch}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        backgroundColor: theme => theme.palette.mode === 'dark' 
+                          ? 'rgba(255, 255, 255, 0.05)' 
+                          : 'rgba(0, 0, 0, 0.04)',
+                      },
+                    }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <SearchIcon sx={{ color: 'text.secondary' }} />
+                          <SearchIcon />
                         </InputAdornment>
                       ),
                     }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: theme => theme.palette.mode === 'dark' 
-                          ? 'rgba(255, 255, 255, 0.05)'
-                          : 'rgba(0, 0, 0, 0.04)',
-                        '&:hover': {
-                          backgroundColor: theme => theme.palette.mode === 'dark'
-                            ? 'rgba(255, 255, 255, 0.08)'
-                            : 'rgba(0, 0, 0, 0.06)',
-                        },
-                        '& fieldset': {
-                          borderColor: 'transparent',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'transparent',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: theme => theme.palette.primary.main,
-                        },
-                      },
-                      '& .MuiInputBase-input': {
-                        color: theme => theme.palette.text.primary,
-                      },
-                    }}
                   />
                 </Box>
-                <Box sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 1,
-                  ml: 'auto',
-                }}>
-                  {/* Mobile search button */}
-                  <IconButton
-                    sx={{ 
-                      display: { xs: 'flex', md: 'none' },
-                      '&:hover': {
-                        backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                      },
-                    }}
-                    onClick={handleMobileSearchToggle}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                  <Tooltip title="Toggle dark mode">
-                    <IconButton 
-                      onClick={() => setDarkMode(!darkMode)} 
-                      color="inherit"
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                        },
-                      }}
-                    >
-                      {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="View on GitHub">
-                    <IconButton
-                      component={Link}
-                      href="https://github.com/monstermuffin/awesome-mini-pc/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      color="inherit"
-                      sx={{
-                        '&:hover': {
-                          backgroundColor: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                        },
-                      }}
-                    >
-                      <GitHubIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              </>
-            )}
+              )}
+              <IconButton onClick={handleThemeToggle} color="inherit">
+                {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+              </IconButton>
+              <IconButton
+                component={Link}
+                href="https://github.com/kobalski/awesome-mini-pcs"
+                target="_blank"
+                rel="noopener noreferrer"
+                color="inherit"
+              >
+                <GitHubIcon />
+              </IconButton>
+            </Box>
           </Toolbar>
         </AppBar>
         {filterDrawer}
@@ -719,7 +658,12 @@ function App() {
               </Box>
             ) : (
               <Box sx={{ height: '100%' }}>
-                <MiniPCTable devices={filteredDevices} />
+                <MiniPCTable 
+                  devices={filteredDevices} 
+                  selectedDevices={selectedDevices}
+                  onDeviceSelect={handleDeviceSelect}
+                  isCompareMode={isCompareMode}
+                />
               </Box>
             )}
           </Box>

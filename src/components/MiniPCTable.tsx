@@ -26,6 +26,9 @@ import type { MiniPC } from '../types/minipc';
 
 interface MiniPCTableProps {
   devices: MiniPC[];
+  selectedDevices: Set<string>;
+  onDeviceSelect: (deviceId: string) => void;
+  isCompareMode: boolean;
 }
 
 type SortKey = keyof MiniPC | 'cpu.cores' | 'cpu.tdp' | 'memory.speed' | 'cpu.model' | 'memory.type' | 'memory.module_type' | 'cpu.chipset' | 'release_date' | 'has_expansion' | 'dimensions.volume';
@@ -35,7 +38,7 @@ type SortConfig = {
   direction: 'asc' | 'desc';
 };
 
-export function MiniPCTable({ devices }: MiniPCTableProps) {
+export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompareMode }: MiniPCTableProps) {
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: 'brand',
     direction: 'asc',
@@ -104,7 +107,8 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
     </TableSortLabel>
   );
 
-  const handleOpenDetails = (device: MiniPC) => {
+  const handleOpenDetails = (device: MiniPC, event: React.MouseEvent) => {
+    event.stopPropagation(); // Stop the event from bubbling up to the row
     setDetailDevice(device);
   };
 
@@ -176,6 +180,10 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
     );
   };
 
+  const displayedDevices = isCompareMode 
+    ? sortedDevices.filter(device => selectedDevices.has(device.id))
+    : sortedDevices;
+
   return (
     <>
       <Paper 
@@ -185,13 +193,13 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
           overflow: 'hidden',
           background: 'transparent',
           transition: 'all 0.3s ease',
-          height: 'calc(100vh - 100px)', // Take full height minus some padding
+          height: 'calc(100vh - 100px)',
           display: 'flex',
           flexDirection: 'column',
           boxShadow: theme => theme.palette.mode === 'dark' 
             ? '0 4px 20px rgba(0,0,0,0.3)'
             : '0 4px 20px rgba(0,0,0,0.1)',
-          position: 'relative', // Important for positioning
+          position: 'relative',
         }}
       >
         <Box sx={{ 
@@ -432,38 +440,33 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedDevices.map((device, index) => (
-                <TableRow 
-                  key={device.id} 
+              {displayedDevices.map((device) => (
+                <TableRow
+                  key={device.id}
                   hover
-                  sx={{ 
-                    transition: 'all 0.2s ease',
-                    animation: `fadeIn 0.5s ease-out ${index * 0.05}s both`,
-                    '@keyframes fadeIn': {
-                      '0%': {
-                        opacity: 0,
-                        transform: 'translateY(10px)'
-                      },
-                      '100%': {
-                        opacity: 1,
-                        transform: 'translateY(0)'
+                  onClick={() => !isCompareMode && onDeviceSelect(device.id)}
+                  sx={{
+                    cursor: isCompareMode ? 'default' : 'pointer',
+                    bgcolor: selectedDevices.has(device.id) 
+                      ? theme => theme.palette.mode === 'dark'
+                        ? 'rgba(33, 150, 243, 0.15)'
+                        : 'rgba(33, 150, 243, 0.08)'
+                      : 'inherit',
+                    '&:hover': {
+                      bgcolor: theme => {
+                        if (selectedDevices.has(device.id)) {
+                          return theme.palette.mode === 'dark'
+                            ? 'rgba(33, 150, 243, 0.2)'
+                            : 'rgba(33, 150, 243, 0.12)';
+                        }
+                        if (isCompareMode) {
+                          return 'inherit';
+                        }
+                        return theme.palette.mode === 'dark'
+                          ? 'rgba(255, 255, 255, 0.03)'
+                          : 'rgba(0, 0, 0, 0.04)';
                       }
                     },
-                    '&:hover': {
-                      backgroundColor: theme => theme.palette.mode === 'dark' 
-                        ? 'rgba(66,165,245,0.1)' 
-                        : 'rgba(33,150,243,0.05)',
-                      boxShadow: 'inset 0 0 0 1px rgba(66,165,245,0.1)',
-                    },
-                    '&:nth-of-type(odd)': {
-                      backgroundColor: theme => theme.palette.mode === 'dark' 
-                        ? 'rgba(255,255,255,0.02)' 
-                        : 'rgba(0,0,0,0.02)',
-                    },
-                    '& .MuiTableCell-root': {
-                      py: 1.2,
-                      verticalAlign: 'top',
-                    }
                   }}
                 >
                   <TableCell>{device.brand}</TableCell>
@@ -736,7 +739,7 @@ export function MiniPCTable({ devices }: MiniPCTableProps) {
                         }>
                           <IconButton 
                             size="small" 
-                            onClick={() => handleOpenDetails(device)}
+                            onClick={(event) => handleOpenDetails(device, event)}
                             sx={{
                               padding: 0.75,
                               transition: 'all 0.2s ease',
