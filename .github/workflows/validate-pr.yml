@@ -1,0 +1,101 @@
+name: Validate PR Data
+
+on:
+  pull_request:
+    paths:
+      - 'data/devices/**/*.yaml'
+      - 'data/devices/**/*.yml'
+
+jobs:
+  validate_data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate data
+        id: validate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+            
+            try {
+              // Run validation script and capture output
+              const output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
+              console.log('Validation output:', output);
+              
+              // If we get here, validation passed
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: '✅ Data validation passed! All device files are correctly formatted.'
+              });
+              
+            } catch (error) {
+              // Parse the error output to extract validation errors
+              const errorOutput = error.stdout || error.stderr;
+              console.error('Validation failed:', errorOutput);
+              
+              // Create a more user-friendly error message
+              let errorMessage = '❌ Data validation failed!\n\n';
+              
+              try {
+                // Try to parse JSON output if available
+                const errors = JSON.parse(errorOutput);
+                
+                // Group errors by device
+                const deviceErrors = {};
+                errors.forEach(err => {
+                  if (!deviceErrors[err.deviceId]) {
+                    deviceErrors[err.deviceId] = [];
+                  }
+                  deviceErrors[err.deviceId].push(err);
+                });
+                
+                // Format errors by device
+                for (const [deviceId, errs] of Object.entries(deviceErrors)) {
+                  errorMessage += `### Device: ${deviceId}\n`;
+                  errorMessage += '| Error Type | Message | Path |\n';
+                  errorMessage += '|------------|---------|------|\n';
+                  
+                  errs.forEach(err => {
+                    const severity = err.critical ? '🔴 Critical' : '⚠️ Warning';
+                    errorMessage += `| ${severity} | ${err.message} | \`${err.path}\` |\n`;
+                  });
+                  errorMessage += '\n';
+                }
+                
+                // Add help section
+                errorMessage += '\n### Common Fixes\n';
+                errorMessage += '- Make sure all required fields are present\n';
+                errorMessage += '- Check that values match the allowed options (e.g., CPU brands, memory types)\n';
+                errorMessage += '- Verify the format of numeric values (e.g., memory capacity, CPU speeds)\n';
+                errorMessage += '- Ensure arrays (storage, GPU, etc.) are properly formatted\n';
+                
+              } catch (parseError) {
+                // Fallback for non-JSON output
+                errorMessage += '```\n' + errorOutput + '\n```\n';
+              }
+              
+              // Post comment with validation results
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: errorMessage
+              });
+              
+              // Fail the check
+              core.setFailed('Data validation failed');
+            } 

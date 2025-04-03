@@ -628,6 +628,124 @@ function validateLogicalConstraints(data, path, errors, deviceFile) {
 }
 
 /**
+ * Validates field values against known valid options
+ * @param {any} data - The device data
+ * @param {string} path - Current path
+ * @param {ValidationError[]} errors - Array to append errors to
+ * @param {string} deviceFile - File being validated
+ */
+function validateFieldValues(data, path, errors, deviceFile) {
+  // CPU brand validation
+  if (data.cpu?.brand && !VALID_CPU_BRANDS.includes(data.cpu.brand)) {
+    errors.push({
+      deviceId: data.id || 'unknown',
+      file: deviceFile,
+      message: `Invalid CPU brand: ${data.cpu.brand}. Must be one of: ${VALID_CPU_BRANDS.join(', ')}`,
+      path: `${path}.cpu.brand`,
+      critical: true
+    });
+  }
+
+  // Memory type validation
+  if (data.memory?.type && !VALID_MEMORY_TYPES.includes(data.memory.type)) {
+    errors.push({
+      deviceId: data.id || 'unknown',
+      file: deviceFile,
+      message: `Invalid memory type: ${data.memory.type}. Must be one of: ${VALID_MEMORY_TYPES.join(', ')}`,
+      path: `${path}.memory.type`,
+      critical: true
+    });
+  }
+
+  // Memory module type validation
+  if (data.memory?.module_type && !VALID_MEMORY_MODULE_TYPES.includes(data.memory.module_type)) {
+    errors.push({
+      deviceId: data.id || 'unknown',
+      file: deviceFile,
+      message: `Invalid memory module type: ${data.memory.module_type}. Must be one of: ${VALID_MEMORY_MODULE_TYPES.join(', ')}`,
+      path: `${path}.memory.module_type`,
+      critical: true
+    });
+  }
+
+  // Storage validation
+  if (data.storage && Array.isArray(data.storage)) {
+    data.storage.forEach((storage, index) => {
+      if (storage.type && !VALID_STORAGE_TYPES.includes(storage.type)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `Invalid storage type: ${storage.type}. Must be one of: ${VALID_STORAGE_TYPES.join(', ')}`,
+          path: `${path}.storage[${index}].type`,
+          critical: true
+        });
+      }
+    });
+  }
+
+  // WiFi standard validation
+  if (data.networking?.wifi?.standard && !VALID_WIFI_STANDARDS.includes(data.networking.wifi.standard)) {
+    errors.push({
+      deviceId: data.id || 'unknown',
+      file: deviceFile,
+      message: `Invalid WiFi standard: ${data.networking.wifi.standard}. Must be one of: ${VALID_WIFI_STANDARDS.join(', ')}`,
+      path: `${path}.networking.wifi.standard`,
+      critical: true
+    });
+  }
+
+  // Ethernet validation
+  if (data.networking?.ethernet && Array.isArray(data.networking.ethernet)) {
+    data.networking.ethernet.forEach((eth, index) => {
+      if (eth.speed && !VALID_ETHERNET_SPEEDS.includes(eth.speed)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `Invalid ethernet speed: ${eth.speed}. Must be one of: ${VALID_ETHERNET_SPEEDS.join(', ')}`,
+          path: `${path}.networking.ethernet[${index}].speed`,
+          critical: true
+        });
+      }
+      if (eth.interface && !VALID_ETHERNET_INTERFACES.includes(eth.interface)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `Invalid ethernet interface: ${eth.interface}. Must be one of: ${VALID_ETHERNET_INTERFACES.join(', ')}`,
+          path: `${path}.networking.ethernet[${index}].interface`,
+          critical: true
+        });
+      }
+    });
+  }
+
+  // CPU socket validation for DIY machines
+  if (data.cpu?.socket?.type && !VALID_CPU_SOCKETS.includes(data.cpu.socket.type)) {
+    errors.push({
+      deviceId: data.id || 'unknown',
+      file: deviceFile,
+      message: `Invalid CPU socket type: ${data.cpu.socket.type}. Must be one of: ${VALID_CPU_SOCKETS.join(', ')}`,
+      path: `${path}.cpu.socket.type`,
+      critical: true
+    });
+  }
+
+  // OCuLink validation
+  if (data.expansion?.oculink_ports && Array.isArray(data.expansion.oculink_ports)) {
+    data.expansion.oculink_ports.forEach((port, index) => {
+      if (port.version && !VALID_OCULINK_VERSIONS.includes(port.version)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `Invalid OCuLink version: ${port.version}. Must be one of: ${VALID_OCULINK_VERSIONS.join(', ')}`,
+          path: `${path}.expansion.oculink_ports[${index}].version`,
+          critical: true
+        });
+      }
+    });
+  }
+}
+
+/**
  * Validates a device file
  * @param {string} filePath - Path to the file
  * @param {string} deviceFile - Device file name
@@ -644,6 +762,7 @@ function validateDevice(filePath, deviceFile) {
     validateDataTypes(data, '', errors, deviceFile);
     validateEnumValues(data, '', errors, deviceFile);
     validateLogicalConstraints(data, '', errors, deviceFile);
+    validateFieldValues(data, '', errors, deviceFile);
     
     return errors;
   } catch (error) {
@@ -659,114 +778,63 @@ function validateDevice(filePath, deviceFile) {
 }
 
 /**
- * Main function
+ * Main validation function that processes all device files
+ * @returns {Promise<ValidationError[]>}
  */
-async function main() {
-  const dataDir = path.resolve(__dirname, '../data/devices');
+async function validateAllDevices() {
+  const errors = [];
+  const deviceDirs = ['intel', 'asrock', 'beelink', 'minisforum'];
   
-  if (!fs.existsSync(dataDir)) {
-    console.error(`Data directory does not exist: ${dataDir}`);
-    process.exit(1);
-  }
-  
-  const allErrors = [];
-  let fileCount = 0;
-  let validFileCount = 0;
-  
-  // Process each vendor directory
-  for (const vendor of fs.readdirSync(dataDir)) {
-    const vendorDir = path.join(dataDir, vendor);
+  for (const brand of deviceDirs) {
+    const brandPath = path.join(__dirname, '..', 'data', 'devices', brand);
+    if (!fs.existsSync(brandPath)) continue;
     
-    // Skip files, only process directories
-    if (vendor.includes('.') || !fs.existsSync(vendorDir) || !fs.statSync(vendorDir).isDirectory()) continue;
-    
-    for (const file of fs.readdirSync(vendorDir)) {
-      if (file.endsWith('.yaml') || file.endsWith('.yml')) {
-        fileCount++;
-        const filePath = path.join(vendorDir, file);
-        const deviceFile = `${vendor}/${file}`;
-        
-        console.log(`Validating ${deviceFile}...`);
-        const errors = validateDevice(filePath, deviceFile);
-        
-        if (errors.length === 0) {
-          validFileCount++;
-          console.log(`✓ ${deviceFile} is valid`);
-        } else {
-          const criticalErrors = errors.filter(e => e.critical);
-          const warnings = errors.filter(e => !e.critical);
-          
-          if (criticalErrors.length > 0) {
-            console.error(`✗ ${deviceFile} has ${criticalErrors.length} critical errors`);
-          }
-          
-          if (warnings.length > 0) {
-            console.warn(`⚠ ${deviceFile} has ${warnings.length} warnings`);
-          }
-          
-          allErrors.push(...errors);
-        }
-      }
-    }
-  }
-  
-  // Print summary
-  const criticalErrorCount = allErrors.filter(e => e.critical).length;
-  const warningCount = allErrors.filter(e => !e.critical).length;
-  
-  console.log('\n=== Validation Summary ===');
-  console.log(`Total files processed: ${fileCount}`);
-  console.log(`Valid files: ${validFileCount}`);
-  console.log(`Files with issues: ${fileCount - validFileCount}`);
-  console.log(`Critical errors: ${criticalErrorCount}`);
-  console.log(`Warnings: ${warningCount}`);
-  
-  // Print detailed errors
-  if (allErrors.length > 0) {
-    console.log('\n=== Detailed Error Report ===');
-    
-    // Group errors by file
-    const errorsByFile = {};
-    for (const error of allErrors) {
-      if (!errorsByFile[error.file]) {
-        errorsByFile[error.file] = [];
-      }
-      errorsByFile[error.file].push(error);
-    }
-    
-    // Print errors for each file
-    for (const [file, errors] of Object.entries(errorsByFile)) {
-      console.log(`\nFile: ${file}`);
+    const files = fs.readdirSync(brandPath)
+      .filter(file => file.endsWith('.yaml') || file.endsWith('.yml'));
       
-      // Sort critical errors first
-      errors.sort((a, b) => {
-        if (a.critical && !b.critical) return -1;
-        if (!a.critical && b.critical) return 1;
-        return 0;
-      });
-      
-      for (const error of errors) {
-        const prefix = error.critical ? '✗ ERROR:' : '⚠ WARNING:';
-        console.log(`  ${prefix} ${error.message}`);
-        if (error.path) {
-          console.log(`    at: ${error.path}`);
-        }
+    for (const file of files) {
+      const filePath = path.join(brandPath, file);
+      try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        const data = yaml.load(content);
+        
+        // Validate the device data
+        validateRequiredFields(data, '', errors, filePath);
+        validateFieldValues(data, '', errors, filePath);
+        
+      } catch (error) {
+        errors.push({
+          deviceId: path.basename(file, path.extname(file)),
+          file: filePath,
+          message: `Failed to parse YAML: ${error.message}`,
+          path: '',
+          critical: true
+        });
       }
     }
-    
-    // Exit with error code if there are critical errors
-    if (criticalErrorCount > 0) {
-      console.error('\nValidation failed due to critical errors.');
-      process.exit(1);
-    } else {
-      console.warn('\nValidation complete with warnings only.');
-    }
-  } else {
-    console.log('\nAll files passed validation. ✓');
   }
+  
+  return errors;
 }
 
-main().catch(error => {
-  console.error('Validation failed:', error);
-  process.exit(1);
-}); 
+// Main execution
+if (require.main === module) {
+  validateAllDevices().then(errors => {
+    if (errors.length > 0) {
+      console.log(JSON.stringify(errors, null, 2));
+      process.exit(1);
+    } else {
+      console.log('No validation errors found.');
+      process.exit(0);
+    }
+  }).catch(error => {
+    console.error('Validation failed:', error);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  validateAllDevices,
+  validateRequiredFields,
+  validateFieldValues
+}; 

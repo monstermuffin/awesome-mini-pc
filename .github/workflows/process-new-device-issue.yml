@@ -1,0 +1,231 @@
+name: Process New Device Issue
+
+on:
+  issues:
+    types:
+      - labeled
+
+jobs:
+  create_device_yaml:
+    if: github.event.label.name == 'new-device'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Parse Issue Form and Create YAML
+        id: parse_issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueBody = github.context.payload.issue.body;
+            const lines = issueBody.split('\n');
+            const data = {};
+            let currentKey = null;
+
+            // Simple parser for the issue form markdown format
+            // Extracts key-value pairs based on headings and subsequent lines
+            for (const line of lines) {
+              const trimmedLine = line.trim();
+              if (trimmedLine.startsWith('### ')) {
+                currentKey = trimmedLine.substring(4).trim().toLowerCase().replace(/ /g, '_').replace(/[()]/g, ''); // Simple key generation
+              } else if (currentKey && trimmedLine && trimmedLine !== '_No response_') {
+                if (data[currentKey]) {
+                  // Handle multi-line text areas by appending
+                  data[currentKey] += '\n' + trimmedLine;
+                } else {
+                  data[currentKey] = trimmedLine;
+                }
+              } else if (!trimmedLine) {
+                // Reset key on empty lines between sections
+                currentKey = null;
+              }
+            }
+
+            console.log("Parsed data:", data); // Log extracted data for debugging
+
+            // --- Enhanced Validation ---
+            const errors = [];
+            const requiredFields = [
+              'device_id', 'brand', 'model', 'release_date', 'cpu_brand', 'cpu_model',
+              'cpu_tdp', 'memory_type', 'memory_module_type', 'memory_slots',
+              'maximum_memory_capacity_gb', 'memory_speed_mhz', 'storage_details'
+              // Note: CPU cores/threads/clocks are optional in the form
+              // Note: GPU details are optional
+              // Note: Networking is optional
+            ];
+
+            requiredFields.forEach(field => {
+              if (!data[field]) {
+                errors.push(`Missing required field: \`${field.replace(/_/g, ' ')}\``);
+              }
+            });
+
+            // Type checks for numeric fields (only if present)
+            const numericFields = {
+              release_date: 'integer',
+              cpu_tdp: 'integer',
+              cpu_cores: 'integer',
+              cpu_threads: 'integer',
+              memory_slots: 'integer',
+              maximum_memory_capacity_gb: 'integer',
+              memory_speed_mhz: 'integer',
+              base_clock_ghz: 'float',
+              boost_clock_ghz: 'float'
+            };
+
+            for (const field in numericFields) {
+              if (data[field]) {
+                const value = data[field];
+                if (numericFields[field] === 'integer' && !/^\d+$/.test(value)) {
+                  errors.push(`Invalid format for \`${field.replace(/_/g, ' ')}\`: expected an integer (e.g., 64), got "${value}"`);
+                } else if (numericFields[field] === 'float' && !/^\d+(\.\d+)?$/.test(value)) {
+                  errors.push(`Invalid format for \`${field.replace(/_/g, ' ')}\`: expected a number (e.g., 3.5), got "${value}"`);
+                }
+              }
+            }
+
+            // Device ID format check (lowercase, hyphens)
+            if (data.device_id && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(data.device_id)) {
+               errors.push(`Invalid format for \`Device ID\`: must be lowercase alphanumeric with hyphens (e.g., brand-model-variant), got "${data.device_id}"`);
+            }
+
+            // Check if errors were found
+            if (errors.length > 0) {
+              const errorBody = `Failed to process submission due to validation errors:\\n\\n- ${errors.join('\\n- ')}\\n\\nPlease edit the issue body to correct these errors. The automation will attempt to process it again once updated.`;
+              core.setFailed('Validation errors found in issue form.');
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: errorBody
+              });
+              return; // Stop processing
+            }
+
+            // --- Data Preparation (Type Conversion) ---
+            const deviceId = data.device_id; // Already checked format
+            const brand = data.brand.toLowerCase(); // Assuming brand names are simple enough for directory names
+
+            // Helper function for safe parsing
+            const safeParseInt = (val) => val && /^\d+$/.test(val) ? parseInt(val) : null;
+            const safeParseFloat = (val) => val && /^\d+(\.\d+)?$/.test(val) ? parseFloat(val) : null;
+
+            // --- Construct YAML ---
+            // Helper to parse multi-line list textareas
+            const parseList = (text, fieldMapping) => {
+              if (!text) return [];
+              return text.split('\n')
+                .map(line => line.trim())
+                .filter(line => line.startsWith('- '))
+                .map(line => {
+                  const item = {};
+                  const parts = line.substring(2).split(',').map(p => p.trim());
+                  parts.forEach(part => {
+                    const [keyVal] = part.split(':').map(kv => kv.trim());
+                    const key = keyVal.toLowerCase().replace(/ /g, '_');
+                    const value = part.substring(part.indexOf(':') + 1).trim();
+                    if (fieldMapping[key]) {
+                      item[fieldMapping[key]] = value;
+                    }
+                  });
+                  return item;
+                }).filter(item => Object.keys(item).length > 0);
+            };
+
+            // Field mapping for GPU list
+            const gpuFieldMapping = { type: 'type', model: 'model', vram: 'vram' };
+            const gpuList = parseList(data.gpu_models, gpuFieldMapping);
+
+            // Field mapping for Storage list
+            const storageFieldMapping = { type: 'type', 'form_factor': 'form_factor', interface: 'interface', 'alt_interface': 'alt_interface' };
+            const storageList = parseList(data.storage_details, storageFieldMapping);
+
+            // Build the YAML structure (adjust fields as needed based on your final YAML schema)
+            const yamlData = {
+              id: deviceId,
+              brand: data.brand, // Keep original casing for display?
+              model: data.model,
+              release_date: safeParseInt(data.release_date),
+              cpu: {
+                brand: data.cpu_brand,
+                model: data.cpu_model,
+                tdp: safeParseInt(data.cpu_tdp),
+                cores: safeParseInt(data.cpu_cores), // Already optional
+                threads: safeParseInt(data.cpu_threads), // Already optional
+                base_clock_ghz: safeParseFloat(data.base_clock_ghz), // Already optional
+                boost_clock_ghz: safeParseFloat(data.boost_clock_ghz), // Already optional
+                architecture: data.cpu_architecture, // Optional
+                socket_type: data.cpu_socket_type && data.cpu_socket_type !== 'N/A (Non-DIY system)' ? data.cpu_socket_type : null, // Optional
+              },
+              gpu: gpuList, // Already optional handling
+              memory: {
+                type: data.memory_type,
+                module_type: data.memory_module_type,
+                slots: safeParseInt(data.memory_slots),
+                max_capacity_gb: safeParseInt(data.maximum_memory_capacity_gb),
+                speed_mhz: safeParseInt(data.memory_speed_mhz),
+              },
+              storage: storageList, // Already required handling
+              networking: {
+                wifi: { // Optional fields
+                  standard: data.wifi_standard || null,
+                  chipset: data.wifi_chipset || null,
+                },
+                // ethernet: [] // Placeholder if you add ethernet details later
+              },
+              // Add other top-level fields if they exist in your form/schema
+            };
+
+            // Convert JS object to YAML string
+            const yaml = require('js-yaml');
+            const yamlString = yaml.dump(yamlData, { indent: 2, skipInvalid: true }); // skipInvalid ignores things like 'undefined'
+
+            // --- Determine File Path ---
+            const filePath = `data/devices/${brand}/${deviceId}.yaml`;
+            const dirPath = require('path').dirname(filePath);
+
+            // --- Create Directory and Write File ---
+            const fs = require('fs');
+            if (!fs.existsSync(dirPath)) {
+              fs.mkdirSync(dirPath, { recursive: true });
+            }
+            fs.writeFileSync(filePath, yamlString);
+            console.log(`YAML file created at: ${filePath}`);
+
+            // --- Set Outputs for PR Step ---
+            core.setOutput('file_path', filePath);
+            core.setOutput('branch_name', `new-device/${deviceId}`);
+            core.setOutput('commit_message', `Add device data for ${data.brand} ${data.model}`);
+            core.setOutput('pr_title', `Add Device: ${data.brand} ${data.model}`);
+            core.setOutput('pr_body', `Adds data for **${data.brand} ${data.model}** based on issue #${context.issue.number}.\n\nCloses #${context.issue.number}`);
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: ${{ steps.parse_issue.outputs.commit_message }}
+          branch: ${{ steps.parse_issue.outputs.branch_name }}
+          delete-branch: true
+          title: ${{ steps.parse_issue.outputs.pr_title }}
+          body: ${{ steps.parse_issue.outputs.pr_body }}
+          labels: new-device, automated-pr
+          assignees: ${{ github.actor }}
+
+      - name: Comment on Issue with PR Link
+        uses: actions/github-script@v7
+        if: steps.create_pr.outputs.pull-request-number
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Thank you for your submission! A Pull Request has been created: #${steps.create_pr.outputs.pull-request-number}`
+            }); 
