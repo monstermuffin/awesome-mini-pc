@@ -160,12 +160,15 @@ function validateMiniPC(data) {
     }
   }
 
-  if (!data.memory || !data.memory.type || !data.memory.speed || !data.memory.slots) {
+  // Memory validation
+  if (!data.memory || !data.memory.type || !data.memory.speed || data.memory.slots === undefined || 
+      !data.memory.module_type || !data.memory.max_capacity) {
     throw new Error('Missing or invalid memory information');
   }
 
-  if (!data.memory.module_type) {
-    console.warn(`Warning: ${data.id} is missing memory.module_type (SODIMM/DIMM)`);
+  // For soldered memory, slots can be 0
+  if (data.memory.module_type !== 'Soldered' && data.memory.slots < 1) {
+    throw new Error('Non-soldered memory must have at least 1 slot');
   }
 
   if (!Array.isArray(data.storage)) {
