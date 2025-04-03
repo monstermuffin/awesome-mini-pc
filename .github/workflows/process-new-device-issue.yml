@@ -32,9 +32,7 @@ jobs:
         with:
           script: |
             const yaml = require('js-yaml');
-            const fs = require('fs');
-            const path = require('path');
-
+            
             async function createPR() {
               const issue = await github.rest.issues.get({
                 owner: context.repo.owner,
@@ -133,36 +131,6 @@ jobs:
                 if (fieldName) {
                   data[fieldName] = currentValue.join('\n').trim();
                 }
-              }
-
-              console.log('\nFinal parsed data:');
-              console.log(JSON.stringify(data, null, 2));
-
-              // Validation
-              const errors = [];
-              const requiredFields = [
-                'device_id', 'brand', 'model', 'release_date', 'cpu_brand', 'cpu_model',
-                'cpu_tdp', 'memory_type', 'memory_module_type', 'memory_slots',
-                'maximum_memory_capacity_gb', 'memory_speed_mhz', 'storage_details'
-              ];
-
-              requiredFields.forEach(field => {
-                if (!data[field]) {
-                  errors.push(`Missing required field: \`${field.replace(/_/g, ' ')}\``);
-                }
-              });
-
-              // Check if errors were found
-              if (errors.length > 0) {
-                const errorBody = `Failed to process submission due to validation errors:\\n\\n- ${errors.join('\\n- ')}\\n\\nPlease edit the issue body to correct these errors. The automation will attempt to process it again once updated.`;
-                await github.rest.issues.createComment({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  body: errorBody
-                });
-                core.setFailed('Validation errors found in issue form.');
-                return;
               }
 
               // Convert data to YAML format
@@ -295,45 +263,42 @@ jobs:
               }
 
               const yamlString = yaml.dump(deviceData, { indent: 2, skipInvalid: true });
-
+              
               // Use the GitHub API to create/update the file
               const brand = data.brand.toLowerCase();
               const filePath = `data/devices/${brand}/${data.device_id}.yaml`;
-              
+              const branchName = `new-device/${data.device_id}`;
+
+              // Get the current main branch SHA
+              const mainRef = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'heads/main'
+              });
+
+              // Create a new branch from main
               try {
-                // Try to get the current file (if it exists)
-                const currentFile = await github.rest.repos.getContent({
+                await github.rest.git.createRef({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  path: filePath,
-                  ref: `new-device/${data.device_id}`
-                });
-                
-                // File exists, update it
-                await github.rest.repos.createOrUpdateFileContents({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  path: filePath,
-                  message: `Update device data for ${data.brand} ${data.model}`,
-                  content: Buffer.from(yamlString).toString('base64'),
-                  sha: currentFile.data.sha,
-                  branch: `new-device/${data.device_id}`
+                  ref: `refs/heads/${branchName}`,
+                  sha: mainRef.data.object.sha
                 });
               } catch (error) {
-                if (error.status === 404) {
-                  // File doesn't exist, create it
-                  await github.rest.repos.createOrUpdateFileContents({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    path: filePath,
-                    message: `Add device data for ${data.brand} ${data.model}`,
-                    content: Buffer.from(yamlString).toString('base64'),
-                    branch: `new-device/${data.device_id}`
-                  });
-                } else {
+                if (error.status !== 422) { // 422 means branch already exists
                   throw error;
                 }
               }
+
+              // Create the file in the new branch
+              await github.rest.repos.createOrUpdateFileContents({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: filePath,
+                message: `Add device data for ${data.brand} ${data.model}`,
+                content: Buffer.from(yamlString).toString('base64'),
+                branch: branchName
+              });
               
               // Create PR
               const pr = await github.rest.pulls.create({
@@ -341,7 +306,7 @@ jobs:
                 repo: context.repo.repo,
                 title: `Add Device: ${data.brand} ${data.model}`,
                 body: `Adds data for **${data.brand} ${data.model}** based on issue #${context.issue.number}.\n\nCloses #${context.issue.number}`,
-                head: `new-device/${data.device_id}`,
+                head: branchName,
                 base: 'main'
               });
               
