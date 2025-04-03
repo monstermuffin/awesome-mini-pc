@@ -34,8 +34,21 @@ jobs:
               throw new Error('Issue body is empty');
             }
 
+            // Debug: Log the raw issue body
+            console.log('Raw issue body:');
+            console.log('---START OF BODY---');
+            console.log(issueBody);
+            console.log('---END OF BODY---');
+
             // Parse the issue form
             const lines = issueBody.split('\n');
+            
+            // Debug: Log each line with its index
+            console.log('\nParsing lines:');
+            lines.forEach((line, index) => {
+              console.log(`Line ${index}: "${line}"`);
+            });
+
             const data = {};
             let currentField = '';
             let currentValue = '';
@@ -77,6 +90,12 @@ jobs:
               'Additional Information': 'additional_info'
             };
 
+            // Debug: Log all field mappings we're looking for
+            console.log('\nLooking for these fields:');
+            Object.keys(fieldMapping).forEach(field => {
+              console.log(`- "${field}"`);
+            });
+
             // Process each line
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i].trim();
@@ -86,10 +105,16 @@ jobs:
                 continue;
               }
               
-              // Check if this is a field label (it will be followed by an empty line and then the value)
+              // Debug: Log each line we're processing
+              console.log(`\nProcessing line: "${line}"`);
+              
+              // Check if this is a field label
               if (fieldMapping.hasOwnProperty(line)) {
+                console.log(`Found field: "${line}"`);
+                
                 // Save previous field if exists
                 if (currentField && currentValue) {
+                  console.log(`Saving previous field "${currentField}" with value "${currentValue}"`);
                   data[fieldMapping[currentField]] = currentValue.trim();
                 }
                 
@@ -101,6 +126,7 @@ jobs:
                 i++;
                 if (i + 1 < lines.length) {
                   currentValue = lines[i + 1].trim();
+                  console.log(`Found value: "${currentValue}"`);
                 }
               }
               // If not a field label and we have a current field, append to current value
@@ -109,15 +135,19 @@ jobs:
                   currentValue += '\n';
                 }
                 currentValue += line;
+                console.log(`Appending to current value: "${currentValue}"`);
               }
             }
             
             // Save last field
             if (currentField && currentValue) {
+              console.log(`Saving last field "${currentField}" with value "${currentValue}"`);
               data[fieldMapping[currentField]] = currentValue.trim();
             }
 
-            console.log("Parsed data:", data);
+            // Debug: Log final parsed data
+            console.log('\nFinal parsed data:');
+            console.log(JSON.stringify(data, null, 2));
 
             // Validation
             const errors = [];
