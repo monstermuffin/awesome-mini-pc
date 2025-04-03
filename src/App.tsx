@@ -610,32 +610,36 @@ function App() {
                   {(selectedDevices.size > 0 || hasActiveFilters(selectedFilters) || searchQuery) && (
                     <>
                       {selectedDevices.size > 0 && (
-                        <Button
-                          variant="contained"
-                          startIcon={<CompareArrowsIcon />}
-                          onClick={handleCompareClick}
-                          disabled={isCompareMode}
-                          size="small"
-                        >
-                          Compare ({selectedDevices.size})
-                        </Button>
+                        <Tooltip title="Compare selected devices">
+                          <Button
+                            variant="contained"
+                            startIcon={<CompareArrowsIcon />}
+                            onClick={handleCompareClick}
+                            disabled={isCompareMode}
+                            size="small"
+                          >
+                            Compare ({selectedDevices.size})
+                          </Button>
+                        </Tooltip>
                       )}
-                      <Button
-                        variant="outlined"
-                        startIcon={<RestartAltIcon />}
-                        onClick={handleResetAll}
-                        size="small"
-                        sx={{
-                          borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
-                          color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                          '&:hover': {
-                            borderColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                            backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.08)' : 'rgba(25,118,210,0.08)',
-                          }
-                        }}
-                      >
-                        {isCompareMode ? 'Reset Comparison' : hasActiveFilters(selectedFilters) ? 'Reset Filters' : 'Reset All'}
-                      </Button>
+                      <Tooltip title={isCompareMode ? "Exit comparison mode and clear selection" : hasActiveFilters(selectedFilters) ? "Clear all active filters" : "Clear all filters and selection"}>
+                        <Button
+                          variant="outlined"
+                          startIcon={<RestartAltIcon />}
+                          onClick={handleResetAll}
+                          size="small"
+                          sx={{
+                            borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
+                            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                            '&:hover': {
+                              borderColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                              backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.08)' : 'rgba(25,118,210,0.08)',
+                            }
+                          }}
+                        >
+                          {isCompareMode ? 'Reset Comparison' : hasActiveFilters(selectedFilters) ? 'Reset Filters' : 'Reset All'}
+                        </Button>
+                      </Tooltip>
                     </>
                   )}
                 </Box>
