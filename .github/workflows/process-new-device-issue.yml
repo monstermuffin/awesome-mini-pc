@@ -37,59 +37,74 @@ jobs:
             // Parse the issue form
             const lines = issueBody.split('\n');
             const data = {};
-            let currentField = null;
+            let currentField = '';
             let currentValue = '';
 
-            // Field mapping from form IDs to YAML fields
+            // Field mapping from form fields to YAML fields
             const fieldMapping = {
-              'id': 'device_id',
-              'brand': 'brand',
-              'model': 'model',
-              'release_date': 'release_date',
-              'cpu_brand': 'cpu_brand',
-              'cpu_model': 'cpu_model',
-              'cpu_tdp': 'cpu_tdp',
-              'cpu_cores': 'cpu_cores',
-              'cpu_threads': 'cpu_threads',
-              'cpu_base_clock': 'base_clock_ghz',
-              'cpu_boost_clock': 'boost_clock_ghz',
-              'cpu_architecture': 'cpu_architecture',
-              'cpu_socket_type': 'cpu_socket_type',
-              'memory_type': 'memory_type',
-              'memory_module_type': 'memory_module_type',
-              'memory_slots': 'memory_slots',
-              'memory_max': 'maximum_memory_capacity_gb',
-              'memory_speed': 'memory_speed_mhz',
-              'storage_details': 'storage_details',
-              'wifi_standard': 'wifi_standard',
-              'wifi_chipset': 'wifi_chipset'
+              'Device ID': 'device_id',
+              'Brand': 'brand',
+              'Model': 'model',
+              'Release Date': 'release_date',
+              'CPU Brand': 'cpu_brand',
+              'CPU Model': 'cpu_model',
+              'CPU TDP (Watts)': 'cpu_tdp',
+              'CPU Cores': 'cpu_cores',
+              'CPU Threads': 'cpu_threads',
+              'Base Clock (GHz)': 'base_clock_ghz',
+              'Boost Clock (GHz)': 'boost_clock_ghz',
+              'CPU Architecture': 'cpu_architecture',
+              'CPU Socket Type': 'cpu_socket_type',
+              'GPU Models': 'gpu_models',
+              'Memory Type': 'memory_type',
+              'Memory Module Type': 'memory_module_type',
+              'Memory Slots': 'memory_slots',
+              'Maximum Memory Capacity (GB)': 'maximum_memory_capacity_gb',
+              'Memory Speed (MHz)': 'memory_speed_mhz',
+              'Storage Details': 'storage_details',
+              'WiFi Standard': 'wifi_standard',
+              'WiFi Chipset': 'wifi_chipset',
+              'Bluetooth Version': 'bluetooth_version',
+              'Ethernet Ports': 'ethernet_ports',
+              'PCIe Slots': 'pcie_slots',
+              'OCuLink Ports': 'oculink_ports',
+              'USB Ports': 'usb_ports',
+              'Display Ports': 'display_ports',
+              'Audio Jacks': 'audio_jacks',
+              'SD Card Reader': 'sd_card_reader',
+              'Dimensions (mm)': 'dimensions',
+              'Power Adapter': 'power_adapter',
+              'Additional Information': 'additional_info'
             };
 
+            // Process each line
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i].trim();
               
               // Skip empty lines and headers
-              if (!line || line.startsWith('#') || line.startsWith('_No response_')) {
+              if (!line || line === 'Description' || line.startsWith('###') || line === '_No response_' || line === 'Submission Confirmation') {
                 continue;
               }
               
-              // Check if this is a field label
-              for (const [formId, yamlField] of Object.entries(fieldMapping)) {
-                if (line.includes(`### ${formId}`)) {
-                  // Save previous field if exists
-                  if (currentField && currentValue) {
-                    data[fieldMapping[currentField]] = currentValue.trim();
-                  }
-                  
-                  // Start new field
-                  currentField = formId;
-                  currentValue = '';
-                  break;
+              // Check if this is a field label (it will be followed by an empty line and then the value)
+              if (fieldMapping.hasOwnProperty(line)) {
+                // Save previous field if exists
+                if (currentField && currentValue) {
+                  data[fieldMapping[currentField]] = currentValue.trim();
+                }
+                
+                // Start new field
+                currentField = line;
+                currentValue = '';
+                
+                // Skip the next line (it's empty) and get the value
+                i++;
+                if (i + 1 < lines.length) {
+                  currentValue = lines[i + 1].trim();
                 }
               }
-              
-              // If not a field label, append to current value
-              if (!line.startsWith('###') && currentField) {
+              // If not a field label and we have a current field, append to current value
+              else if (currentField && !line.startsWith('###')) {
                 if (currentValue) {
                   currentValue += '\n';
                 }
@@ -160,9 +175,9 @@ jobs:
             // Parse GPU models if present
             if (data.gpu_models) {
               deviceData.gpu = data.gpu_models.split('\n')
-                .filter(line => line.trim().startsWith('-'))
+                .filter(line => line.trim().startsWith('Type:'))
                 .map(line => {
-                  const parts = line.substring(1).split(',').map(p => p.trim());
+                  const parts = line.split(',').map(p => p.trim());
                   const gpu = {};
                   parts.forEach(part => {
                     const [key, value] = part.split(':').map(s => s.trim());
@@ -175,25 +190,90 @@ jobs:
             }
 
             // Parse storage details
-            deviceData.storage = data.storage_details.split('\n')
-              .filter(line => line.trim().startsWith('-'))
-              .map(line => {
-                const parts = line.substring(1).split(',').map(p => p.trim());
-                const storage = {};
-                parts.forEach(part => {
-                  const [key, value] = part.split(':').map(s => s.trim());
-                  storage[key.toLowerCase().replace(/ /g, '_')] = value;
+            if (data.storage_details) {
+              deviceData.storage = data.storage_details.split('\n')
+                .filter(line => line.trim().startsWith('Type:'))
+                .map(line => {
+                  const parts = line.split(',').map(p => p.trim());
+                  const storage = {};
+                  parts.forEach(part => {
+                    const [key, value] = part.split(':').map(s => s.trim());
+                    storage[key.toLowerCase().replace(/ /g, '_')] = value;
+                  });
+                  return storage;
                 });
-                return storage;
-              });
+            }
 
             // Add networking if present
             deviceData.networking = {
               wifi: data.wifi_standard ? {
                 standard: data.wifi_standard,
-                chipset: data.wifi_chipset
-              } : undefined
+                chipset: data.wifi_chipset,
+                bluetooth: data.bluetooth_version
+              } : undefined,
+              ethernet: data.ethernet_ports ? data.ethernet_ports.split('\n')
+                .filter(line => line.trim().startsWith('Type:'))
+                .map(line => {
+                  const parts = line.split(',').map(p => p.trim());
+                  const eth = {};
+                  parts.forEach(part => {
+                    const [key, value] = part.split(':').map(s => s.trim());
+                    eth[key.toLowerCase().replace(/ /g, '_')] = value;
+                  });
+                  return eth;
+                }) : []
             };
+
+            // Add ports and interfaces
+            if (data.usb_ports) {
+              deviceData.ports = {
+                usb: data.usb_ports.split('\n')
+                  .filter(line => line.trim().startsWith('Type:'))
+                  .map(line => {
+                    const parts = line.split(',').map(p => p.trim());
+                    const usb = {};
+                    parts.forEach(part => {
+                      const [key, value] = part.split(':').map(s => s.trim());
+                      usb[key.toLowerCase().replace(/ /g, '_')] = value;
+                    });
+                    return usb;
+                  })
+              };
+            }
+
+            if (data.display_ports) {
+              if (!deviceData.ports) deviceData.ports = {};
+              deviceData.ports.display = data.display_ports.split('\n')
+                .filter(line => line.trim().startsWith('Type:') || line.includes('Version:'))
+                .map(line => {
+                  const parts = line.split(',').map(p => p.trim());
+                  const display = {};
+                  parts.forEach(part => {
+                    const [key, value] = part.split(':').map(s => s.trim());
+                    display[key.toLowerCase().replace(/ /g, '_')] = value;
+                  });
+                  return display;
+                });
+            }
+
+            // Add physical specifications
+            deviceData.physical = {
+              dimensions: data.dimensions,
+              power_adapter: data.power_adapter
+            };
+
+            if (data.audio_jacks) {
+              deviceData.physical.audio_jacks = parseInt(data.audio_jacks);
+            }
+
+            if (data.sd_card_reader) {
+              deviceData.physical.sd_card_reader = data.sd_card_reader === 'Yes';
+            }
+
+            // Add additional info if present
+            if (data.additional_info && data.additional_info !== 'No response') {
+              deviceData.additional_info = data.additional_info;
+            }
 
             const yaml = require('js-yaml');
             const yamlString = yaml.dump(deviceData, { indent: 2, skipInvalid: true });
