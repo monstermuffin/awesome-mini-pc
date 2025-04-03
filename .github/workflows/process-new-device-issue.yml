@@ -31,308 +31,336 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const issue = await github.rest.issues.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number
-            });
-            
-            const issueBody = issue.data.body;
-            if (!issueBody) {
-              throw new Error('Issue body is empty');
-            }
+            const yaml = require('js-yaml');
+            const fs = require('fs');
+            const path = require('path');
 
-            // Parse the issue form
-            const lines = issueBody.split('\n');
-            const data = {};
-            
-            // Field mapping from form fields to YAML fields
-            const fieldMapping = {
-              'Device ID': 'device_id',
-              'Brand': 'brand',
-              'Model': 'model',
-              'Release Date': 'release_date',
-              'CPU Brand': 'cpu_brand',
-              'CPU Model': 'cpu_model',
-              'CPU TDP (Watts)': 'cpu_tdp',
-              'CPU Cores': 'cpu_cores',
-              'CPU Threads': 'cpu_threads',
-              'Base Clock (GHz)': 'base_clock_ghz',
-              'Boost Clock (GHz)': 'boost_clock_ghz',
-              'CPU Architecture': 'cpu_architecture',
-              'CPU Socket Type': 'cpu_socket_type',
-              'GPU Models': 'gpu_models',
-              'Memory Type': 'memory_type',
-              'Memory Module Type': 'memory_module_type',
-              'Memory Slots': 'memory_slots',
-              'Maximum Memory Capacity (GB)': 'maximum_memory_capacity_gb',
-              'Memory Speed (MHz)': 'memory_speed_mhz',
-              'Storage Details': 'storage_details',
-              'WiFi Standard': 'wifi_standard',
-              'WiFi Chipset': 'wifi_chipset',
-              'Bluetooth Version': 'bluetooth_version',
-              'Ethernet Ports': 'ethernet_ports',
-              'PCIe Slots': 'pcie_slots',
-              'OCuLink Ports': 'oculink_ports',
-              'USB Ports': 'usb_ports',
-              'Display Ports': 'display_ports',
-              'Audio Jacks': 'audio_jacks',
-              'SD Card Reader': 'sd_card_reader',
-              'Dimensions (mm)': 'dimensions',
-              'Power Adapter': 'power_adapter',
-              'Additional Information': 'additional_info'
-            };
-
-            let currentField = null;
-            let currentValue = [];
-
-            // Process each line
-            for (let i = 0; i < lines.length; i++) {
-              const line = lines[i].trim();
+            async function createPR() {
+              const issue = await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number
+              });
               
-              // Skip empty lines and confirmation section
-              if (!line || line === 'Description' || line === 'Submission Confirmation') {
-                continue;
+              const issueBody = issue.data.body;
+              if (!issueBody) {
+                throw new Error('Issue body is empty');
               }
 
-              // Check if this is a field header
-              if (line.startsWith('### ')) {
-                // Save previous field if exists
-                if (currentField && currentValue.length > 0) {
-                  const fieldName = fieldMapping[currentField];
-                  if (fieldName) {
-                    data[fieldName] = currentValue.join('\n').trim();
-                  }
-                }
+              // Parse the issue form
+              const lines = issueBody.split('\n');
+              const data = {};
+              
+              // Field mapping from form fields to YAML fields
+              const fieldMapping = {
+                'Device ID': 'device_id',
+                'Brand': 'brand',
+                'Model': 'model',
+                'Release Date': 'release_date',
+                'CPU Brand': 'cpu_brand',
+                'CPU Model': 'cpu_model',
+                'CPU TDP (Watts)': 'cpu_tdp',
+                'CPU Cores': 'cpu_cores',
+                'CPU Threads': 'cpu_threads',
+                'Base Clock (GHz)': 'base_clock_ghz',
+                'Boost Clock (GHz)': 'boost_clock_ghz',
+                'CPU Architecture': 'cpu_architecture',
+                'CPU Socket Type': 'cpu_socket_type',
+                'GPU Models': 'gpu_models',
+                'Memory Type': 'memory_type',
+                'Memory Module Type': 'memory_module_type',
+                'Memory Slots': 'memory_slots',
+                'Maximum Memory Capacity (GB)': 'maximum_memory_capacity_gb',
+                'Memory Speed (MHz)': 'memory_speed_mhz',
+                'Storage Details': 'storage_details',
+                'WiFi Standard': 'wifi_standard',
+                'WiFi Chipset': 'wifi_chipset',
+                'Bluetooth Version': 'bluetooth_version',
+                'Ethernet Ports': 'ethernet_ports',
+                'PCIe Slots': 'pcie_slots',
+                'OCuLink Ports': 'oculink_ports',
+                'USB Ports': 'usb_ports',
+                'Display Ports': 'display_ports',
+                'Audio Jacks': 'audio_jacks',
+                'SD Card Reader': 'sd_card_reader',
+                'Dimensions (mm)': 'dimensions',
+                'Power Adapter': 'power_adapter',
+                'Additional Information': 'additional_info'
+              };
+
+              let currentField = null;
+              let currentValue = [];
+
+              // Process each line
+              for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
                 
-                // Start new field
-                currentField = line.substring(4);
-                currentValue = [];
-                continue;
+                // Skip empty lines and confirmation section
+                if (!line || line === 'Description' || line === 'Submission Confirmation') {
+                  continue;
+                }
+
+                // Check if this is a field header
+                if (line.startsWith('### ')) {
+                  // Save previous field if exists
+                  if (currentField && currentValue.length > 0) {
+                    const fieldName = fieldMapping[currentField];
+                    if (fieldName) {
+                      data[fieldName] = currentValue.join('\n').trim();
+                    }
+                  }
+                  
+                  // Start new field
+                  currentField = line.substring(4);
+                  currentValue = [];
+                  continue;
+                }
+
+                // Skip "No response" values
+                if (line === '_No response_') {
+                  continue;
+                }
+
+                // If we have a current field and this isn't a checkbox line, add to value
+                if (currentField && !line.startsWith('- [x]')) {
+                  currentValue.push(line);
+                }
+              }
+              
+              // Save last field
+              if (currentField && currentValue.length > 0) {
+                const fieldName = fieldMapping[currentField];
+                if (fieldName) {
+                  data[fieldName] = currentValue.join('\n').trim();
+                }
               }
 
-              // Skip "No response" values
-              if (line === '_No response_') {
-                continue;
+              console.log('\nFinal parsed data:');
+              console.log(JSON.stringify(data, null, 2));
+
+              // Validation
+              const errors = [];
+              const requiredFields = [
+                'device_id', 'brand', 'model', 'release_date', 'cpu_brand', 'cpu_model',
+                'cpu_tdp', 'memory_type', 'memory_module_type', 'memory_slots',
+                'maximum_memory_capacity_gb', 'memory_speed_mhz', 'storage_details'
+              ];
+
+              requiredFields.forEach(field => {
+                if (!data[field]) {
+                  errors.push(`Missing required field: \`${field.replace(/_/g, ' ')}\``);
+                }
+              });
+
+              // Check if errors were found
+              if (errors.length > 0) {
+                const errorBody = `Failed to process submission due to validation errors:\\n\\n- ${errors.join('\\n- ')}\\n\\nPlease edit the issue body to correct these errors. The automation will attempt to process it again once updated.`;
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: errorBody
+                });
+                core.setFailed('Validation errors found in issue form.');
+                return;
               }
 
-              // If we have a current field and this isn't a checkbox line, add to value
-              if (currentField && !line.startsWith('- [x]')) {
-                currentValue.push(line);
+              // Convert data to YAML format
+              const deviceData = {
+                id: data.device_id,
+                brand: data.brand,
+                model: data.model,
+                release_date: parseInt(data.release_date),
+                cpu: {
+                  brand: data.cpu_brand,
+                  model: data.cpu_model,
+                  tdp: parseInt(data.cpu_tdp),
+                  cores: data.cpu_cores ? parseInt(data.cpu_cores) : undefined,
+                  threads: data.cpu_threads ? parseInt(data.cpu_threads) : undefined,
+                  base_clock_ghz: data.base_clock_ghz ? parseFloat(data.base_clock_ghz) : undefined,
+                  boost_clock_ghz: data.boost_clock_ghz ? parseFloat(data.boost_clock_ghz) : undefined,
+                  architecture: data.cpu_architecture,
+                  socket_type: data.cpu_socket_type !== 'None' ? data.cpu_socket_type : undefined
+                },
+                memory: {
+                  type: data.memory_type,
+                  module_type: data.memory_module_type,
+                  slots: parseInt(data.memory_slots),
+                  max_capacity_gb: parseInt(data.maximum_memory_capacity_gb),
+                  speed_mhz: parseInt(data.memory_speed_mhz)
+                }
+              };
+
+              // Parse GPU models if present
+              if (data.gpu_models) {
+                deviceData.gpu = data.gpu_models.split('\n')
+                  .filter(line => line.trim().startsWith('Type:'))
+                  .map(line => {
+                    const parts = line.split(',').map(p => p.trim());
+                    const gpu = {};
+                    parts.forEach(part => {
+                      const [key, value] = part.split(':').map(s => s.trim());
+                      if (key.toLowerCase() === 'type') gpu.type = value;
+                      if (key.toLowerCase() === 'model') gpu.model = value;
+                      if (key.toLowerCase() === 'vram') gpu.vram = value;
+                    });
+                    return gpu;
+                  });
               }
-            }
-            
-            // Save last field
-            if (currentField && currentValue.length > 0) {
-              const fieldName = fieldMapping[currentField];
-              if (fieldName) {
-                data[fieldName] = currentValue.join('\n').trim();
+
+              // Parse storage details
+              if (data.storage_details) {
+                deviceData.storage = data.storage_details.split('\n')
+                  .filter(line => line.trim().startsWith('Type:'))
+                  .map(line => {
+                    const parts = line.split(',').map(p => p.trim());
+                    const storage = {};
+                    parts.forEach(part => {
+                      const [key, value] = part.split(':').map(s => s.trim());
+                      storage[key.toLowerCase().replace(/ /g, '_')] = value;
+                    });
+                    return storage;
+                  });
               }
-            }
 
-            console.log('\nFinal parsed data:');
-            console.log(JSON.stringify(data, null, 2));
+              // Add networking if present
+              deviceData.networking = {
+                wifi: data.wifi_standard ? {
+                  standard: data.wifi_standard,
+                  chipset: data.wifi_chipset,
+                  bluetooth: data.bluetooth_version
+                } : undefined,
+                ethernet: data.ethernet_ports ? data.ethernet_ports.split('\n')
+                  .filter(line => line.trim().startsWith('Type:'))
+                  .map(line => {
+                    const parts = line.split(',').map(p => p.trim());
+                    const eth = {};
+                    parts.forEach(part => {
+                      const [key, value] = part.split(':').map(s => s.trim());
+                      eth[key.toLowerCase().replace(/ /g, '_')] = value;
+                    });
+                    return eth;
+                  }) : []
+              };
 
-            // Validation
-            const errors = [];
-            const requiredFields = [
-              'device_id', 'brand', 'model', 'release_date', 'cpu_brand', 'cpu_model',
-              'cpu_tdp', 'memory_type', 'memory_module_type', 'memory_slots',
-              'maximum_memory_capacity_gb', 'memory_speed_mhz', 'storage_details'
-            ];
-
-            requiredFields.forEach(field => {
-              if (!data[field]) {
-                errors.push(`Missing required field: \`${field.replace(/_/g, ' ')}\``);
+              // Add ports and interfaces
+              if (data.usb_ports) {
+                deviceData.ports = {
+                  usb: data.usb_ports.split('\n')
+                    .filter(line => line.trim().startsWith('Type:'))
+                    .map(line => {
+                      const parts = line.split(',').map(p => p.trim());
+                      const usb = {};
+                      parts.forEach(part => {
+                        const [key, value] = part.split(':').map(s => s.trim());
+                        usb[key.toLowerCase().replace(/ /g, '_')] = value;
+                      });
+                      return usb;
+                    })
+                };
               }
-            });
 
-            // Check if errors were found
-            if (errors.length > 0) {
-              const errorBody = `Failed to process submission due to validation errors:\\n\\n- ${errors.join('\\n- ')}\\n\\nPlease edit the issue body to correct these errors. The automation will attempt to process it again once updated.`;
+              if (data.display_ports) {
+                if (!deviceData.ports) deviceData.ports = {};
+                deviceData.ports.display = data.display_ports.split('\n')
+                  .filter(line => line.includes('Version:') || line.includes('Count:'))
+                  .map(line => {
+                    const parts = line.split(',').map(p => p.trim());
+                    const display = {};
+                    parts.forEach(part => {
+                      const [key, value] = part.split(':').map(s => s.trim());
+                      display[key.toLowerCase().replace(/ /g, '_')] = value;
+                    });
+                    return display;
+                  });
+              }
+
+              // Add physical specifications
+              deviceData.physical = {
+                dimensions: data.dimensions,
+                power_adapter: data.power_adapter
+              };
+
+              if (data.audio_jacks) {
+                deviceData.physical.audio_jacks = parseInt(data.audio_jacks);
+              }
+
+              if (data.sd_card_reader) {
+                deviceData.physical.sd_card_reader = data.sd_card_reader === 'Yes';
+              }
+
+              // Add additional info if present
+              if (data.additional_info && data.additional_info !== '_No response_') {
+                deviceData.additional_info = data.additional_info;
+              }
+
+              const yamlString = yaml.dump(deviceData, { indent: 2, skipInvalid: true });
+
+              // Use the GitHub API to create/update the file
+              const brand = data.brand.toLowerCase();
+              const filePath = `data/devices/${brand}/${data.device_id}.yaml`;
+              
+              try {
+                // Try to get the current file (if it exists)
+                const currentFile = await github.rest.repos.getContent({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  path: filePath,
+                  ref: `new-device/${data.device_id}`
+                });
+                
+                // File exists, update it
+                await github.rest.repos.createOrUpdateFileContents({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  path: filePath,
+                  message: `Update device data for ${data.brand} ${data.model}`,
+                  content: Buffer.from(yamlString).toString('base64'),
+                  sha: currentFile.data.sha,
+                  branch: `new-device/${data.device_id}`
+                });
+              } catch (error) {
+                if (error.status === 404) {
+                  // File doesn't exist, create it
+                  await github.rest.repos.createOrUpdateFileContents({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    path: filePath,
+                    message: `Add device data for ${data.brand} ${data.model}`,
+                    content: Buffer.from(yamlString).toString('base64'),
+                    branch: `new-device/${data.device_id}`
+                  });
+                } else {
+                  throw error;
+                }
+              }
+              
+              // Create PR
+              const pr = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Add Device: ${data.brand} ${data.model}`,
+                body: `Adds data for **${data.brand} ${data.model}** based on issue #${context.issue.number}.\n\nCloses #${context.issue.number}`,
+                head: `new-device/${data.device_id}`,
+                base: 'main'
+              });
+              
+              // Add labels to PR
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.data.number,
+                labels: ['new-device', 'automated-pr']
+              });
+              
+              // Comment on the issue
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: errorBody
+                body: `Thank you for your submission! A Pull Request has been created: #${pr.data.number}`
               });
-              core.setFailed('Validation errors found in issue form.');
-              return;
             }
-
-            // Convert data to YAML format
-            const deviceData = {
-              id: data.device_id,
-              brand: data.brand,
-              model: data.model,
-              release_date: parseInt(data.release_date),
-              cpu: {
-                brand: data.cpu_brand,
-                model: data.cpu_model,
-                tdp: parseInt(data.cpu_tdp),
-                cores: data.cpu_cores ? parseInt(data.cpu_cores) : undefined,
-                threads: data.cpu_threads ? parseInt(data.cpu_threads) : undefined,
-                base_clock_ghz: data.base_clock_ghz ? parseFloat(data.base_clock_ghz) : undefined,
-                boost_clock_ghz: data.boost_clock_ghz ? parseFloat(data.boost_clock_ghz) : undefined,
-                architecture: data.cpu_architecture,
-                socket_type: data.cpu_socket_type !== 'None' ? data.cpu_socket_type : undefined
-              },
-              memory: {
-                type: data.memory_type,
-                module_type: data.memory_module_type,
-                slots: parseInt(data.memory_slots),
-                max_capacity_gb: parseInt(data.maximum_memory_capacity_gb),
-                speed_mhz: parseInt(data.memory_speed_mhz)
-              }
-            };
-
-            // Parse GPU models if present
-            if (data.gpu_models) {
-              deviceData.gpu = data.gpu_models.split('\n')
-                .filter(line => line.trim().startsWith('Type:'))
-                .map(line => {
-                  const parts = line.split(',').map(p => p.trim());
-                  const gpu = {};
-                  parts.forEach(part => {
-                    const [key, value] = part.split(':').map(s => s.trim());
-                    if (key.toLowerCase() === 'type') gpu.type = value;
-                    if (key.toLowerCase() === 'model') gpu.model = value;
-                    if (key.toLowerCase() === 'vram') gpu.vram = value;
-                  });
-                  return gpu;
-                });
-            }
-
-            // Parse storage details
-            if (data.storage_details) {
-              deviceData.storage = data.storage_details.split('\n')
-                .filter(line => line.trim().startsWith('Type:'))
-                .map(line => {
-                  const parts = line.split(',').map(p => p.trim());
-                  const storage = {};
-                  parts.forEach(part => {
-                    const [key, value] = part.split(':').map(s => s.trim());
-                    storage[key.toLowerCase().replace(/ /g, '_')] = value;
-                  });
-                  return storage;
-                });
-            }
-
-            // Add networking if present
-            deviceData.networking = {
-              wifi: data.wifi_standard ? {
-                standard: data.wifi_standard,
-                chipset: data.wifi_chipset,
-                bluetooth: data.bluetooth_version
-              } : undefined,
-              ethernet: data.ethernet_ports ? data.ethernet_ports.split('\n')
-                .filter(line => line.trim().startsWith('Type:'))
-                .map(line => {
-                  const parts = line.split(',').map(p => p.trim());
-                  const eth = {};
-                  parts.forEach(part => {
-                    const [key, value] = part.split(':').map(s => s.trim());
-                    eth[key.toLowerCase().replace(/ /g, '_')] = value;
-                  });
-                  return eth;
-                }) : []
-            };
-
-            // Add ports and interfaces
-            if (data.usb_ports) {
-              deviceData.ports = {
-                usb: data.usb_ports.split('\n')
-                  .filter(line => line.trim().startsWith('Type:'))
-                  .map(line => {
-                    const parts = line.split(',').map(p => p.trim());
-                    const usb = {};
-                    parts.forEach(part => {
-                      const [key, value] = part.split(':').map(s => s.trim());
-                      usb[key.toLowerCase().replace(/ /g, '_')] = value;
-                    });
-                    return usb;
-                  })
-              };
-            }
-
-            if (data.display_ports) {
-              if (!deviceData.ports) deviceData.ports = {};
-              deviceData.ports.display = data.display_ports.split('\n')
-                .filter(line => line.includes('Version:') || line.includes('Count:'))
-                .map(line => {
-                  const parts = line.split(',').map(p => p.trim());
-                  const display = {};
-                  parts.forEach(part => {
-                    const [key, value] = part.split(':').map(s => s.trim());
-                    display[key.toLowerCase().replace(/ /g, '_')] = value;
-                  });
-                  return display;
-                });
-            }
-
-            // Add physical specifications
-            deviceData.physical = {
-              dimensions: data.dimensions,
-              power_adapter: data.power_adapter
-            };
-
-            if (data.audio_jacks) {
-              deviceData.physical.audio_jacks = parseInt(data.audio_jacks);
-            }
-
-            if (data.sd_card_reader) {
-              deviceData.physical.sd_card_reader = data.sd_card_reader === 'Yes';
-            }
-
-            // Add additional info if present
-            if (data.additional_info && data.additional_info !== '_No response_') {
-              deviceData.additional_info = data.additional_info;
-            }
-
-            const yaml = require('js-yaml');
-            const yamlString = yaml.dump(deviceData, { indent: 2, skipInvalid: true });
-
-            // Determine file path based on brand
-            const brand = data.brand.toLowerCase();
-            const filePath = `data/devices/${brand}/${data.device_id}.yaml`;
-            const dirPath = require('path').dirname(filePath);
-
-            // Create directory if it doesn't exist
-            if (!fs.existsSync(dirPath)) {
-              fs.mkdirSync(dirPath, { recursive: true });
-            }
-
-            // Write YAML file
-            fs.writeFileSync(filePath, yamlString);
-
-            // Set outputs for PR creation
-            core.setOutput('file_path', filePath);
-            core.setOutput('branch_name', `new-device/${data.device_id}`);
-            core.setOutput('commit_message', `Add device data for ${data.brand} ${data.model}`);
-            core.setOutput('pr_title', `Add Device: ${data.brand} ${data.model}`);
-            core.setOutput('pr_body', `Adds data for **${data.brand} ${data.model}** based on issue #${context.issue.number}.\n\nCloses #${context.issue.number}`);
-
-      - name: Create Pull Request
-        id: create_pr
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: ${{ steps.parse_issue.outputs.commit_message }}
-          branch: ${{ steps.parse_issue.outputs.branch_name }}
-          delete-branch: true
-          title: ${{ steps.parse_issue.outputs.pr_title }}
-          body: ${{ steps.parse_issue.outputs.pr_body }}
-          labels: new-device, automated-pr
-          assignees: ${{ github.actor }}
-
-      - name: Comment on Issue with PR Link
-        uses: actions/github-script@v7
-        if: steps.create_pr.outputs.pull-request-number
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `Thank you for your submission! A Pull Request has been created: #${steps.create_pr.outputs.pull-request-number}`
-            }); 
+            
+            // Run the PR creation
+            await createPR(); 
