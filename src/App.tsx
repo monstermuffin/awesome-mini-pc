@@ -56,6 +56,35 @@ type FilterState = {
   volume: { min: number; max: number } | null;
 };
 
+// Add helper function to check for active filters
+const hasActiveFilters = (filters: FilterState): boolean => {
+  return (
+    filters.brands.size > 0 ||
+    filters.cpuBrands.size > 0 ||
+    filters.cpuArchitectures.size > 0 ||
+    filters.cpuChipsets.size > 0 ||
+    filters.cpuSockets.size > 0 ||
+    filters.memoryTypes.size > 0 ||
+    filters.memoryModuleTypes.size > 0 ||
+    filters.memorySlotsCount.size > 0 ||
+    filters.wifiStandards.size > 0 ||
+    filters.wifiChipsets.size > 0 ||
+    filters.ethernetSpeeds.size > 0 ||
+    filters.ethernetChipsets.size > 0 ||
+    filters.storageTypes.size > 0 ||
+    filters.storageInterfaces.size > 0 ||
+    filters.releaseYears.size > 0 ||
+    filters.pcieSlotTypes.size > 0 ||
+    filters.hasExpansionSlots ||
+    filters.deviceAge !== null ||
+    filters.tdp !== null ||
+    filters.cores !== null ||
+    filters.memorySpeed !== null ||
+    filters.memoryCapacity !== null ||
+    filters.volume !== null
+  );
+};
+
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -433,9 +462,11 @@ function App() {
     setIsCompareMode(true);
   };
 
-  const handleResetComparison = () => {
+  const handleResetAll = () => {
     setSelectedDevices(new Set());
     setIsCompareMode(false);
+    setSelectedFilters(initialFilterState);
+    setSearchQuery('');
   };
 
   const filterDrawer = (
@@ -567,7 +598,7 @@ function App() {
                   aria-label="open drawer"
                   edge="start"
                   onClick={handleDrawerToggle}
-                  sx={{ mr: 2, display: { sm: 'none' } }}
+                  sx={{ mr: 2 }}
                 >
                   <MenuIcon />
                 </IconButton>
@@ -576,50 +607,40 @@ function App() {
                 </Typography>
 
                 <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 2, ml: 4 }}>
-                  {selectedDevices.size > 0 && (
+                  {(selectedDevices.size > 0 || hasActiveFilters(selectedFilters) || searchQuery) && (
                     <>
-                      <Button
-                        variant="contained"
-                        startIcon={<CompareArrowsIcon />}
-                        onClick={handleCompareClick}
-                        disabled={isCompareMode}
-                        size="small"
-                      >
-                        Compare ({selectedDevices.size})
-                      </Button>
-                      {isCompareMode ? (
+                      {selectedDevices.size > 0 && (
                         <Button
-                          variant="outlined"
-                          startIcon={<RestartAltIcon />}
-                          onClick={handleResetComparison}
+                          variant="contained"
+                          startIcon={<CompareArrowsIcon />}
+                          onClick={handleCompareClick}
+                          disabled={isCompareMode}
                           size="small"
-                          sx={{
-                            borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
-                            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                            '&:hover': {
-                              borderColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                              backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.08)' : 'rgba(25,118,210,0.08)',
-                            }
-                          }}
                         >
-                          Reset Comparison
+                          Compare ({selectedDevices.size})
                         </Button>
-                      ) : (
-                        <Tooltip title="Reset Selection">
-                          <IconButton
-                            onClick={handleResetComparison}
-                            color="inherit"
-                            size="small"
-                          >
-                            <RestartAltIcon />
-                          </IconButton>
-                        </Tooltip>
                       )}
+                      <Button
+                        variant="outlined"
+                        startIcon={<RestartAltIcon />}
+                        onClick={handleResetAll}
+                        size="small"
+                        sx={{
+                          borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
+                          color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                          '&:hover': {
+                            borderColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                            backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.08)' : 'rgba(25,118,210,0.08)',
+                          }
+                        }}
+                      >
+                        {isCompareMode ? 'Reset Comparison' : hasActiveFilters(selectedFilters) ? 'Reset Filters' : 'Reset All'}
+                      </Button>
                     </>
                   )}
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
                   {!isMobile && (
                     <Box sx={{ position: 'relative', mr: 2 }}>
                       <TextField
@@ -659,7 +680,7 @@ function App() {
                   </IconButton>
                   <IconButton
                     component={Link}
-                    href="https://github.com/monstermuffin/awesome-mini-pc/"
+                    href="https://github.com/kobalski/awesome-mini-pcs"
                     target="_blank"
                     rel="noopener noreferrer"
                     color="inherit"
