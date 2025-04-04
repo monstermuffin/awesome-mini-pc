@@ -12,8 +12,8 @@ body:
     id: id
     attributes:
       label: Device ID
-      description: A unique identifier for the device (lowercase, use hyphens, e.g., intel-nuc6i7kyk). If this machine is a variant of another machine, use the parent id with a hypen for the variant (MS-A1-9950X).
-      placeholder: brand-model-variant
+      description: A unique identifier for the device (lowercase, use hyphens, e.g., MS-A1. If this machine is a variant of another machine, use the parent id with a hypen for the variant (MS-A1-9950X). If this machine is a barebones machine, append DIY (MS-A1-DIY).
+      placeholder: model-variant
     validations:
       required: true
 
@@ -22,7 +22,7 @@ body:
     attributes:
       label: Brand
       description: The manufacturer of the machine
-      placeholder: Intel, GMKTec, Minisforum, etc.
+      placeholder: Intel, GMKTec, Minisforum, Dell, HP etc.
     validations:
       required: true
 
@@ -31,7 +31,7 @@ body:
     attributes:
       label: Model
       description: The model name/number of the mini PC
-      placeholder: NUC6i7KYK
+      placeholder: MS-A1
     validations:
       required: true
 
@@ -74,10 +74,10 @@ body:
     id: cpu_tdp
     attributes:
       label: CPU TDP (Watts)
-      description: Thermal Design Power in watts
+      description: Thermal Design Power in watts (not required for DIY systems)
       placeholder: "45"
     validations:
-      required: true
+      required: false
 
   - type: input
     id: cpu_cores
@@ -128,7 +128,6 @@ body:
         - SP3
         - sTRX4
         - sWRX8
-        - N/A (Non-DIY system)
 
   - type: markdown
     attributes:
