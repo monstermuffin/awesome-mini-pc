@@ -85,6 +85,8 @@ body:
       label: CPU Cores
       description: Number of CPU cores (not required for DIY systems)
       placeholder: "4"
+    validations:
+      required: true
 
   - type: input
     id: cpu_threads
@@ -92,6 +94,8 @@ body:
       label: CPU Threads
       description: Number of CPU threads (not required for DIY systems)
       placeholder: "8"
+    validations:
+      required: true
 
   - type: input
     id: cpu_base_clock
@@ -99,6 +103,8 @@ body:
       label: Base Clock (GHz)
       description: Base clock speed in GHz (not required for DIY systems)
       placeholder: "2.6"
+    validations:
+      required: true
 
   - type: input
     id: cpu_boost_clock
@@ -106,6 +112,8 @@ body:
       label: Boost Clock (GHz)
       description: Maximum boost clock speed in GHz (not required for DIY systems)
       placeholder: "3.5"
+    validations:
+      required: true
 
   - type: input
     id: cpu_architecture
@@ -113,6 +121,8 @@ body:
       label: CPU Architecture
       description: The CPU microarchitecture (e.g., Skylake, Zen 3)
       placeholder: "Skylake"
+    validations:
+      required: true
 
   - type: dropdown
     id: cpu_socket_type
