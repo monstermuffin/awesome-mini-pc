@@ -142,9 +142,9 @@ function validateMiniPC(data) {
     });
   }
 
-  // CPU validation
-  if (!data.cpu || !data.cpu.brand || !data.cpu.model || !data.cpu.tdp) {
-    throw new Error('Missing required CPU fields: brand, model, or tdp');
+  // Validate required fields
+  if (!data.cpu || !data.cpu.brand || !data.cpu.model) {
+    throw new Error('Missing required CPU fields: brand or model');
   }
 
   // For DIY machines, require socket information

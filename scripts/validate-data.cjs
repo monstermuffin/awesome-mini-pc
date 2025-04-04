@@ -49,11 +49,11 @@ function validateRequiredFields(data, path, errors, deviceFile) {
   
   // CPU required fields
   if (data.cpu) {
-    const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'boost_clock', 'tdp', 'architecture'];
+    const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'boost_clock', 'architecture'];
     const isDIYMachine = data.cpu.socket?.supports_cpu_swap === true;
 
-    // For DIY machines, only brand, model, tdp and architecture are required
-    const fieldsToCheck = isDIYMachine ? ['brand', 'model', 'tdp', 'architecture'] : requiredCpuFields;
+    // For DIY machines, only brand, model and architecture are required
+    const fieldsToCheck = isDIYMachine ? ['brand', 'model', 'architecture'] : requiredCpuFields;
 
     for (const field of fieldsToCheck) {
       if (data.cpu[field] === undefined) {
@@ -347,12 +347,12 @@ function validateDataTypes(data, path, errors, deviceFile) {
       }
     }
 
-    // TDP is always required and must be positive
+    // TDP validation - only check if provided
     if (data.cpu.tdp !== undefined && (typeof data.cpu.tdp !== 'number' || data.cpu.tdp <= 0)) {
       errors.push({
         deviceId: data.id || 'unknown',
         file: deviceFile,
-        message: `cpu.tdp must be a positive number`,
+        message: `If provided, cpu.tdp must be a positive number`,
         path: `${path}.cpu.tdp`,
         critical: true
       });
