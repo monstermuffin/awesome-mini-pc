@@ -323,19 +323,6 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     minWidth: 80,
                   }}
                 >{renderSortLabel('Cores', 'cpu.cores')}</TableCell>
-                <TableCell 
-                  align="right"
-                  sx={{ 
-                    background: theme => theme.palette.mode === 'dark' 
-                      ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
-                      : 'linear-gradient(180deg, rgba(33,150,243,0.2) 0%, rgba(33,150,243,0.1) 100%)',
-                    fontWeight: 'bold',
-                    color: theme => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
-                    borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                    width: 80,
-                    minWidth: 80,
-                  }}
-                >{renderSortLabel('TDP', 'cpu.tdp')}</TableCell>
                 <TableCell
                   sx={{ 
                     background: theme => theme.palette.mode === 'dark' 
@@ -579,15 +566,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       fontWeight: 'medium', 
                       color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2' 
                     }}>
-                      {device.cpu.model !== 'DIY' && device.cpu.cores}
-                    </Box>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Box sx={{ 
-                      fontWeight: 'medium', 
-                      color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2' 
-                    }}>
-                      {device.cpu.tdp}W
+                      {device.cpu.model === 'DIY' ? 'N/A' : device.cpu.cores}
                     </Box>
                   </TableCell>
                   <TableCell>
