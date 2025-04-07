@@ -378,7 +378,7 @@ body:
       description: Power adapter specifications (Wattage and DC input)
       placeholder: "120W (19V/6.32A)"
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: additional_info
