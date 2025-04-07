@@ -88,6 +88,7 @@ const path = require('path');
  * @property {string} brand - Device brand
  * @property {string} model - Device model
  * @property {string} release_date - Release year
+ * @property {string} [notes] - Optional notes/comments about the device
  * @property {CPU} cpu - CPU information
  * @property {GPU[]} [gpu] - GPU information
  * @property {Memory} memory - Memory information
@@ -109,6 +110,19 @@ function validateMiniPC(data) {
   // Basic validation of required fields
   if (!data.id || !data.brand || !data.model) {
     throw new Error('Missing required fields: id, brand, or model');
+  }
+
+  // Validate notes format if present
+  if (data.notes) {
+    if (typeof data.notes !== 'string') {
+      throw new Error('Notes must be a string');
+    }
+    const notes = data.notes.trim().split('\n');
+    for (const note of notes) {
+      if (!note.trim().startsWith('-')) {
+        throw new Error(`Each note line must start with a dash (-). Invalid line: "${note.trim()}"`);
+      }
+    }
   }
 
   // Check if this is a DIY/barebones machine

@@ -3,6 +3,7 @@ export interface MiniPC {
   brand: string;
   model: string;
   release_date: string;
+  notes?: string; // Optional notes/comments about the device
   cpu: {
     brand: string;
     model: string;

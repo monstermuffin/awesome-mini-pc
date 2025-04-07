@@ -47,6 +47,22 @@ function validateRequiredFields(data, path, errors, deviceFile) {
     }
   }
   
+  // Validate notes format if present
+  if (data.notes) {
+    const notes = data.notes.trim().split('\n');
+    for (const note of notes) {
+      if (!note.trim().startsWith('-')) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `Each note line must start with a dash (-). Invalid line: "${note.trim()}"`,
+          path: `${path}.notes`,
+          critical: false
+        });
+      }
+    }
+  }
+  
   // CPU required fields
   if (data.cpu) {
     const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'boost_clock', 'architecture'];

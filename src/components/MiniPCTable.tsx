@@ -1467,6 +1467,39 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     )}
                   </Grid>
                 </Grid>
+
+                {/* Notes section - moved to end and styled like other sections */}
+                {detailDevice.notes && (
+                  <Grid item xs={12} sx={{ 
+                    pt: 2, 
+                    mt: 2, 
+                    borderTop: theme => `1px solid ${theme.palette.divider}`
+                  }}>
+                    <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
+                      color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      '&::before': {
+                        content: '""',
+                        display: 'block',
+                        width: 3,
+                        height: 16,
+                        backgroundColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                        marginRight: 1,
+                        borderRadius: 1,
+                      }
+                    }}>Notes</Typography>
+                    <Typography variant="body2" component="div">
+                      {detailDevice.notes.split('\n').map((note, index) => (
+                        note.trim() && (
+                          <Typography key={index} variant="body2" sx={{ mb: 0.5 }}>
+                            {note}
+                          </Typography>
+                        )
+                      ))}
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             </DialogContent>
             <DialogActions sx={{ px: 3, py: 2 }}>

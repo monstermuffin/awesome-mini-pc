@@ -31,7 +31,7 @@ export const RANGES = {
     "max": 5200
   },
   "volume": {
-    "min": 0.53,
+    "min": 0.48,
     "max": 1.78
   }
 } as const;

@@ -387,6 +387,15 @@ body:
       description: Any other relevant information about the mini PC
       placeholder: Special features, cooling system details, etc.
 
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Any notable comments, observations, or special considerations about this device that users should be aware of
+      placeholder: "Example: Requires specific riser for PCIE use, SKU: 1234567890"
+    validations:
+      required: false
+
   - type: checkboxes
     id: confirmation
     attributes:
