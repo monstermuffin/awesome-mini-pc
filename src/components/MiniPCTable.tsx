@@ -675,9 +675,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                   <TableCell>
                     {device.dimensions?.volume && (
                       <Box sx={{ 
-                        fontWeight: 'medium', 
-                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                        whiteSpace: 'nowrap'
+                        fontWeight: 'medium'
                       }}>
                         {device.dimensions.volume.toFixed(2)}L
                       </Box>
@@ -1425,12 +1423,20 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                           {detailDevice.dimensions.width} × {detailDevice.dimensions.depth} × {detailDevice.dimensions.height} mm
                         </Typography>
                         {detailDevice.dimensions.volume && (
-                          <Typography variant="body2" sx={{ 
-                            fontWeight: 'medium',
-                            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2'
-                          }}>
-                            Volume: {detailDevice.dimensions.volume.toFixed(2)}L
-                          </Typography>
+                          <Box sx={{ mt: 1, mb: 0.5 }}>
+                            <Typography variant="subtitle2" sx={{ 
+                              fontWeight: 600, 
+                              mb: 0.5,
+                              color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                              borderBottom: theme => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.2)' : 'rgba(25,118,210,0.2)'}`,
+                              pb: 0.5
+                            }}>
+                              Volume
+                            </Typography>
+                            <Typography variant="body2">
+                              {detailDevice.dimensions.volume.toFixed(2)}L
+                            </Typography>
+                          </Box>
                         )}
                       </Grid>
                     )}
