@@ -383,7 +383,7 @@ function App() {
     }
 
     if (selectedFilters.pcieSlotTypes.size > 0) {
-      // If we're filtering by PCIe slot types, device must have matching slots
+      // If filtering by PCIe slot types, device must have matching slots
       if (!device.expansion?.pcie_slots || 
           !device.expansion.pcie_slots.some(slot => 
             selectedFilters.pcieSlotTypes.has(slot.type))) {
@@ -393,35 +393,67 @@ function App() {
 
     if (selectedFilters.deviceAge) {
       const currentYear = new Date().getFullYear();
-      const deviceYear = parseInt(device.release_date, 10);
-      if (isNaN(deviceYear)) {
-        return false;
-      }
-      const age = currentYear - deviceYear;
-      if (age < selectedFilters.deviceAge.min || age > selectedFilters.deviceAge.max) {
-        return false;
+      const oldestDeviceYear = Math.min(...Array.from(new Set(devices.map(d => d.release_date)))
+        .map(year => parseInt(year, 10))
+        .filter(year => !isNaN(year)));
+      const ageRange = {
+        min: 0,
+        max: currentYear - oldestDeviceYear
+      };
+      if (selectedFilters.deviceAge.min !== ageRange.min || 
+          selectedFilters.deviceAge.max !== ageRange.max) {
+        const deviceYear = parseInt(device.release_date, 10);
+        if (isNaN(deviceYear)) {
+          return false;
+        }
+        const age = currentYear - deviceYear;
+        if (age < selectedFilters.deviceAge.min || age > selectedFilters.deviceAge.max) {
+          return false;
+        }
       }
     }
 
     if (selectedFilters.tdp) {
-      if (device.cpu.tdp < selectedFilters.tdp.min || device.cpu.tdp > selectedFilters.tdp.max) {
-        return false;
+      const tdpRange = filterOptions?.tdpRange;
+      if (tdpRange && 
+          (selectedFilters.tdp.min !== tdpRange.min || 
+           selectedFilters.tdp.max !== tdpRange.max)) {
+        if (device.cpu.tdp < selectedFilters.tdp.min || device.cpu.tdp > selectedFilters.tdp.max) {
+          return false;
+        }
       }
     }
     if (selectedFilters.cores) {
-      if (device.cpu.cores < selectedFilters.cores.min || device.cpu.cores > selectedFilters.cores.max) {
-        return false;
+      const coreRange = filterOptions?.coreRange;
+      if (coreRange && 
+          (selectedFilters.cores.min !== coreRange.min || 
+           selectedFilters.cores.max !== coreRange.max)) {
+        if (device.cpu.cores < selectedFilters.cores.min || device.cpu.cores > selectedFilters.cores.max) {
+          return false;
+        }
       }
     }
     if (selectedFilters.memorySpeed) {
-      if (device.memory.speed < selectedFilters.memorySpeed.min || device.memory.speed > selectedFilters.memorySpeed.max) {
-        return false;
+      const memorySpeedRange = filterOptions?.memorySpeedRange;
+      if (memorySpeedRange && 
+          (selectedFilters.memorySpeed.min !== memorySpeedRange.min || 
+           selectedFilters.memorySpeed.max !== memorySpeedRange.max)) {
+        if (device.memory.speed < selectedFilters.memorySpeed.min || device.memory.speed > selectedFilters.memorySpeed.max) {
+          return false;
+        }
       }
     }
     if (selectedFilters.memoryCapacity) {
-      if (device.memory.max_capacity < selectedFilters.memoryCapacity.min || 
-          device.memory.max_capacity > selectedFilters.memoryCapacity.max) {
-        return false;
+      const memoryCapacityRange = {
+        min: 0,
+        max: Math.max(...devices.map(d => d.memory.max_capacity), 64)
+      };
+      if (selectedFilters.memoryCapacity.min !== memoryCapacityRange.min || 
+          selectedFilters.memoryCapacity.max !== memoryCapacityRange.max) {
+        if (device.memory.max_capacity < selectedFilters.memoryCapacity.min || 
+            device.memory.max_capacity > selectedFilters.memoryCapacity.max) {
+          return false;
+        }
       }
     }
 
@@ -429,7 +461,6 @@ function App() {
       if (!device.dimensions?.volume || 
           device.dimensions.volume < selectedFilters.volume.min || 
           device.dimensions.volume > selectedFilters.volume.max) {
-        // Only filter if the user has changed the volume range from the default
         const volumeRange = filterOptions?.volumeRange;
         if (!volumeRange || 
             selectedFilters.volume.min !== volumeRange.min || 
