@@ -381,6 +381,17 @@ body:
     validations:
       required: false
 
+  - type: dropdown
+    id: micro_sd_card_reader
+    attributes:
+      label: Micro SD Card Reader
+      description: Whether the system has a micro SD card reader
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: false
+
   - type: markdown
     attributes:
       value: "## Physical Specifications"

@@ -1423,6 +1423,19 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                             </Box>
                           )}
 
+                          {/* Micro SD Card Reader */}
+                          {detailDevice?.ports?.micro_sd_card_reader !== undefined && (
+                            <Box sx={{ 
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 0.5
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>Micro SD Card Reader:</Typography>
+                              <Typography variant="body2">{detailDevice?.ports?.micro_sd_card_reader ? 'Yes' : 'No'}</Typography>
+                            </Box>
+                          )}
+
                           {/* OCuLink */}
                           {detailDevice?.ports?.oculink !== undefined && (
                             <Box sx={{ 

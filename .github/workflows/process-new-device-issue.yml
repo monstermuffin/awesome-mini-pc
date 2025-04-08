@@ -84,6 +84,8 @@ jobs:
                 'Display Ports': 'display_ports',
                 'Audio Jacks': 'audio_jacks',
                 'SD Card Reader': 'sd_card_reader',
+                'Micro SD Card Reader': 'micro_sd_card_reader',
+                'IR Receiver': 'ir_receiver',
                 'Dimensions (mm)': 'dimensions',
                 'Power Adapter': 'power_adapter',
                 'Additional Information': 'additional_info'
@@ -317,6 +319,14 @@ jobs:
 
               if (data.sd_card_reader) {
                 validationData.ports.sd_card_reader = data.sd_card_reader === 'Yes';
+              }
+
+              if (data.micro_sd_card_reader) {
+                validationData.ports.micro_sd_card_reader = data.micro_sd_card_reader === 'Yes';
+              }
+
+              if (data.ir_receiver) {
+                validationData.ports.ir_receiver = data.ir_receiver === 'Yes';
               }
 
               if (data.dimensions) {
