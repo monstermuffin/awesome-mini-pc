@@ -137,7 +137,7 @@ jobs:
                 cpu: {
                   brand: data.cpu_brand,
                   model: normalizeCPUModel(data.cpu_brand, data.cpu_model),
-                  tdp: parseInt(data.cpu_tdp),
+                  tdp: data.cpu_tdp ? parseInt(data.cpu_tdp) : undefined,
                   cores: parseInt(data.cpu_cores),
                   threads: parseInt(data.cpu_threads),
                   base_clock: parseFloat(data.base_clock),

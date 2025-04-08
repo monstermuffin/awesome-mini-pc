@@ -17,7 +17,7 @@ const path = require('path');
  * @property {number} threads - Number of threads
  * @property {number} base_clock - Base clock speed in GHz
  * @property {number} boost_clock - Boost clock speed in GHz
- * @property {number} tdp - TDP in watts
+ * @property {number} [tdp] - TDP in watts (optional)
  * @property {string} [chipset] - Optional chipset information
  * @property {string} [architecture] - Optional architecture information
  * @property {CPUSocket} [socket] - Optional socket information
@@ -253,8 +253,11 @@ function extractMetadata(devices) {
       metadata.storageInterfaces.add(storage.interface);
     });
 
-    metadata.tdpRange.min = Math.min(metadata.tdpRange.min, pc.cpu.tdp);
-    metadata.tdpRange.max = Math.max(metadata.tdpRange.max, pc.cpu.tdp);
+    // Only update TDP range if TDP is defined
+    if (pc.cpu.tdp !== undefined) {
+      metadata.tdpRange.min = Math.min(metadata.tdpRange.min, pc.cpu.tdp);
+      metadata.tdpRange.max = Math.max(metadata.tdpRange.max, pc.cpu.tdp);
+    }
     
     // Only include core counts from non-DIY machines
     if (!pc.cpu.socket?.supports_cpu_swap) {
