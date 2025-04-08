@@ -23,20 +23,34 @@ def parse_core_config(core_config):
         return None
     
     types = []
-    core_parts = [part.strip() for part in core_config.split(',')]
+    lines = [line.strip() for line in core_config.split('\n') if line.strip()]
     
-    for part in core_parts:
-        match = re.match(r'^([^:]+):\s*(\d+)', part)
-        if match:
-            core_type = match.group(1).strip()
-            count = int(match.group(2).strip())
+    for line in lines:
+        core_data = {}
+        parts = [p.strip() for p in line.split(',')]
+        
+        for part in parts:
+            if not part or ':' not in part:
+                continue
+                
+            key, value = [x.strip() for x in part.split(':', 1)]
+            key_lower = key.lower()
             
-            if count > 0:
-                types.append({
-                    "type": core_type,
-                    "count": count,
-                    "boost_clock": 0
-                })
+            if key_lower == 'type':
+                core_data['type'] = value
+            elif key_lower == 'count':
+                try:
+                    core_data['count'] = int(value)
+                except ValueError:
+                    continue
+            elif key_lower == 'boost clock':
+                try:
+                    core_data['boost_clock'] = float(value)
+                except ValueError:
+                    continue
+        
+        if 'type' in core_data and 'count' in core_data and 'boost_clock' in core_data:
+            types.append(core_data)
     
     return {"types": types} if types else None
 
@@ -136,10 +150,12 @@ def create_device_yaml(extracted_data):
             "cores": int(extracted_data['cpu_cores']),
             "threads": int(extracted_data['cpu_threads']),
             "base_clock": float(extracted_data['base_clock']),
-            "boost_clock": float(extracted_data['boost_clock']) if extracted_data.get('boost_clock') and extracted_data['boost_clock'] != 'No response' else None,
             "architecture": extracted_data['cpu_architecture']
         }
     }
+    
+    if extracted_data.get('boost_clock') and extracted_data['boost_clock'] != 'No response':
+        structured_data['cpu']['boost_clock'] = float(extracted_data['boost_clock'])
     
     if 'cpu_socket_type' in extracted_data and extracted_data['cpu_socket_type'] != 'None':
         structured_data['cpu']['socket'] = {

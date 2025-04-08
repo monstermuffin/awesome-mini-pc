@@ -20,3 +20,5 @@ yarn-error.log*
 src/generated/data.json
 test_issue_body.txt
 .venv/
+test-workflow.py
+test*
