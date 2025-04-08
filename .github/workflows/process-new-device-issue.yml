@@ -402,7 +402,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.data.number,
-                labels: ['new-device', 'automated-pr']
+                labels: ['automated-pr']
               });
               
               await github.rest.issues.createComment({

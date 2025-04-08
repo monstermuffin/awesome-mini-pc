@@ -3,12 +3,13 @@ name: PR Validation
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'data/devices/**'
 
 jobs:
   validate_data:
     name: Validate Device Data
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'new-device')
     permissions:
       contents: write
       pull-requests: write
@@ -26,6 +27,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Debug - List Changed Files
+        run: |
+          echo "PR Number: ${{ github.event.pull_request.number }}"
+          echo "Changed files:"
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
 
       - name: Validate data
         id: validate
