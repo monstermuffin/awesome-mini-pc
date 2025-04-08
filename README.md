@@ -6,16 +6,37 @@ I am so fucking fed up of having to search the entire fucking internet just to f
 
 Most of the time I end up having to scour Reddit to find this information from people that already have the machine. So, there has to be a better way I keep telling myself, so here we are.
 
-## How?
-Data on machines is stored in the `data/machines` directory. Each machine is stored in a YAML file with appropriate metadata describing the machine.
+## How It Works
+The project consists of:
 
-This data is then generated into json for the frontend, built using TypeScript which shows this data in the form of a table on [Awesome Mini PC](https://awesomeminipc.com). This is all done on Github. 
+1. **Data**: Structured YAML files in `data/devices/` containing detailed specifications for each device, organized by manufacturer.
+2. **Frontend**: A React-based web application with powerful filtering capabilities to browse and compare devices.
+3. **Contribution Workflow**: GitHub Actions workflows to make contributing new devices easy.
 
-My goal is to make this as easy as possible for people to contribute to, using Github's issue templates to allow you to fill out the information and have Github automatically create a PR to add the information to the database after being reviewed.
+### Data Structure
+Each device is stored as a YAML file in its manufacturer's directory with comprehensive specifications including:
+- CPU details (model, cores, clock speeds, etc.).
+- Memory specifications.
+- Storage options.
+- Networking capabilities (Ethernet, Wi-Fi, Bluetooth).
+- Ports and expansion options.
+- Physical dimensions.
+- Power requirements.
 
-The end goal will be to have a definitive list of all the machines that are worth considering for a home lab or self-hoster.
+### Automated Contribution
+
+We use GitHub Actions to streamline the contribution process:
+1. Users submit new devices via issue templates.
+2. Our automation validates the data format.
+3. PRs are created automatically with proper formatting.
+4. After validation and review, devices are added to the database.
 
 ## Contributing
+Anyone can contribute new device information, I am counting on it for this to be a definitive resource. I've attempted to make the process as simple as possible:
 
-Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for details.
+1. Open an issue using the "New Device" template.
+2. Fill out the device specifications.
+3. Submit the issue.
+4. Our automation will handle the rest.
 
+For more detailed contribution guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md).
