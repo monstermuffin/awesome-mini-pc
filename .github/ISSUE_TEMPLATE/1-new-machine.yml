@@ -74,7 +74,7 @@ body:
     id: cpu_tdp
     attributes:
       label: CPU TDP (Watts)
-      description: Thermal Design Power in watts (not required for DIY systems)
+      description: Thermal Design Power in watts (not required for DIY systems). Best effort should be made to find the TDP, but it is not required.
       placeholder: "45"
     validations:
       required: false
