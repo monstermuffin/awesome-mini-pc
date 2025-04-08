@@ -8,6 +8,7 @@ jobs:
   validate_data:
     name: Validate Device Data
     runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'new-device')
     permissions:
       contents: write
       pull-requests: write
