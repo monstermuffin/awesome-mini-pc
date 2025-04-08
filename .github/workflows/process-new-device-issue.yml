@@ -134,19 +134,19 @@ jobs:
                 // Basic information
                 id: `${data.brand.toLowerCase()}-${data.id.toLowerCase()}`,
                 brand: data.brand,
-                model: `"${data.model}"`,
-                release_date: `"${data.release_date}"`,
+                model: data.model,
+                release_date: data.release_date,
 
                 // CPU information
                 cpu: {
                   brand: data.cpu_brand,
-                  model: `"${normalizeCPUModel(data.cpu_brand, data.cpu_model)}"`,
+                  model: normalizeCPUModel(data.cpu_brand, data.cpu_model),
                   tdp: data.cpu_tdp ? parseFloat(data.cpu_tdp) : undefined,
                   cores: parseInt(data.cpu_cores),
                   threads: parseInt(data.cpu_threads),
                   base_clock: parseFloat(data.base_clock),
                   boost_clock: data.boost_clock ? parseFloat(data.boost_clock) : undefined,
-                  architecture: `"${data.cpu_architecture}"`
+                  architecture: data.cpu_architecture
                 },
 
                 // GPU information
@@ -158,9 +158,9 @@ jobs:
                       const gpu = {};
                       parts.forEach(part => {
                         const [key, value] = part.split(':').map(s => s.trim());
-                        if (key.toLowerCase() === 'type') gpu.type = `"${value}"`;
-                        if (key.toLowerCase() === 'model') gpu.model = `"${value}"`;
-                        if (key.toLowerCase() === 'vram') gpu.vram = `"${value}"`;
+                        if (key.toLowerCase() === 'type') gpu.type = value;
+                        if (key.toLowerCase() === 'model') gpu.model = value;
+                        if (key.toLowerCase() === 'vram') gpu.vram = value;
                       });
                       return gpu;
                     })
@@ -171,7 +171,7 @@ jobs:
                   slots: parseInt(data.memory_slots),
                   type: data.memory_type,
                   speed: parseFloat(data.memory_speed),
-                  module_type: `"${data.memory_module_type}"`,
+                  module_type: data.memory_module_type,
                   max_capacity: parseInt(data.memory_max)
                 },
 
@@ -185,10 +185,10 @@ jobs:
                       parts.forEach(part => {
                         const [key, value] = part.split(':').map(s => s.trim());
                         const key_lower = key.toLowerCase();
-                        if (key_lower === 'type') storage.type = `"${value}"`;
-                        if (key_lower === 'form factor') storage.form_factor = `"${value}"`;
-                        if (key_lower === 'interface') storage.interface = `"${value}"`;
-                        if (key_lower === 'alt interface') storage.alt_interface = `"${value}"`;
+                        if (key_lower === 'type') storage.type = value;
+                        if (key_lower === 'form factor') storage.form_factor = value;
+                        if (key_lower === 'interface') storage.interface = value;
+                        if (key_lower === 'alt interface') storage.alt_interface = value;
                       });
                       return storage;
                     })
@@ -204,18 +204,18 @@ jobs:
                       parts.forEach(part => {
                         const [key, value] = part.split(':').map(s => s.trim());
                         const key_lower = key.toLowerCase();
-                        if (key_lower === 'type') eth.speed = `"${value}"`;
-                        if (key_lower === 'chipset') eth.chipset = `"${value}"`;
-                        if (key_lower === 'interface') eth.interface = `"${value}"`;
+                        if (key_lower === 'type') eth.speed = value;
+                        if (key_lower === 'chipset') eth.chipset = value;
+                        if (key_lower === 'interface') eth.interface = value;
                       });
                       eth.ports = 1;
                       return eth;
                     }) : [],
                   ...(data.wifi_standard && {
                     wifi: {
-                      chipset: `"${data.wifi_chipset}"`,
-                      standard: `"${data.wifi_standard}"`,
-                      bluetooth: `"${data.bluetooth_version}"`
+                      chipset: data.wifi_chipset,
+                      standard: data.wifi_standard,
+                      bluetooth: data.bluetooth_version
                     }
                   })
                 },
@@ -234,12 +234,12 @@ jobs:
                         parts.forEach(part => {
                           const [key, value] = part.split(':').map(s => s.trim());
                           const key_lower = key.toLowerCase();
-                          if (key_lower === 'type') port.type = `"${value}"`;
-                          if (key_lower === 'speed') port.speed = `"${value}"`;
+                          if (key_lower === 'type') port.type = value;
+                          if (key_lower === 'speed') port.speed = value;
                           if (key_lower === 'count') port.count = parseInt(value);
-                          if (key_lower === 'alt mode') port.alt_mode = `"${value}"`;
-                          if (key_lower === 'max resolution') port.max_resolution = `"${value}"`;
-                          if (key_lower === 'thunderbolt') port.thunderbolt_version = `"${value}"`;
+                          if (key_lower === 'alt mode') port.alt_mode = value;
+                          if (key_lower === 'max resolution') port.max_resolution = value;
+                          if (key_lower === 'thunderbolt') port.thunderbolt_version = value;
                         });
 
                         if (port.type.toLowerCase().includes('usb4') || port.type.toLowerCase().includes('type-c')) {
@@ -265,9 +265,9 @@ jobs:
                           const [key, value] = part.split(':').map(s => s.trim());
                           const key_lower = key.toLowerCase();
                           if (key_lower === 'count') port.count = parseInt(value);
-                          if (key_lower === 'version') port.version = `"${value}"`;
-                          if (key_lower === 'form factor') port.form_factor = `"${value}"`;
-                          if (key_lower === 'max resolution') port.max_resolution = `"${value}"`;
+                          if (key_lower === 'version') port.version = value;
+                          if (key_lower === 'form factor') port.form_factor = value;
+                          if (key_lower === 'max resolution') port.max_resolution = value;
                         });
                         return port;
                       });
@@ -305,7 +305,7 @@ jobs:
                   return {
                     power: {
                       adapter_wattage: parseFloat(match ? match[1] : data.power_adapter),
-                      ...(match && { dc_input: `"${match[2]}V/${match[3]}A"` })
+                      ...(match && { dc_input: `${match[2]}V/${match[3]}A` })
                     }
                   };
                 })())
@@ -318,8 +318,9 @@ jobs:
                 indent: 2,
                 skipInvalid: true,
                 quotingType: '"',
-                forceQuotes: false,
-                lineWidth: -1
+                forceQuotes: true,
+                lineWidth: -1,
+                noRefs: true
               });
               
               const brand = data.brand.toLowerCase();
