@@ -342,6 +342,30 @@ body:
 
   - type: markdown
     attributes:
+      value: |
+        ### Port and Interface Cheatsheet
+        
+        **USB Speed Reference:**
+        - USB 2.0: 480Mbps
+        - USB 3.0 / USB 3.1 Gen1 / USB 3.2 Gen1: 5Gbps
+        - USB 3.1 Gen2 / USB 3.2 Gen2: 10Gbps
+        - USB 3.2 Gen2x2: 20Gbps
+        - USB4 Gen2x2: 20Gbps
+        - USB4 Gen3x2: 40Gbps
+        
+        **DisplayPort Version Reference:**
+        - DP 1.2: 4K@60Hz
+        - DP 1.3: 4K@120Hz or 8K@30Hz
+        - DP 1.4: 4K@144Hz or 8K@30Hz (with DSC: 8K@60Hz)
+        - DP 2.0: 8K@60Hz or 4K@240Hz
+        
+        **HDMI Version Reference:**
+        - HDMI 1.4: 4K@30Hz
+        - HDMI 2.0: 4K@60Hz
+        - HDMI 2.1: 8K@60Hz or 4K@120Hz
+
+  - type: markdown
+    attributes:
       value: "## Ports"
 
   - type: textarea
@@ -350,11 +374,16 @@ body:
       label: USB Ports
       description: |
         List all USB ports with their specifications:
+        - Type: USB 2.0, Speed: 480Mbps, Count: 2
+        - Type: USB 3.0, Speed: 5Gbps, Count: 2
+        - Type: USB 3.1 Gen1, Speed: 5Gbps, Count: 2
         - Type: USB 3.2 Gen2, Speed: 10Gbps, Count: 2
-        - Type: USB4, Count: 2, Alt Mode: DisplayPort, Max Resolution: 8K@30Hz, Thunderbolt: 3
+        - Type: USB-C, Count: 1, Speed: 10Gbps, Alt Mode: DisplayPort 1.2
         - Type: USB-C, Count: 1, Alt Mode: DisplayPort 2.0, Power Delivery: 100W
+        - Type: USB4, Count: 2, Speed: 40Gbps, Alt Mode: DisplayPort, Max Resolution: 8K@30Hz, Thunderbolt: 3
       placeholder: |
-        - Type: USB 3.2 Gen2, Speed: 10Gbps, Count: 2
+        - Type: USB 3.0, Speed: 5Gbps, Count: 2
+        - Type: USB-C, Count: 1, Speed: 10Gbps, Alt Mode: DisplayPort 1.2
     validations:
       required: true
 
@@ -366,8 +395,12 @@ body:
         List all display outputs with their specifications:
         - Type: HDMI, Count: 1, Version: 2.1, Form Factor: Full-size, Max Resolution: 8K@60Hz
         - Type: DisplayPort, Count: 1, Version: 2.0, Form Factor: Mini, Max Resolution: 4K@144Hz
+        - Type: USB-C, Count: 1, Alt Mode: DisplayPort 1.2, Max Resolution: 4K@60Hz
+        - Type: USB-C, Count: 1, Alt Mode: DisplayPort 1.4, Max Resolution: 4K@120Hz
+        - Type: USB-C, Count: 1, Alt Mode: DisplayPort 2.0, Max Resolution: 8K@60Hz, DSC: Yes
       placeholder: |
         - Type: HDMI, Count: 1, Version: 2.1, Form Factor: Full-size, Max Resolution: 4K@60Hz
+        - Type: USB-C, Count: 1, Alt Mode: DisplayPort 1.2, Max Resolution: 4K@60Hz
     validations:
       required: true
 
@@ -435,6 +468,16 @@ body:
       placeholder: "Example: Requires specific riser for PCIE use, SKU: 1234567890"
     validations:
       required: false
+
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Submission Confirmation
+      options:
+        - label: I have verified all the information provided is accurate
+          required: true
+        - label: I understand this submission will be reviewed before being added
+          required: true
 
   - type: checkboxes
     id: confirmation
