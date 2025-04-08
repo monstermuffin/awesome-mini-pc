@@ -67,6 +67,7 @@ jobs:
                 'Boost Clock (GHz)': 'boost_clock',
                 'CPU Architecture': 'cpu_architecture',
                 'CPU Socket Type': 'cpu_socket_type',
+                'Core Configuration': 'cpu_core_config',
                 'GPU Models': 'gpu_models',
                 'Memory Type': 'memory_type',
                 'Memory Module Type': 'memory_module_type',
@@ -161,6 +162,30 @@ jobs:
                   type: data.cpu_socket_type,
                   supports_cpu_swap: true
                 };
+              }
+
+              // Add CPU core configuration if specified
+              if (data.cpu_core_config) {
+                const coreTypes = data.cpu_core_config.split('\n')
+                  .filter(line => line.trim().startsWith('Type:'))
+                  .map(line => {
+                    const parts = line.split(',').map(p => p.trim());
+                    const coreType = {};
+                    parts.forEach(part => {
+                      const [key, value] = part.split(':').map(s => s.trim());
+                      const key_lower = key.toLowerCase();
+                      if (key_lower === 'type') coreType.type = value;
+                      if (key_lower === 'count') coreType.count = parseInt(value);
+                      if (key_lower === 'boost clock') coreType.boost_clock = parseFloat(value);
+                    });
+                    return coreType;
+                  });
+                  
+                if (coreTypes.length > 0) {
+                  validationData.cpu.core_config = {
+                    types: coreTypes
+                  };
+                }
               }
 
               // Parse GPU models

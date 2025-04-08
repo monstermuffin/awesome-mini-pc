@@ -141,6 +141,29 @@ body:
 
   - type: markdown
     attributes:
+      value: "## CPU Core Configuration (Optional)"
+
+  - type: markdown
+    attributes:
+      value: |
+        This section is for CPUs with heterogeneous core types (like Intel's P-cores and E-cores).
+        Skip this section for CPUs with homogenous cores.
+
+  - type: textarea
+    id: cpu_core_config
+    attributes:
+      label: Core Configuration
+      description: |
+        List each core type with its count and boost clock (one per line):
+        - Type: P-core, Count: 6, Boost Clock: 5.0
+        - Type: E-core, Count: 8, Boost Clock: 3.6
+      placeholder: |
+        - Type: P-core, Count: 6, Boost Clock: 5.0
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
       value: "## GPU Information"
 
   - type: textarea

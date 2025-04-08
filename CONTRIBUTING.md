@@ -128,6 +128,11 @@ When submitting a new device, you'll need to fill out the following information:
 - **CPU Architecture**: Architecture name (Alder Lake, Zen 4, etc.).
 - **CPU Socket Type**: For upgradeable systems, what socket is used (LGA1700, AM5, etc.).
   - This is required only for DIY/configurable systems.
+- **CPU Core Configuration** (Optional): For heterogeneous CPU architectures (like Intel's hybrid P-core/E-core designs). You can get this information from [Intel Ark.](https://www.intel.com/content/www/us/en/ark.html)
+  - List each core type using the format "Type: [Core Type], Count: [Number], Boost Clock: [GHz]"
+  - Example: `Type: P-core, Count: 6, Boost Clock: 5.0`
+  - Example: `Type: E-core, Count: 8, Boost Clock: 3.6`
+  - The total count of all core types should match the CPU Cores value.
 
 ### Graphics Information
 - **GPU Models**: List each GPU using the format "Type: Integrated/Discrete, Model: GPU Model, VRAM: Amount" (one per line).
