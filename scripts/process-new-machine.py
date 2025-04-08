@@ -246,12 +246,20 @@ def create_device_yaml(extracted_data):
                         eth['interface'] = value
                 networking['ethernet'].append(eth)
     
-    if all(k in extracted_data for k in ['wifi_standard', 'wifi_chipset', 'bluetooth_version']):
-        networking['wifi'] = {
-            "chipset": extracted_data['wifi_chipset'],
-            "standard": extracted_data['wifi_standard'].replace("Wi-Fi ", "WiFi "),
-            "bluetooth": extracted_data['bluetooth_version']
-        }
+    networking['wifi'] = {
+        "standard": "None",
+        "chipset": "None",
+        "bluetooth": "None"
+    }
+    
+    if 'wifi_standard' in extracted_data and extracted_data['wifi_standard']:
+        networking['wifi']['standard'] = extracted_data['wifi_standard'].replace("Wi-Fi ", "WiFi ")
+    
+    if 'wifi_chipset' in extracted_data and extracted_data['wifi_chipset']:
+        networking['wifi']['chipset'] = extracted_data['wifi_chipset']
+    
+    if 'bluetooth_version' in extracted_data and extracted_data['bluetooth_version']:
+        networking['wifi']['bluetooth'] = extracted_data['bluetooth_version']
     
     structured_data['networking'] = networking
     
