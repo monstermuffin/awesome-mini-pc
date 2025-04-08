@@ -107,12 +107,10 @@ const path = require('path');
  * @returns {boolean} - Whether the data is valid
  */
 function validateMiniPC(data) {
-  // Basic validation of required fields
   if (!data.id || !data.brand || !data.model) {
     throw new Error('Missing required fields: id, brand, or model');
   }
 
-  // Validate notes format if present !!not tested properly!!
   if (data.notes) {
     if (typeof data.notes !== 'string') {
       throw new Error('Notes must be a string');
@@ -125,10 +123,8 @@ function validateMiniPC(data) {
     }
   }
 
-  // Check if this is a DIY/barebones machine
   const isDIYMachine = data.cpu?.socket?.supports_cpu_swap === true;
 
-  // Convert single GPU to array for consistency
   if (data.gpu && !Array.isArray(data.gpu)) {
     const oldGpu = /** @type {any} */ (data.gpu);
     /** @type {GPU} */
@@ -139,7 +135,6 @@ function validateMiniPC(data) {
     data.gpu = [singleGpu];
   }
 
-  // Validate GPU array if present
   if (data.gpu) {
     if (!Array.isArray(data.gpu)) {
       throw new Error('GPU must be an array');
@@ -156,31 +151,26 @@ function validateMiniPC(data) {
     });
   }
 
-  // Validate required fields
   if (!data.cpu || !data.cpu.brand || !data.cpu.model) {
     throw new Error('Missing required CPU fields: brand or model');
   }
 
-  // For DIY machines, require socket information
   if (isDIYMachine) {
     if (!data.cpu.socket?.type) {
       throw new Error('DIY machine must specify CPU socket type');
     }
   } else {
-    // For non-DIY machines, require full CPU specs
     if (data.cpu.cores === undefined || data.cpu.threads === undefined || 
         data.cpu.base_clock === undefined || data.cpu.boost_clock === undefined) {
       throw new Error('Missing required CPU performance specifications');
     }
   }
 
-  // Memory validation
   if (!data.memory || !data.memory.type || !data.memory.speed || data.memory.slots === undefined || 
       !data.memory.module_type || !data.memory.max_capacity) {
     throw new Error('Missing or invalid memory information');
   }
 
-  // For soldered memory, slots can be 0
   if (data.memory.module_type !== 'Soldered' && data.memory.slots < 1) {
     throw new Error('Non-soldered memory must have at least 1 slot');
   }
@@ -193,21 +183,18 @@ function validateMiniPC(data) {
     throw new Error('Missing or invalid networking information');
   }
 
-  // Check if wifi has chipset
   if (!data.networking.wifi.chipset) {
     throw new Error('WiFi chipset is required');
   }
 
-  // Validate ethernet entries
   for (const eth of data.networking.ethernet) {
     if (!eth.chipset || !eth.speed) {
       throw new Error('Ethernet entries must include chipset and speed');
     }
   }
 
-  // Calculate volume
   if (data.dimensions?.width && data.dimensions?.depth && data.dimensions?.height) {
-    const calculatedVolume = (data.dimensions.width * data.dimensions.depth * data.dimensions.height) / 1000000; // Convert from mm³ to liters
+    const calculatedVolume = (data.dimensions.width * data.dimensions.depth * data.dimensions.height) / 1000000;
     data.dimensions.volume = Math.round(calculatedVolume * 100) / 100;
   }
 
@@ -253,13 +240,11 @@ function extractMetadata(devices) {
       metadata.storageInterfaces.add(storage.interface);
     });
 
-    // Only update TDP range if TDP is defined
     if (pc.cpu.tdp !== undefined) {
       metadata.tdpRange.min = Math.min(metadata.tdpRange.min, pc.cpu.tdp);
       metadata.tdpRange.max = Math.max(metadata.tdpRange.max, pc.cpu.tdp);
     }
     
-    // Only include core counts from non-DIY machines
     if (!pc.cpu.socket?.supports_cpu_swap) {
       metadata.coreRange.min = Math.min(metadata.coreRange.min, pc.cpu.cores);
       metadata.coreRange.max = Math.max(metadata.coreRange.max, pc.cpu.cores);
