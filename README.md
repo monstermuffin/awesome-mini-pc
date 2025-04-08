@@ -23,14 +23,6 @@ Each device is stored as a YAML file in its manufacturer's directory with compre
 - Physical dimensions.
 - Power requirements.
 
-### Automated Contribution
-
-We use GitHub Actions to streamline the contribution process:
-1. Users submit new devices via issue templates.
-2. Our automation validates the data format.
-3. PRs are created automatically with proper formatting.
-4. After validation and review, devices are added to the database.
-
 ## Contributing
 Anyone can contribute new device information, I am counting on it for this to be a definitive resource. I've attempted to make the process as simple as possible:
 
