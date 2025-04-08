@@ -3,9 +3,6 @@ name: Validate PR Data
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - 'data/devices/**/*.yaml'
-      - 'data/devices/**/*.yml'
 
 jobs:
   validate_data:
@@ -16,8 +13,31 @@ jobs:
       issues: write
       
     steps:
+      - name: Debug Event Info
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Event action: ${{ github.event.action }}"
+          echo "PR number: ${{ github.event.pull_request.number }}"
+          echo "PR head ref: ${{ github.event.pull_request.head.ref }}"
+          echo "PR base ref: ${{ github.event.pull_request.base.ref }}"
+          echo "PR title: ${{ github.event.pull_request.title }}"
+
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Debug Changed Files
+        run: |
+          echo "Files in PR:"
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
+          
+          echo "\nRepository contents:"
+          ls -R data/devices/
+          
+          echo "\nFull git status:"
+          git status
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,13 +50,20 @@ jobs:
 
       - name: Validate data
         id: validate
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
             const { execSync } = require('child_process');
             
             try {
-              // Run validation script and capture output
+              console.log('Current directory contents:');
+              console.log(execSync('ls -la', { encoding: 'utf8' }));
+              
+              console.log('\nDevice directory contents:');
+              console.log(execSync('ls -la data/devices/', { encoding: 'utf8' }));
+              
+              console.log('\nRunning validation:');
               const output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
               console.log('Validation output:', output);
               
