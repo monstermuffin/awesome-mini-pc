@@ -178,43 +178,65 @@ def main():
                 print(f"::error::Could not verify branch '{branch_name}' creation after retries.")
                 sys.exit(1)
 
-        existing_file_sha = None
         try:
             print(f"Checking for existing file '{file_path}' on branch '{branch_name}'...")
             existing_file_content = repo.get_contents(file_path, ref=branch_name)
             existing_file_sha = existing_file_content.sha
             print(f"File exists (SHA: {existing_file_sha}). Will update.")
+            print("File update logic using Git Data API is not implemented in this refactor yet.")
+            print("Proceeding assuming creation path...")
+            existing_file_sha = None
         except UnknownObjectException:
-            print("File does not exist. Will create.")
+            print("File does not exist. Will create using Git Data API.")
+            existing_file_sha = None
             
         try:
-            print(f"--- Preparing to call update_file ---")
-            print(f"  Path: {file_path}")
-            print(f"  Branch: {branch_name}")
-            print(f"  SHA (existing): {existing_file_sha}")
-            print(f"  Message: {commit_message}")
-            print(f"  Content Type: {type(yaml_content)}")
-            print(f"  Content Length: {len(yaml_content)}")
-            content_preview = yaml_content[:100].replace('\n', '\\n')
-            print(f"  Content Preview (first 100 chars): {content_preview}") 
-            print(f"------------------------------------")
+            print(f"--- Preparing Git Data operations for {file_path} on {branch_name} ---")
             
-            print(f"Creating/Updating file '{file_path}' on branch '{branch_name}'...")
-            update_result = repo.update_file(
-                path=file_path,
+            print("Creating git blob...")
+            blob = repo.create_git_blob(yaml_content, "utf-8")
+            print(f"Blob created: {blob.sha}")
+
+            print("Getting latest commit on branch...")
+            branch_ref = repo.get_git_ref(f"heads/{branch_name}")
+            latest_commit_sha = branch_ref.object.sha
+            latest_commit = repo.get_git_commit(latest_commit_sha)
+            print(f"Latest commit SHA: {latest_commit_sha}")
+
+            base_tree_sha = latest_commit.tree.sha
+            print(f"Base tree SHA: {base_tree_sha}")
+
+            element = {
+                'path': file_path,
+                'mode': '100644',
+                'type': 'blob',
+                'sha': blob.sha
+            }
+
+            print("Creating new git tree...")
+            new_tree = repo.create_git_tree([element], base_tree=base_tree_sha) 
+            print(f"New tree SHA: {new_tree.sha}")
+
+            print("Creating new git commit...")
+            new_commit = repo.create_git_commit(
                 message=commit_message,
-                content=yaml_content,
-                branch=branch_name,
-                sha=existing_file_sha
+                tree=new_tree,
+                parents=[latest_commit]
             )
-            print(f"File commit SHA: {update_result['commit'].sha}")
-        except GithubException as file_error:
-            print(f"::error::GitHub error creating/updating file '{file_path}': {file_error}")
-            print(f"Status: {file_error.status}, Data: {file_error.data}")
+            print(f"New commit SHA: {new_commit.sha}")
+
+            print(f"Updating branch reference '{branch_name}' to {new_commit.sha}...")
+            branch_ref.edit(sha=new_commit.sha)
+            print(f"Branch reference updated successfully.")
+            update_result = {'commit': new_commit}
+
+        except GithubException as git_data_error:
+            print(f"::error::GitHub error during Git Data operations: {git_data_error}")
+            print(f"Status: {git_data_error.status}, Data: {git_data_error.data}")
             sys.exit(1)
-        except Exception as file_e:
-            print(f"::error::Unexpected error creating/updating file '{file_path}': {type(file_e).__name__}")
-            print(f"Error details: {repr(file_e)}")
+        except Exception as git_data_e:
+            print(f"::error::Unexpected error during Git Data operations: {type(git_data_e).__name__}")
+            print(f"Error details: {repr(git_data_e)}")
             sys.exit(1)
 
         time.sleep(3) 
