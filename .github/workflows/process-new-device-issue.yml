@@ -20,17 +20,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create requirements file
+        run: |
+          mkdir -p .github/workflows
+          echo "pyyaml==6.0.2" > .github/workflows/requirements.txt
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-          cache-dependency-path: |
-            .github/workflows/requirements.txt
-
-      - name: Create requirements file
-        run: |
-          echo "pyyaml==6.0.2" > .github/workflows/requirements.txt
+          cache-dependency-path: .github/workflows/requirements.txt
 
       - name: Install Python dependencies
         run: |
