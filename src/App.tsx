@@ -15,6 +15,10 @@ import {
   TextField,
   InputAdornment,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -22,6 +26,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import SearchIcon from '@mui/icons-material/Search';
+import InfoIcon from '@mui/icons-material/Info';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { loadMiniPCData } from './utils/dataLoader';
@@ -95,6 +100,7 @@ function App() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [selectedDevices, setSelectedDevices] = useState<Set<string>>(new Set());
   const [isCompareMode, setIsCompareMode] = useState(false);
+  const [infoDialogOpen, setInfoDialogOpen] = useState(false);
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
@@ -494,6 +500,14 @@ function App() {
     setSearchQuery('');
   };
 
+  const handleInfoOpen = () => {
+    setInfoDialogOpen(true);
+  };
+
+  const handleInfoClose = () => {
+    setInfoDialogOpen(false);
+  };
+
   const filterDrawer = (
     <Drawer
       variant={isMobile ? "temporary" : "persistent"}
@@ -716,6 +730,15 @@ function App() {
                   >
                     <GitHubIcon />
                   </IconButton>
+                  <Tooltip title="About">
+                    <IconButton
+                      color="inherit"
+                      aria-label="info"
+                      onClick={handleInfoOpen}
+                    >
+                      <InfoIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
               </>
             )}
@@ -785,6 +808,102 @@ function App() {
           </Box>
         </Box>
       </Box>
+
+      {/* Info Dialog */}
+      <Dialog
+        open={infoDialogOpen}
+        onClose={handleInfoClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            backgroundImage: theme => theme.palette.mode === 'dark'
+              ? 'linear-gradient(180deg, rgba(24,24,24,1) 0%, rgba(33,33,33,1) 100%)'
+              : 'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(250,250,250,1) 100%)',
+            boxShadow: theme => theme.palette.mode === 'dark'
+              ? '0 8px 32px rgba(0,0,0,0.4)'
+              : '0 8px 32px rgba(0,0,0,0.1)',
+          }
+        }}
+      >
+        <DialogTitle sx={{ 
+          borderBottom: theme => `1px solid ${theme.palette.divider}`,
+          background: theme => theme.palette.mode === 'dark'
+            ? 'linear-gradient(90deg, rgba(21,101,192,0.1) 0%, rgba(30,136,229,0.1) 100%)'
+            : 'linear-gradient(90deg, rgba(33,150,243,0.05) 0%, rgba(66,165,245,0.05) 100%)',
+          px: 3,
+          py: 2,
+        }}>
+          <Typography variant="h6" component="div" sx={{ 
+            fontWeight: 600,
+            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }}>
+            <InfoIcon fontSize="small" />
+            About
+          </Typography>
+        </DialogTitle>
+        <DialogContent dividers sx={{ px: 3, py: 2 }}>
+          <Typography variant="body1" paragraph>
+            Welcome to Awesome Mini PC - An attempt to become the defacto resource for finding the best mini PCs.
+          </Typography>
+          <Typography variant="body1" paragraph>
+            This project aims to catalog and compare various SFF and similar devices available on the market, making it easier to compare specifications and features across different brands and models.
+          </Typography>
+          <Typography variant="subtitle1" sx={{ 
+            fontWeight: 600, 
+            mt: 2, 
+            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+          }}>
+            Features
+          </Typography>
+          <Typography component="ul" variant="body2">
+            <li>Compare technical specifications across multiple mini PC models.</li>
+            <li>Filter by CPU, memory, storage, and other specifications.</li>
+            <li>Detailed information about expansion options, connectivity, and dimensions.</li>
+            <li>Comparison of selected devices.</li>
+          </Typography>
+          <Typography variant="subtitle1" sx={{ 
+            fontWeight: 600, 
+            mt: 2, 
+            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+          }}>
+            Contributing
+          </Typography>
+          <Typography variant="body2" paragraph>
+            This is an open-source project. If you'd like to contribute by adding new devices or updating specifications, please visit our GitHub repository. Contributions, corrections, and suggestions are welcome!
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button 
+            variant="outlined" 
+            onClick={handleInfoClose}
+            sx={{
+              borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
+              color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+              '&:hover': {
+                borderColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.08)' : 'rgba(25,118,210,0.08)',
+              }
+            }}
+          >
+            Close
+          </Button>
+          <Button 
+            variant="contained"
+            component={Link}
+            href="https://github.com/monstermuffin/awesome-mini-pcs"
+            target="_blank"
+            rel="noopener noreferrer"
+            endIcon={<GitHubIcon />}
+          >
+            View on GitHub
+          </Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   );
 }
