@@ -207,5 +207,27 @@ If you are comfortable with Git and YAML, you can submit devices directly via pu
 - Reference existing YAML files in the repository as templates.
 - Nested lists and objects must follow the exact structure of the existing device files.
 
+## Modifying Existing Devices or Correcting Information
+If you need to update information for an existing device or correct errors in the database:
+
+1. **Fork the repository** to your GitHub account.
+2. **Find the device YAML file** you want to modify in the `data/devices/` directory.
+3. **Make the necessary changes** while maintaining the correct YAML structure.
+4. **Create a pull request** with:
+   - A clear title describing the change (e.g., "Correct memory speed for Dell OptiPlex 7050").
+   - A detailed description explaining:
+     - What you are changing.
+     - Why the change is needed.
+     - Evidence supporting the correction (links to official documentation, screenshots, test results, etc.).
+5. **Provide proof** whenever possible:
+   - For hardware specs, links to manufacturer documentation or screenshots from system information tools.
+   - For capabilities, test results or official specifications.
+   - For corrections, explain why the current information is incorrect.
+
+### Additional Guidelines for Corrections
+- **Minor corrections** (typos, formatting) does not need extensive explanation.
+- **Specification changes** require verifiable evidence (e.g., device manual, manufacturer website, diagnostic tool output).
+- **Performance-related changes** (e.g., maximum RAM speed, maximum display resolution) should include test results or official documentation.
+
 # Thank You!
 Thank you for your contribution.
