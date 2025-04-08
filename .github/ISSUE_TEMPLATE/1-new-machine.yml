@@ -281,12 +281,21 @@ body:
     validations:
       required: false
 
-  - type: input
+  - type: dropdown
     id: bluetooth
     attributes:
       label: Bluetooth Version
-      description: Bluetooth version if available (e.g., 5.2)
-      placeholder: "5.2"
+      description: Bluetooth version if available
+      options:
+        - "3.0"
+        - "4.0"
+        - "4.1"
+        - "4.2"
+        - "5.0"
+        - "5.1"
+        - "5.2"
+        - "5.3"
+        - "5.4"
     validations:
       required: false
 
