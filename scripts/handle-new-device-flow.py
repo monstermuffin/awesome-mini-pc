@@ -129,7 +129,8 @@ def main():
         except UnknownObjectException:
             print(f"Creating branch '{branch_name}' from sha {source_sha}...")
             repo.create_git_ref(ref=f"refs/heads/{branch_name}", sha=source_sha)
-            print("Branch created.")
+            print("Branch created. Waiting for propagation...")
+            time.sleep(5)
 
         existing_file_sha = None
         try:
