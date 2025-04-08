@@ -83,13 +83,6 @@ jobs:
               }
               
               console.log('Validation output:', output);
-              
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pullNumber,
-                body: '✅ Data validation passed! All device files are correctly formatted.\n\nThis PR is now ready for manual review and merge.'
-              });
 
               const { data: pr } = await github.rest.pulls.get({
                 owner: context.repo.owner,
@@ -162,13 +155,6 @@ jobs:
               }
 
               const pullNumber = context.payload.pull_request.number;
-
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pullNumber,
-                body: errorMessage
-              });
 
               const { data: pr } = await github.rest.pulls.get({
                 owner: context.repo.owner,

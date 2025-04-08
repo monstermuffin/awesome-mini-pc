@@ -174,26 +174,13 @@ def main():
             pr.add_to_labels('automated-pr')
             print("Label added.")
         
-        comment_body = f"Thank you for your submission! A Pull Request has been created/updated: #{pr.number}\n\nThe PR will now be automatically validated. If any issues are found, they will be reported in the PR and here."
-        print(f"Commenting on issue #{issue_number}...")
-        issue.create_comment(comment_body)
-        print("Comment posted.")
-
     except GithubException as e:
         print(f"::error::GitHub API error during Git/PR operations: {e}")
         print(f"Status: {e.status}")
         print(f"Data: {e.data}")
-        try:
-            issue.create_comment(f"Failed to automatically create PR due to an error: {e}. Please check the workflow logs.")
-        except Exception as comment_e:
-            print(f"::error::Could not even comment on the original issue about the failure: {comment_e}")
         sys.exit(1)
     except Exception as e:
         print(f"::error::An unexpected error occurred: {e}")
-        try:
-            issue.create_comment(f"Failed to automatically create PR due to an unexpected script error: {e}. Please check the workflow logs.")
-        except Exception as comment_e:
-             print(f"::error::Could not even comment on the original issue about the failure: {comment_e}")
         sys.exit(1)
 
 if __name__ == "__main__":
