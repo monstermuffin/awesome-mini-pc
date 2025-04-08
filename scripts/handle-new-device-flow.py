@@ -195,7 +195,8 @@ def main():
             print(f"  Message: {commit_message}")
             print(f"  Content Type: {type(yaml_content)}")
             print(f"  Content Length: {len(yaml_content)}")
-            print(f"  Content Preview (first 100 chars): {yaml_content[:100].replace('\n', '\\n')}") # Replace newlines for log readability
+            content_preview = yaml_content[:100].replace('\n', '\\n')
+            print(f"  Content Preview (first 100 chars): {content_preview}") 
             print(f"------------------------------------")
             
             print(f"Creating/Updating file '{file_path}' on branch '{branch_name}'...")
