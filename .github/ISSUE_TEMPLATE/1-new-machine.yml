@@ -454,8 +454,8 @@ body:
   - type: input
     id: power_adapter
     attributes:
-      label: Power Adapter
-      description: Power adapter specifications (Wattage and DC input)
+      label: Power Adapter Output
+      description: Power adapter specifications (Wattage and DC input). Example, "65W (19V/3.42A)"
       placeholder: "120W (19V/6.32A)"
     validations:
       required: false
