@@ -187,15 +187,24 @@ def main():
         except UnknownObjectException:
             print("File does not exist. Will create.")
             
-        print(f"Creating/Updating file '{file_path}' on branch '{branch_name}'...")
-        update_result = repo.update_file(
-            path=file_path,
-            message=commit_message,
-            content=yaml_content,
-            branch=branch_name,
-            sha=existing_file_sha
-        )
-        print(f"File commit SHA: {update_result['commit'].sha}")
+        try:
+            print(f"Creating/Updating file '{file_path}' on branch '{branch_name}'...")
+            update_result = repo.update_file(
+                path=file_path,
+                message=commit_message,
+                content=yaml_content,
+                branch=branch_name,
+                sha=existing_file_sha
+            )
+            print(f"File commit SHA: {update_result['commit'].sha}")
+        except GithubException as file_error:
+            print(f"::error::GitHub error creating/updating file '{file_path}': {file_error}")
+            print(f"Status: {file_error.status}, Data: {file_error.data}")
+            sys.exit(1)
+        except Exception as file_e:
+            print(f"::error::Unexpected error creating/updating file '{file_path}': {type(file_e).__name__}")
+            print(f"Error details: {repr(file_e)}")")
+            sys.exit(1)
 
         time.sleep(3) 
 
@@ -222,12 +231,12 @@ def main():
             print("Label added.")
         
     except GithubException as e:
-        print(f"::error::GitHub API error during Git/PR operations: {e}")
+        print(f"::error::Outer GitHub API error: {e}")
         print(f"Status: {e.status}")
         print(f"Data: {e.data}")
         sys.exit(1)
     except Exception as e:
-        print(f"::error::An unexpected error occurred: {e}")
+        print(f"::error::Outer unexpected error: {type(e).__name__} - {repr(e)}")
         sys.exit(1)
 
 if __name__ == "__main__":
