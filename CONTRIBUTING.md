@@ -1,6 +1,57 @@
 # Contributing to Awesome Mini PC
 Thank you for your interest in contributing to Awesome Mini PC! Contributing a device means the device will be added to the [Awesome Mini PC](https://awesomeminipc.com) database once it has been validated.
 
+## Finding Device Information
+The key to a valuable contribution is detailed and accurate information. Here's how to find specifications for your device:
+
+### Why Detailed Information Matters
+Most manufacturers don't publish comprehensive technical details about their mini PCs, this is why I created this project.
+
+Collecting as much detailed information as possible about devices allows this database to become the comprehensive resource it is intended to be.
+
+### Tools for Windows Users:
+- **Device Manager**: For detailed hardware identification with chipset information.
+   - Press `Win+X` and select "Device Manager".
+   - Expand categories like "Network adapters", "Display adapters", etc.
+   - Right-click on a device and select "Properties" > "Details" > "Hardware Ids" for model numbers.
+
+- **System Information**: For general specifications.
+   - Press `Win+R`, type `msinfo32` and press Enter.
+   - Navigate through categories to find detailed hardware information.
+
+- **HWiNFO**: A comprehensive hardware information tool.
+   - Download from [hwinfo.com](https://www.hwinfo.com/)
+   - Provides detailed information about every component.
+
+- **CPU-Z and GPU-Z**: Specialized tools for CPU and GPU details.
+   - Download from [cpuid.com](https://www.cpuid.com/softwares/cpu-z.html) and [techpowerup.com](https://www.techpowerup.com/gpuz/).
+
+### Tools for Linux Users:
+<need to add some information here for linux users. Maybe make a script to print all this info?>
+
+### Physical Inspection:
+For some details, physical inspection may be necessary:
+- Count the number and type of ports visually.
+- Open the case (if possible) to check memory slots, M.2 slots, etc.
+- Look for model numbers printed on chips.
+- Check labels on the power adapter for wattage and voltage.
+
+### BIOS/UEFI Settings:
+The BIOS/UEFI can provide information about:
+- Memory speed and timing capabilities.
+- Storage interface options.
+- CPU power limits.
+- Available PCIe lanes.
+
+## Handling Different Variants of the Same Model
+When submitting different variants of the same model:
+- **Use the parent ID with a descriptor**: If adding a variant of an existing model, use the parent ID followed by a hyphen and the differentiating feature:
+   - Example: For a Minisforum HX90 with a Ryzen 5950X: `minisforum-hx90-5950x`.
+   - Example: For an Intel NUC with a different CPU: `intel-nuc12-i7`.
+- **For Barebones/DIY versions**: Append `-diy` to indicate a configurable version:
+   - Example: `asrock-deskmini-b660-diy`.
+- **For DIY systems**, mark the CPU-specific fields as "DIY" or specify the range of supported processors. A DIY system in this context is a system that allows you to add/remove/change the CPU.
+
 ## Contributing a New Device via GitHub Issues (Recommended)
 1. **Create a new issue** using the [New Device](https://github.com/monstermuffin/awesome-mini-pc/issues/new?template=1-new-machine.yml) template.
 2. **Fill out the form** with as much accurate information as possible. More about this is below.
@@ -53,9 +104,17 @@ When submitting a new device, you'll need to fill out the following information:
   - Use the `Alt Interface` field when a storage slot supports multiple interfaces (e.g., many M.2 slots can operate in either PCIe mode or SATA mode). This helps users understand the full flexibility of the storage options.
 
 ### Networking Information
-- **Wi-Fi Standard**: Wi-Fi 6, Wi-Fi 6E, etc. (or "None").
-- **Wi-Fi Chipset**: Model of the Wi-Fi controller.
-- **Bluetooth Version**: Bluetooth version supported.
+- **WiFi Standard**: WiFi 6, WiFi 6E, etc. (or "None"). Leave blank if not supported.
+  - Example: `WiFi 6E` for 6GHz support
+  - Example: `WiFi 5` for 802.11ac
+- **WiFi Chipset**: Model of the WiFi controller.
+  - Example: `Intel AX211`
+  - Example: `MediaTek MT7921K`
+  - Example: `Realtek RTL8852BE`
+- **Bluetooth Version**: Bluetooth version supported. Leave blank if not supported.
+  - Example: `5.2` for Bluetooth 5.2
+  - Example: `4.2` for Bluetooth 4.2
+  - You can add additional details in parentheses like `5.3 (LE Audio)` if the device supports specific Bluetooth features
 - **Ethernet Ports**: List each port with format (one per line):
   - `Type: 2.5GbE, Chipset: Intel I225-V, Interface: RJ45`
   - `Type: 10GbE, Chipset: Intel X550-AT2, Interface: SFP+`
@@ -103,3 +162,6 @@ If you are comfortable with Git and YAML, you can submit devices directly via pu
 - Reference existing YAML files in the repository as templates.
 - Nested lists and objects must follow the exact structure of the existing device files.
 
+# Thank You!
+
+Thank you for your contribution. 
