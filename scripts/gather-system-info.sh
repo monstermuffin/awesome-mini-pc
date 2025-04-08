@@ -41,87 +41,87 @@ PACKAGES=(
     "inxi:inxi:comprehensive system info"
 )
 
-install_if_needed() {
-    local package=$1
-    local command=$2
-    local description=$3
-    if ! command_exists "$command"; then
-        missing_packages+=("$package ($description)")
-        if [ "$install_mode" = "auto" ] && [ "$SUDO_AVAILABLE" = true ]; then
-            echo -e "${YELLOW}Installing $package...${NC}"
-            if command_exists apt-get; then
-                sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y "$package" >/dev/null 2>&1
-            elif command_exists dnf; then
-                sudo dnf install -y "$package" >/dev/null 2>&1
-            elif command_exists yum; then
-                sudo yum install -y "$package" >/dev/null 2>&1
-            elif command_exists pacman; then
-                sudo pacman -Sy --noconfirm "$package" >/dev/null 2>&1
-            elif command_exists zypper; then
-                sudo zypper install -y "$package" >/dev/null 2>&1
-            else
-                echo -e "${RED}Could not install $package automatically. Please install it manually.${NC}"
-                return 1
-            fi
-            if [ $? -eq 0 ]; then
-                installed_packages+=("$package")
-            fi
-        else
-            return 1
-        fi
-    fi
-    return 0
-}
-
-echo -e "${CYAN}This script requires the following packages:${NC}"
-for pkg_info in "${PACKAGES[@]}"; do
-    IFS=':' read -r package command description <<< "$pkg_info"
-    if ! command_exists "$command"; then
-        echo -e "  - ${YELLOW}$package${NC} ($description) - ${RED}Not installed${NC}"
-    else
-        echo -e "  - ${GREEN}$package${NC} ($description) - ${GREEN}Installed${NC}"
-    fi
-done
-echo
-
-if [ "$SUDO_AVAILABLE" = true ]; then
-    echo -n -e "${YELLOW}Would you like to automatically install missing packages? [Y/n] ${NC}"
-    read -r response
-    response=${response:-Y}
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-        install_mode="auto"
-    else
-        install_mode="manual"
-        echo -e "${YELLOW}Please install missing packages manually and run the script again.${NC}"
-    fi
-else
-    install_mode="manual"
-    echo -e "${RED}Cannot install packages without sudo privileges.${NC}"
-fi
-
 missing_packages=()
 installed_packages=()
+all_installed=true
 
-echo -e "${CYAN}Checking required tools...${NC}"
 for pkg_info in "${PACKAGES[@]}"; do
     IFS=':' read -r package command description <<< "$pkg_info"
-    install_if_needed "$package" "$command" "$description" || true
+    if ! command_exists "$command"; then
+        missing_packages+=("$package ($description)")
+        all_installed=false
+    fi
 done
 
-if [ ${#installed_packages[@]} -gt 0 ]; then
-    echo -e "${GREEN}Installed packages:${NC}"
-    for pkg in "${installed_packages[@]}"; do
-        echo -e "  - $pkg"
-    done
-fi
-
-if [ ${#missing_packages[@]} -gt 0 ]; then
-    echo -e "${YELLOW}Missing packages (some information may be incomplete):${NC}"
-    for pkg in "${missing_packages[@]}"; do
-        echo -e "  - $pkg"
-    done
-fi
+echo -e "${CYAN}This script uses the following packages:${NC}"
+for pkg_info in "${PACKAGES[@]}"; do
+    IFS=':' read -r package command description <<< "$pkg_info"
+    if command_exists "$command"; then
+        echo -e "  - ${GREEN}$package${NC} ($description) - ${GREEN}Installed${NC}"
+    else
+        echo -e "  - ${YELLOW}$package${NC} ($description) - ${RED}Not installed${NC}"
+    fi
+done
 echo
+
+if [ "$all_installed" = false ]; then
+    if [ "$SUDO_AVAILABLE" = true ]; then
+        echo -n -e "${YELLOW}Would you like to automatically install missing packages? [Y/n] ${NC}"
+        read -r response
+        response=${response:-Y}
+        if [[ "$response" =~ ^[Yy]$ ]]; then
+            install_mode="auto"
+        else
+            install_mode="manual"
+            echo -e "${YELLOW}Please install missing packages manually and run the script again.${NC}"
+        fi
+    else
+        install_mode="manual"
+        echo -e "${RED}Cannot install packages without sudo privileges.${NC}"
+    fi
+
+    if [ "$install_mode" = "auto" ]; then
+        echo -e "${CYAN}Installing missing packages...${NC}"
+        for pkg_info in "${PACKAGES[@]}"; do
+            IFS=':' read -r package command description <<< "$pkg_info"
+            if ! command_exists "$command"; then
+                echo -e "${YELLOW}Installing $package...${NC}"
+                if command_exists apt-get; then
+                    sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y "$package" >/dev/null 2>&1
+                elif command_exists dnf; then
+                    sudo dnf install -y "$package" >/dev/null 2>&1
+                elif command_exists yum; then
+                    sudo yum install -y "$package" >/dev/null 2>&1
+                elif command_exists pacman; then
+                    sudo pacman -Sy --noconfirm "$package" >/dev/null 2>&1
+                elif command_exists zypper; then
+                    sudo zypper install -y "$package" >/dev/null 2>&1
+                else
+                    echo -e "${RED}Could not install $package automatically. Please install it manually.${NC}"
+                    continue
+                fi
+                if [ $? -eq 0 ]; then
+                    installed_packages+=("$package")
+                fi
+            fi
+        done
+
+        if [ ${#installed_packages[@]} -gt 0 ]; then
+            echo -e "${GREEN}Installed packages:${NC}"
+            for pkg in "${installed_packages[@]}"; do
+                echo -e "  - $pkg"
+            done
+        fi
+
+        if [ ${#missing_packages[@]} -gt 0 ]; then
+            echo -e "${YELLOW}Missing packages (some information may be incomplete):${NC}"
+            for pkg in "${missing_packages[@]}"; do
+                echo -e "  - $pkg"
+            done
+        fi
+        echo
+    fi
+fi
 
 get_system_info() {
     echo -e "${GREEN}=========================================================${NC}"
@@ -174,11 +174,22 @@ get_system_info() {
     fi
     echo
     
-    echo -e "${CYAN}CPU TDP (estimate):${NC}"
+    echo -e "${CYAN}CPU TDP and Boost Clock (estimated):${NC}"
     if command_exists inxi; then
-        inxi -C | grep "watts"
+        inxi -C | grep -v "rev:" | sed 's/ rev: [0-9]//g'
     else
-        echo "TDP information not available. Please check the CPU specifications online."
+        echo "TDP and Boost Clock information not available. Please check the CPU specifications online."
+    fi
+    
+    if command_exists cpupower && [ "$SUDO_AVAILABLE" = true ]; then
+        echo
+        echo "CPU Boost Clock (from cpupower):"
+        sudo cpupower frequency-info | grep "boost state" || echo "Boost clock not found with cpupower"
+    fi
+    
+    if [ -f /sys/devices/system/cpu/intel_pstate/max_perf_pct ]; then
+        echo
+        echo "Max Performance Percentage (Intel pstate): $(cat /sys/devices/system/cpu/intel_pstate/max_perf_pct)%"
     fi
     echo
     
@@ -188,7 +199,7 @@ get_system_info() {
     
     echo -e "${CYAN}GPU Information:${NC}"
     if command_exists lspci; then
-        lspci -v | grep -A 12 -E "VGA|3D|Display" | grep -v "Kernel driver" | sed 's/^\s*//'
+        lspci -v | grep -A 12 -E "VGA|3D|Display" | grep -v "Kernel driver" | sed 's/ (rev [0-9a-z][0-9a-z]*)//g' | sed 's/^\s*//'
     fi
     echo
     
@@ -234,7 +245,7 @@ get_system_info() {
     
     echo -e "${CYAN}Storage Interfaces:${NC}"
     if command_exists lspci; then
-        lspci -v | grep -A 5 -E "SATA|AHCI|NVM|RAID" | grep -v "Kernel driver" | sed 's/^\s*//'
+        lspci -v | grep -A 5 -E "SATA|AHCI|NVM|RAID" | grep -v "Kernel driver" | sed 's/ (rev [0-9a-z][0-9a-z]*)//g' | sed 's/^\s*//'
     fi
     echo
     
@@ -244,7 +255,7 @@ get_system_info() {
     
     echo -e "${CYAN}WiFi and Bluetooth:${NC}"
     if command_exists lspci; then
-        lspci -v | grep -A 10 -i "Network controller" | grep -v "Kernel driver" | sed 's/^\s*//'
+        lspci -v | grep -A 10 -i "Network controller" | grep -v "Kernel driver" | sed 's/ (rev [0-9a-z][0-9a-z]*)//g' | sed 's/^\s*//'
     fi
     echo
     if command_exists lsusb; then
@@ -280,10 +291,18 @@ get_system_info() {
     
     echo -e "${CYAN}Ethernet Controllers:${NC}"
     if command_exists lspci; then
-        lspci -v | grep -A 10 -i "Ethernet controller" | grep -v "Kernel driver" | sed 's/^\s*//'
+        lspci -v | grep -A 10 -i "Ethernet controller" | grep -v "Kernel driver" | sed 's/ (rev [0-9a-z][0-9a-z]*)//g' | sed 's/^\s*//'
     fi
     echo
-
+    
+    echo -e "${CYAN}Network Interfaces:${NC}"
+    if command_exists ip; then
+        ip -br link show
+    elif command_exists ifconfig; then
+        ifconfig | grep -E "^[a-z]" | awk '{print $1}'
+    fi
+    echo
+    
     echo -e "${GREEN}=========================================================${NC}"
     echo -e "${BLUE}              EXPANSION SLOT INFORMATION${NC}"
     echo -e "${GREEN}=========================================================${NC}"
@@ -305,7 +324,7 @@ get_system_info() {
     
     echo -e "${CYAN}USB Controllers:${NC}"
     if command_exists lspci; then
-        lspci -v | grep -A 7 -i "USB controller" | grep -v "Kernel driver" | sed 's/^\s*//'
+        lspci -v | grep -A 7 -i "USB controller" | grep -v "Kernel driver" | sed 's/ (rev [0-9a-z][0-9a-z]*)//g' | sed 's/^\s*//'
     fi
     echo
     
@@ -377,12 +396,10 @@ get_system_info() {
     echo -e "${BLUE}                PHYSICAL INFORMATION${NC}"
     echo -e "${GREEN}=========================================================${NC}"
     
-    # Physical dimensions
     echo -e "${CYAN}Physical Dimensions:${NC}"
     echo "Please measure the device manually (width x depth x height in mm)"
     echo
     
-    # Power supply
     echo -e "${CYAN}Power Supply Information:${NC}"
     echo "Please check the power adapter label for wattage and voltage information"
     if command_exists inxi; then
@@ -397,7 +414,7 @@ get_system_info() {
     
     if command_exists inxi; then
         echo -e "${CYAN}Full System Report:${NC}"
-        inxi -Fxxxz
+        inxi -Fxxxz | sed 's/ rev: [0-9]//g' | sed 's/ (rev [0-9a-z][0-9a-z]*)//g'
     fi
     
     echo
@@ -406,6 +423,7 @@ get_system_info() {
     echo -e "${GREEN}=========================================================${NC}"
     echo
     echo -e "${CYAN}This section contains data formatted for easy copying into the submission template:${NC}"
+    echo -e "${YELLOW}Note: Please review and fill in missing information before submitting${NC}"
     echo
     
     if command_exists dmidecode && [ "$SUDO_AVAILABLE" = true ]; then
@@ -427,39 +445,84 @@ get_system_info() {
     if command_exists lscpu; then
         cpu_model=$(lscpu | grep "Model name" | sed 's/.*:\s*//')
         cpu_cores=$(lscpu | grep "^CPU(s):" | sed 's/.*:\s*//')
-        cpu_threads=$(lscpu | grep "Thread(s) per core" | sed 's/.*:\s*//')
-        cpu_threads=$((cpu_cores * cpu_threads))
+        threads_per_core=$(lscpu | grep "Thread(s) per core" | sed 's/.*:\s*//')
+        cores_per_socket=$(lscpu | grep "Core(s) per socket" | sed 's/.*:\s*//')
+        
+        real_cores=$((cores_per_socket))
+        cpu_threads=$((real_cores * threads_per_core))
+        
         cpu_freq=$(lscpu | grep "CPU max MHz" | sed 's/.*:\s*//')
-        cpu_freq=$(echo "scale=1; $cpu_freq/1000" | bc)
+        
+        if [ -n "$cpu_freq" ]; then
+            cpu_ghz=$(echo "scale=2; $cpu_freq/1000" | bc)
+        else
+            cpu_ghz="Unknown"
+        fi
+        
+        if [[ $cpu_model =~ Intel.*@\ ([0-9.]+)GHz ]]; then
+            base_ghz="${BASH_REMATCH[1]}"
+            if [ -n "$cpu_freq" ]; then
+                calculated_base=$(echo "scale=2; $base_ghz * 1000" | bc | cut -d. -f1)
+                cpu_freq_int=$(echo "$cpu_freq" | cut -d. -f1)
+                calculated_base_int=$(echo "$calculated_base" | cut -d. -f1)
+                if [ "$cpu_freq_int" -gt "$calculated_base_int" ]; then
+                    boost_ghz="$cpu_ghz"
+                else
+                    boost_ghz="N/A (No Boost? - Pls check)"
+                fi
+            else
+                boost_ghz="Unknown"
+            fi
+        else
+            base_ghz="$cpu_ghz"
+            boost_ghz="Unknown"
+        fi
     else
         cpu_model="Unknown"
-        cpu_cores="Unknown"
+        real_cores="Unknown"
         cpu_threads="Unknown"
-        cpu_freq="Unknown"
-    fi
-    
-    if command_exists dmidecode && [ "$SUDO_AVAILABLE" = true ]; then
-        memory_type=$(sudo dmidecode -t memory | grep -m1 "Type:" | grep -v "Unknown" | sed 's/.*: //')
-        mem_slots=$(sudo dmidecode -t memory | grep -c "Memory Device")
-        max_mem=$(sudo dmidecode -t memory | grep "Maximum Capacity" | sed 's/.*: //')
-    else
-        memory_type="Unknown"
-        mem_slots="Unknown"
-        max_mem="Unknown"
+        base_ghz="Unknown"
+        boost_ghz="Unknown"
     fi
     
     if command_exists lspci; then
-        gpu_model=$(lspci | grep -i "VGA\|3D\|Display" | sed 's/.*: //')
+        gpu_model=$(lspci | grep -i "VGA\|3D\|Display" | sed 's/.*: //' | sed 's/ (rev [0-9a-z][0-9a-z]*)//g')
     else
         gpu_model="Unknown"
     fi
     
     if command_exists lspci; then
-        eth_controller=$(lspci | grep -i "Ethernet controller" | sed 's/.*: //')
-        wifi_controller=$(lspci | grep -i "Network controller" | sed 's/.*: //')
+        eth_controller=$(lspci | grep -i "Ethernet controller" | sed 's/.*: //' | sed 's/ (rev [0-9a-z][0-9a-z]*)//g')
+        wifi_controller=$(lspci | grep -i "Network controller" | sed 's/.*: //' | sed 's/ (rev [0-9a-z][0-9a-z]*)//g')
     else
         eth_controller="Unknown"
         wifi_controller="Unknown"
+    fi
+    
+    if command_exists dmidecode && [ "$SUDO_AVAILABLE" = true ]; then
+        memory_type=$(sudo dmidecode -t memory | grep -A20 "Memory Device" | grep "Type:" | grep -v "Unknown" | head -1 | sed 's/.*: //')
+        memory_speed=$(sudo dmidecode -t memory | grep -m1 "Configured Memory Speed:" | sed 's/.*: //')
+        mem_slots=$(sudo dmidecode -t memory | grep -c "Memory Device")
+        max_mem=$(sudo dmidecode -t memory | grep "Maximum Capacity" | sed 's/.*: //')
+    else
+        memory_type="Unknown"
+        if command_exists lshw && [ "$SUDO_AVAILABLE" = true ]; then
+            mem_info=$(sudo lshw -class memory | grep -i "description:")
+            if [[ $mem_info =~ DDR5 ]]; then
+                memory_type="DDR5"
+            elif [[ $mem_info =~ DDR4 ]]; then
+                memory_type="DDR4"
+            elif [[ $mem_info =~ DDR3 ]]; then
+                memory_type="DDR3"
+            elif [[ $mem_info =~ LPDDR4 ]]; then
+                memory_type="LPDDR4"
+            elif [[ $mem_info =~ LPDDR5 ]]; then
+                memory_type="LPDDR5"
+            fi
+        fi
+        memory_speed="Unknown"
+        mem_slots="Unknown"
+        max_mem="Unknown"
     fi
     
     echo "Brand: $manufacturer"
@@ -469,13 +532,19 @@ get_system_info() {
     echo "CPU Brand: $(echo "$cpu_model" | grep -o -E '(Intel|AMD|ARM|Qualcomm)')"
     echo "CPU Model: $cpu_model"
     echo "CPU TDP: (Please check online specifications)"
-    echo "CPU Cores: $cpu_cores"
+    echo "CPU Cores: $real_cores"
     echo "CPU Threads: $cpu_threads"
-    echo "Base/Boost Clock: $cpu_freq GHz"
+    echo "Base Clock: $base_ghz GHz"
+    if [ "$boost_ghz" = "N/A (No Boost)" ]; then
+        echo "Boost Clock: N/A (No Boost)"
+    else
+        echo "Boost Clock: $boost_ghz GHz"
+    fi
     echo 
     echo "GPU: Type: Integrated, Model: $gpu_model"
     echo 
     echo "Memory Type: $memory_type"
+    echo "Memory Speed: $memory_speed"
     echo "Memory Slots: $mem_slots"
     echo "Maximum Memory: $max_mem"
     echo 
@@ -502,6 +571,13 @@ echo
 echo -e "${YELLOW}Information has been saved to${NC} ${CYAN}awesome-mini-pc-info.txt${NC}"
 echo -e "${YELLOW}Please review the information and add it to your Awesome Mini PC submission.${NC}"
 echo -e "${YELLOW}Some information may need to be manually verified or measured.${NC}"
+echo -e "${YELLOW}Important: You should manually verify and complete the following items:${NC}"
+echo -e "  - ${CYAN}CPU TDP${NC}: Check manufacturer's website"
+echo -e "  - ${CYAN}Boost Clock${NC}: Verify on manufacturer's website if not detected"
+echo -e "  - ${CYAN}USB Port count${NC}: Physically count the ports on your device"
+echo -e "  - ${CYAN}Display outputs${NC}: Check which ports are available (HDMI, DisplayPort, etc.)"
+echo -e "  - ${CYAN}Dimensions${NC}: Measure your mini PC (width x depth x height in mm)"
+echo -e "  - ${CYAN}Power adapter${NC}: Check the label for voltage and wattage information"
 echo
 
 if [ ${#installed_packages[@]} -gt 0 ]; then
