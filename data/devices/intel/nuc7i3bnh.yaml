@@ -13,6 +13,13 @@ cpu:
 gpu:
   - type: Integrated
     model: Intel HD Graphics 620
+dimensions:
+  width: 114.3
+  depth: 111.8
+  height: 50.8
+power:
+  adapter_wattage: 65
+  dc_input: 19V/3.42A
 memory:
   slots: 2
   type: DDR4
@@ -47,10 +54,3 @@ ports:
     max_resolution: 4K@60Hz
   sd_card_reader: false
   micro_sd_card_reader: true
-dimensions:
-  width: 114
-  depth: 111
-  height: 50
-power:
-  adapter_wattage: 65
-  dc_input: 19V/3.42A
