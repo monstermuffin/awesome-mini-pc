@@ -3,30 +3,12 @@ name: PR Validation
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'data/devices/**'
 
 jobs:
-  check_changes:
-    name: Check Changed Files
-    runs-on: ubuntu-latest
-    outputs:
-      device_changes: ${{ steps.filter.outputs.device_changes }}
-    
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            device_changes:
-              - 'data/devices/**'
-
   validate_data:
     name: Validate Device Data
-    needs: check_changes
-    if: needs.check_changes.outputs.device_changes == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -54,7 +36,32 @@ jobs:
             const { execSync } = require('child_process');
             
             try {
-              const output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
+              // Get changed files in the PR
+              const { data: files } = await github.rest.pulls.listFiles({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number
+              });
+              
+              const deviceFiles = files
+                .filter(file => file.filename.startsWith('data/devices/'))
+                .map(file => file.filename);
+              
+              if (deviceFiles.length === 0) {
+                console.log('No device files changed in this PR');
+                return;
+              }
+              
+              console.log('Validating device files:', deviceFiles.join(', '));
+              
+              // Validate all files or just the changed ones
+              let output;
+              if (deviceFiles.length > 0) {
+                output = execSync(`node scripts/validate-data.cjs ${deviceFiles.join(' ')}`, { encoding: 'utf8' });
+              } else {
+                output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
+              }
+              
               console.log('Validation output:', output);
               
               await github.rest.issues.createComment({
