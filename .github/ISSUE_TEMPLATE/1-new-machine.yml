@@ -239,21 +239,21 @@ body:
   - type: dropdown
     id: wifi_standard
     attributes:
-      label: WiFi Standard
+      label: Wi-Fi Standard
       options:
-        - WiFi 4
-        - WiFi 5
-        - WiFi 6
-        - WiFi 6E
-        - WiFi 7
+        - Wi-Fi 4
+        - Wi-Fi 5
+        - Wi-Fi 6
+        - Wi-Fi 6E
+        - Wi-Fi 7
     validations:
       required: false
 
   - type: input
     id: wifi_chipset
     attributes:
-      label: WiFi Chipset
-      description: The model of the WiFi chipset (if WiFi is present)
+      label: Wi-Fi Chipset
+      description: The model of the Wi-Fi chipset (if Wi-Fi is present)
       placeholder: Intel AX200
     validations:
       required: false
