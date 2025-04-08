@@ -3,12 +3,33 @@ name: PR Validation
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - 'data/devices/**'
 
 jobs:
+  check_changes:
+    name: Check Changed Files
+    runs-on: ubuntu-latest
+    outputs:
+      device_changes: ${{ steps.filter.outputs.device_changes }}
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            device_changes:
+              - 'data/devices/**'
+              
+      - name: Debug Changed Files
+        run: echo "Changes in data/devices? ${{ steps.filter.outputs.device_changes }}"
+
   validate_data:
     name: Validate Device Data
+    needs: check_changes
+    if: needs.check_changes.outputs.device_changes == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
