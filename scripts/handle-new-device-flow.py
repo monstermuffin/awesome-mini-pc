@@ -203,7 +203,7 @@ def main():
             sys.exit(1)
         except Exception as file_e:
             print(f"::error::Unexpected error creating/updating file '{file_path}': {type(file_e).__name__}")
-            print(f"Error details: {repr(file_e)}")")
+            print(f"Error details: {repr(file_e)}")
             sys.exit(1)
 
         time.sleep(3) 
