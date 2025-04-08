@@ -377,13 +377,28 @@ jobs:
                 }
               }
 
+              let existingFile;
+              try {
+                existingFile = await github.rest.repos.getContent({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  path: filePath,
+                  ref: branchName
+                });
+              } catch (error) {
+                if (error.status !== 404) {
+                  throw error;
+                }
+              }
+
               await github.rest.repos.createOrUpdateFileContents({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 path: filePath,
                 message: `Add device data for ${data.brand} ${data.model}`,
                 content: Buffer.from(yamlString).toString('base64'),
-                branch: branchName
+                branch: branchName,
+                ...(existingFile && { sha: existingFile.data.sha })
               });
               
               const pr = await github.rest.pulls.create({
