@@ -121,12 +121,26 @@ def main():
         print("Getting main branch SHA...")
         source_branch = repo.get_branch("main")
         source_sha = source_branch.commit.sha
+        print(f"Got main branch SHA: {source_sha}")
         
+        branch_exists = False
         try:
             print(f"Checking if branch '{branch_name}' exists...")
             repo.get_branch(branch_name)
             print(f"Branch '{branch_name}' already exists.")
+            branch_exists = True
         except UnknownObjectException:
+            print(f"Branch '{branch_name}' not found (UnknownObjectException), proceeding with creation.")
+            branch_exists = False
+        except GithubException as e:
+            print(f"::error::Unexpected GitHub error checking for branch '{branch_name}': {e}")
+            print(f"Status: {e.status}, Data: {e.data}")
+            sys.exit(1)
+        except Exception as e:
+            print(f"::error::Non-GitHub error checking for branch '{branch_name}': {e}")
+            sys.exit(1)
+            
+        if not branch_exists:
             try:
                 print(f"Attempting to create ref 'refs/heads/{branch_name}' from sha {source_sha}...")
                 repo.create_git_ref(ref=f"refs/heads/{branch_name}", sha=source_sha)
@@ -138,20 +152,31 @@ def main():
                 sys.exit(1) 
 
             max_retries = 5
-            retry_delay = 3
+            retry_delay = 3 
+            verified = False
             for attempt in range(max_retries):
                 try:
                     time.sleep(retry_delay)
                     repo.get_branch(branch_name)
                     print(f"Branch '{branch_name}' confirmed available.")
-                    break
-                except UnknownObjectException:
-                    if attempt < max_retries - 1:
-                        print(f"Branch not yet available, retrying ({attempt + 1}/{max_retries})...")
+                    verified = True
+                    break 
+                except GithubException as verify_error:
+                    if verify_error.status == 404 and attempt < max_retries - 1:
+                        print(f"Branch not yet available (404), retrying ({attempt + 1}/{max_retries})...")
+                    elif attempt < max_retries - 1:
+                         print(f"::warning::Error verifying branch '{branch_name}' ({verify_error.status}), retrying ({attempt + 1}/{max_retries})...")
                     else:
-                        print(f"::error::Branch '{branch_name}' not available after multiple retries.")
-                        raise
-            
+                        print(f"::error::Branch '{branch_name}' verification failed after multiple retries: {verify_error}")
+                        sys.exit(1) 
+                except Exception as verify_e:
+                    print(f"::error::Unexpected error during branch verification loop: {verify_e}")
+                    sys.exit(1)
+
+            if not verified:
+                print(f"::error::Could not verify branch '{branch_name}' creation after retries.")
+                sys.exit(1)
+
         existing_file_sha = None
         try:
             print(f"Checking for existing file '{file_path}' on branch '{branch_name}'...")
