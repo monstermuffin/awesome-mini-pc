@@ -127,11 +127,31 @@ def main():
             repo.get_branch(branch_name)
             print(f"Branch '{branch_name}' already exists.")
         except UnknownObjectException:
-            print(f"Creating branch '{branch_name}' from sha {source_sha}...")
-            repo.create_git_ref(ref=f"refs/heads/{branch_name}", sha=source_sha)
-            print("Branch created. Waiting for propagation...")
-            time.sleep(5)
+            try:
+                print(f"Attempting to create ref 'refs/heads/{branch_name}' from sha {source_sha}...")
+                repo.create_git_ref(ref=f"refs/heads/{branch_name}", sha=source_sha)
+                print("Branch ref creation initiated. Verifying availability...")
+            except GithubException as create_error:
+                print(f"::error::Failed to create branch '{branch_name}' directly: {create_error}")
+                print(f"Status: {create_error.status}")
+                print(f"Data: {create_error.data}")
+                sys.exit(1) 
 
+            max_retries = 5
+            retry_delay = 3
+            for attempt in range(max_retries):
+                try:
+                    time.sleep(retry_delay)
+                    repo.get_branch(branch_name)
+                    print(f"Branch '{branch_name}' confirmed available.")
+                    break
+                except UnknownObjectException:
+                    if attempt < max_retries - 1:
+                        print(f"Branch not yet available, retrying ({attempt + 1}/{max_retries})...")
+                    else:
+                        print(f"::error::Branch '{branch_name}' not available after multiple retries.")
+                        raise
+            
         existing_file_sha = None
         try:
             print(f"Checking for existing file '{file_path}' on branch '{branch_name}'...")
