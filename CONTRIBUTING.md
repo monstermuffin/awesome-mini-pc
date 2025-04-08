@@ -27,7 +27,52 @@ Collecting as much detailed information as possible about devices allows this da
    - Download from [cpuid.com](https://www.cpuid.com/softwares/cpu-z.html) and [techpowerup.com](https://www.techpowerup.com/gpuz/).
 
 ### Tools for Linux Users:
-<need to add some information here for linux users. Maybe make a script to print all this info?>
+I've created a bash script that can automatically gather most of the information needed for your submission. To use it:
+
+1. **Download the script**:
+   ```bash
+   wget https://raw.githubusercontent.com/monstermuffin/awesome-mini-pc/main/scripts/gather-system-info.sh
+   ```
+
+2. **Make it executable**:
+   ```bash
+   chmod +x gather-system-info.sh
+   ```
+
+3. **Run with sudo for full information**:
+   ```bash
+   sudo ./gather-system-info.sh
+   ```
+
+4. **Review the output**: The script saves all information to `awesome-mini-pc-info.txt` in the current directory.
+
+**Note about software installation**: The script will attempt to install the following packages if they're not already present on your system:
+- `pciutils` - for PCI device information (lspci command)
+- `usbutils` - for USB device information (lsusb command)
+- `lshw` - for detailed hardware listing
+- `dmidecode` - for BIOS/firmware information
+- `inxi` - for comprehensive system information
+
+The script will use your distribution's package manager (apt, dnf, yum, pacman, or zypper) to install them.
+
+The script will automatically detect:
+- System manufacturer and model.
+- CPU details (model, cores, architecture, socket).
+- GPU information.
+- Memory specifications (type, slots, speed).
+- Storage devices and interfaces.
+- Network controllers (Ethernet, WiFi, Bluetooth).
+- Expansion slots.
+- USB and port information.
+
+Alternatively, you can manually run these commands:
+- `lspci -v`: List PCI devices with detailed information.
+- `lsusb -v`: List USB devices with detailed information.
+- `lshw -C network`: List network hardware.
+- `sudo dmidecode`: System information from BIOS.
+- `inxi -Fxxxz`: Comprehensive system information.
+
+Alternatively, alternatively, you can get this information yourself. You're a Linux user, you can figure it out.
 
 ### Physical Inspection:
 For some details, physical inspection may be necessary:
@@ -163,5 +208,4 @@ If you are comfortable with Git and YAML, you can submit devices directly via pu
 - Nested lists and objects must follow the exact structure of the existing device files.
 
 # Thank You!
-
-Thank you for your contribution. 
+Thank you for your contribution.
