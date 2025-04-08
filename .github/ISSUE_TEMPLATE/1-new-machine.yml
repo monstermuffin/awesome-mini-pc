@@ -474,17 +474,7 @@ body:
     attributes:
       label: Submission Confirmation
       options:
-        - label: I have verified all the information provided is accurate
+        - label: I have verified all the information provided is accurate.
           required: true
-        - label: I understand this submission will be reviewed before being added
-          required: true
-
-  - type: checkboxes
-    id: confirmation
-    attributes:
-      label: Submission Confirmation
-      options:
-        - label: I have verified all the information provided is accurate
-          required: true
-        - label: I understand this submission will be reviewed before being added
+        - label: I understand this submission will be reviewed before being added.
           required: true 
