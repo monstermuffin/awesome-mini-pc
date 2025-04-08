@@ -398,15 +398,6 @@ jobs:
                 maintainer_can_modify: true
               });
 
-              await github.rest.repos.createCommitStatus({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                sha: latestCommit.data.commit.sha,
-                state: 'pending',
-                context: 'PR Validation',
-                description: 'Waiting for validation checks to run'
-              });
-
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

@@ -1,14 +1,12 @@
-name: Validate PR Data
+name: PR Validation
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - 'data/devices/**/*.yaml'
-      - 'data/devices/**/*.yml'
 
 jobs:
   validate_data:
+    name: Validate Device Data
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -18,15 +16,6 @@ jobs:
       checks: write
       
     steps:
-      - name: Debug Event Info
-        run: |
-          echo "Event name: ${{ github.event_name }}"
-          echo "Event action: ${{ github.event.action }}"
-          echo "PR number: ${{ github.event.pull_request.number }}"
-          echo "PR head ref: ${{ github.event.pull_request.head.ref }}"
-          echo "PR base ref: ${{ github.event.pull_request.base.ref }}"
-          echo "PR title: ${{ github.event.pull_request.title }}"
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -50,6 +39,15 @@ jobs:
               const output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
               console.log('Validation output:', output);
               
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: context.payload.pull_request.head.sha,
+                state: 'success',
+                context: 'PR Validation',
+                description: 'Device data validation passed'
+              });
+              
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -70,6 +68,15 @@ jobs:
               }
               
             } catch (error) {
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: context.payload.pull_request.head.sha,
+                state: 'failure',
+                context: 'PR Validation',
+                description: 'Device data validation failed'
+              });
+
               const errorOutput = error.stdout || error.stderr;
               console.error('Validation failed:', errorOutput);
               
@@ -112,6 +119,13 @@ jobs:
                 errorMessage += '```\n' + errorOutput + '\n```\n';
               }
 
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: errorMessage
+              });
+
               const issueMatch = context.payload.pull_request.body.match(/#(\d+)/);
               if (issueMatch) {
                 const issueNumber = parseInt(issueMatch[1]);
@@ -123,13 +137,6 @@ jobs:
                   body: `### Validation Failed in PR #${context.payload.pull_request.number}\n\n${errorMessage}\n\nPlease edit your issue with the corrections. A new PR will be created automatically with your changes.`
                 });
               }
-              
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                body: errorMessage
-              });
 
               await github.rest.pulls.update({
                 owner: context.repo.owner,
