@@ -22,9 +22,6 @@ jobs:
           filters: |
             device_changes:
               - 'data/devices/**'
-              
-      - name: Debug Changed Files
-        run: echo "Changes in data/devices? ${{ steps.filter.outputs.device_changes }}"
 
   validate_data:
     name: Validate Device Data
