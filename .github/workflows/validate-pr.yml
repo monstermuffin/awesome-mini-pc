@@ -5,8 +5,6 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - 'data/devices/**'
-  repository_dispatch:
-    types: [validate_new_pr]
 
 jobs:
   validate_data:
@@ -16,10 +14,29 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      statuses: write
       
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set validation status to pending
+        id: status_pending
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pullNumber = context.payload.pull_request.number;
+            
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.payload.pull_request.head.sha,
+              state: 'pending',
+              description: 'Data validation in progress',
+              context: 'PR Validation'
+            });
+            
+            console.log(`Set pending status for PR #${pullNumber}`);
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -38,15 +55,8 @@ jobs:
             const { execSync } = require('child_process');
             
             try {
-              let pullNumber;
-              
-              if (context.eventName === 'repository_dispatch') {
-                pullNumber = context.payload.client_payload.pull_number;
-                console.log(`Triggered by repository_dispatch for PR #${pullNumber}`);
-              } else {
-                pullNumber = context.payload.pull_request.number;
-                console.log(`Triggered by pull_request event for PR #${pullNumber}`);
-              }
+              const pullNumber = context.payload.pull_request.number;
+              console.log(`Validating data for PR #${pullNumber}`);
               
               const { data: files } = await github.rest.pulls.listFiles({
                 owner: context.repo.owner,
@@ -98,6 +108,15 @@ jobs:
                   body: `### ✅ Validation Successful! \n\nYour device submission has passed all validation checks in PR #${pullNumber}.\n\nChanges will be reviewed and merged into the database.`
                 });
               }
+
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: context.payload.pull_request.head.sha,
+                state: 'success',
+                description: 'Data validation passed',
+                context: 'PR Validation'
+              });
               
             } catch (error) {
               const errorOutput = error.stdout || error.stderr;
@@ -142,12 +161,7 @@ jobs:
                 errorMessage += '```\n' + errorOutput + '\n```\n';
               }
 
-              let pullNumber;
-              if (context.eventName === 'repository_dispatch') {
-                pullNumber = context.payload.client_payload.pull_number;
-              } else {
-                pullNumber = context.payload.pull_request.number;
-              }
+              const pullNumber = context.payload.pull_request.number;
 
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -173,6 +187,15 @@ jobs:
                   body: `### Validation Failed in PR #${pullNumber}\n\n${errorMessage}\n\nPlease edit your issue with the corrections. A new PR will be created automatically with your changes.`
                 });
               }
+
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: context.payload.pull_request.head.sha,
+                state: 'failure',
+                description: 'Data validation failed',
+                context: 'PR Validation'
+              });
 
               await github.rest.pulls.update({
                 owner: context.repo.owner,
