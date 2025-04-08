@@ -342,8 +342,12 @@ body:
 
   - type: markdown
     attributes:
+      value: "## Ports & Interfaces"
+
+  - type: markdown
+    attributes:
       value: |
-        ### Port and Interface Cheatsheet
+        ### Cheatsheet
         
         **USB Speed Reference:**
         - USB 2.0: 480Mbps
@@ -363,10 +367,6 @@ body:
         - HDMI 1.4: 4K@30Hz
         - HDMI 2.0: 4K@60Hz
         - HDMI 2.1: 8K@60Hz or 4K@120Hz
-
-  - type: markdown
-    attributes:
-      value: "## Ports"
 
   - type: textarea
     id: usb_ports
