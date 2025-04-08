@@ -188,6 +188,16 @@ def main():
             print("File does not exist. Will create.")
             
         try:
+            print(f"--- Preparing to call update_file ---")
+            print(f"  Path: {file_path}")
+            print(f"  Branch: {branch_name}")
+            print(f"  SHA (existing): {existing_file_sha}")
+            print(f"  Message: {commit_message}")
+            print(f"  Content Type: {type(yaml_content)}")
+            print(f"  Content Length: {len(yaml_content)}")
+            print(f"  Content Preview (first 100 chars): {yaml_content[:100].replace('\n', '\\n')}") # Replace newlines for log readability
+            print(f"------------------------------------")
+            
             print(f"Creating/Updating file '{file_path}' on branch '{branch_name}'...")
             update_result = repo.update_file(
                 path=file_path,
