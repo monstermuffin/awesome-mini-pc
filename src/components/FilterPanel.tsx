@@ -202,7 +202,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   // Calculate the memory capacity range
   const memoryCapacityRange = {
     min: 0,
-    max: Math.max(...devices.map(d => d.memory.max_capacity), 64) // Default to 64 if no devices
+    max: Math.max(...devices.map(d => d.memory.max_capacity), 64) // Default to 64 (probably should change this)
   };
 
   // Calculate the age range

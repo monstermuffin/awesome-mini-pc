@@ -112,7 +112,7 @@ function validateMiniPC(data) {
     throw new Error('Missing required fields: id, brand, or model');
   }
 
-  // Validate notes format if present
+  // Validate notes format if present !!not tested properly!!
   if (data.notes) {
     if (typeof data.notes !== 'string') {
       throw new Error('Notes must be a string');
@@ -134,7 +134,7 @@ function validateMiniPC(data) {
     /** @type {GPU} */
     const singleGpu = {
       model: oldGpu.model,
-      type: oldGpu.type || 'Integrated' // Default to integrated for backward compatibility
+      type: oldGpu.type || 'Integrated' // Default to integrated (for backward compatibility, probably not needed now)
     };
     data.gpu = [singleGpu];
   }
@@ -205,10 +205,10 @@ function validateMiniPC(data) {
     }
   }
 
-  // Calculate volume if dimensions are present
+  // Calculate volume
   if (data.dimensions?.width && data.dimensions?.depth && data.dimensions?.height) {
     const calculatedVolume = (data.dimensions.width * data.dimensions.depth * data.dimensions.height) / 1000000; // Convert from mm³ to liters
-    data.dimensions.volume = Math.round(calculatedVolume * 100) / 100; // Round to 2 decimal places
+    data.dimensions.volume = Math.round(calculatedVolume * 100) / 100;
   }
 
   return true;
@@ -321,19 +321,15 @@ export const RANGES = ${JSON.stringify({
 `;
 }
 
-/**
- * Main function
- */
 async function main() {
   const dataDir = path.resolve(__dirname, '../data/devices');
   const outputDir = path.resolve(__dirname, '../src/generated');
   /** @type {MiniPCData[]} */
   const devices = [];
 
-  // Process each vendor directory
   for (const vendor of fs.readdirSync(dataDir)) {
     const vendorDir = path.join(dataDir, vendor);
-    if (!vendorDir.includes('.') && fs.statSync(vendorDir).isDirectory()) { // Skip files, only process directories
+    if (!vendorDir.includes('.') && fs.statSync(vendorDir).isDirectory()) {
       for (const file of fs.readdirSync(vendorDir)) {
         if (file.endsWith('.yaml') || file.endsWith('.yml')) {
           console.log(`Processing ${vendor}/${file}...`);
@@ -342,14 +338,12 @@ async function main() {
           
           try {
             const rawData = yaml.load(content);
-            // Type check the loaded data
             if (typeof rawData === 'object' && rawData !== null) {
               /** @type {any} */
               const inputData = rawData;
               /** @type {MiniPCData} */
               const data = inputData;
               if (validateMiniPC(data)) {
-                // Add metadata
                 data._sourcePath = `${vendor}/${file}`;
                 data._vendor = vendor;
                 data._device = file.replace(/\.ya?ml$/, '');
@@ -367,22 +361,17 @@ async function main() {
     }
   }
 
-  // Extract metadata and create processed data
   const processedData = {
     devices,
     metadata: extractMetadata(devices),
   };
-
-  // Create output directory if it doesn't exist
   await fs.promises.mkdir(outputDir, { recursive: true });
 
-  // Write processed data
   fs.writeFileSync(
     path.join(outputDir, 'data.json'),
     JSON.stringify(processedData, null, 2)
   );
 
-  // Write type definitions
   fs.writeFileSync(
     path.join(outputDir, 'types.ts'),
     generateTypeDefinitions(processedData)

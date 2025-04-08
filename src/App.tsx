@@ -56,7 +56,6 @@ type FilterState = {
   volume: { min: number; max: number } | null;
 };
 
-// Add helper function to check for active filters
 const hasActiveFilters = (filters: FilterState): boolean => {
   return (
     filters.brands.size > 0 ||
@@ -264,7 +263,6 @@ function App() {
 
   const [selectedFilters, setSelectedFilters] = useState<FilterState>(initialFilterState);
 
-  // Load data on mount
   useEffect(() => {
     loadMiniPCData().then(({ devices, filterOptions }) => {
       setDevices(devices);
@@ -273,7 +271,6 @@ function App() {
     });
   }, []);
 
-  // Initialize dark mode based on system preference
   useEffect(() => {
     setDarkMode(prefersDarkMode);
   }, [prefersDarkMode]);
@@ -306,14 +303,11 @@ function App() {
     });
   };
 
-  // Add search handler function
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  // Combined filtering logic for both search and filters
   const filteredDevices = devices.filter((device) => {
-    // Apply search filter first
     if (searchQuery) {
       const searchLower = searchQuery.toLowerCase();
       const matchesSearch = 
@@ -323,7 +317,7 @@ function App() {
       if (!matchesSearch) return false;
     }
 
-    // Skip filtering if filterOptions is not loaded yet
+    // Skip filtering if filterOptions is not loaded
     if (!filterOptions) return true;
 
     // Apply all other filters
@@ -767,7 +761,7 @@ function App() {
             flex: 1,
             p: { xs: 1, sm: 2 },
             overflow: 'auto',
-            height: 'calc(100vh - 64px)', // Height minus toolbar
+            height: 'calc(100vh - 64px)',
           }}>
             {loading ? (
               <Box sx={{ 

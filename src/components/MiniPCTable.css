@@ -91,7 +91,6 @@ tr:hover {
   background: #f8fafc;
 }
 
-/* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .filters {
     background: #1a1a1a;
@@ -138,7 +137,6 @@ tr:hover {
   }
 }
 
-/* Responsive adjustments */
 @media screen and (max-width: 768px) {
   .filters {
     grid-template-columns: 1fr;

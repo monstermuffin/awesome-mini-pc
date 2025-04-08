@@ -116,7 +116,6 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
     setDetailDevice(null);
   };
 
-  // Calculate device age in years
   const getDeviceAge = (releaseYear: string): string => {
     if (!releaseYear) return 'Unknown';
     const currentYear = new Date().getFullYear();

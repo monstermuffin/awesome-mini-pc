@@ -47,7 +47,7 @@ function validateRequiredFields(data, path, errors, deviceFile) {
     }
   }
   
-  // Validate notes format if present
+  // Validate notes format if present (should test this more)
   if (data.notes) {
     const notes = data.notes.trim().split('\n');
     for (const note of notes) {
@@ -782,7 +782,6 @@ function validateDevice(filePath, deviceFile) {
     
     return errors;
   } catch (error) {
-    // Handle YAML parsing errors
     return [{
       deviceId: 'unknown',
       file: deviceFile,
@@ -833,7 +832,6 @@ async function validateAllDevices() {
   return errors;
 }
 
-// Main execution
 if (require.main === module) {
   validateAllDevices().then(errors => {
     if (errors.length > 0) {
