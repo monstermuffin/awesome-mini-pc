@@ -339,7 +339,7 @@ jobs:
               }
 
               if (data.power_adapter) {
-                const match = data.power_adapter.match(/(\d+)W.*?(\d+)v.*?(\d+)A/i);
+                const match = data.power_adapter.match(/(\d+)W.*?(\d+)[vV].*?(\d+(?:\.\d+)?)A/i);
                 if (match) {
                   validationData.power = {
                     adapter_wattage: parseInt(match[1]),
