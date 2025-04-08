@@ -433,11 +433,11 @@ function validateDataTypes(data, path, errors, deviceFile) {
       });
     }
     
-    if (data.memory.speed !== undefined && (!Number.isInteger(data.memory.speed) || data.memory.speed <= 0)) {
+    if (data.memory.speed !== undefined && (typeof data.memory.speed !== 'number' || data.memory.speed <= 0)) {
       errors.push({
         deviceId: data.id || 'unknown',
         file: deviceFile,
-        message: `memory.speed must be a positive integer`,
+        message: `memory.speed must be a positive number`,
         path: `${path}.memory.speed`,
         critical: true
       });

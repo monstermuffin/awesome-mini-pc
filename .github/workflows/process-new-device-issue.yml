@@ -139,7 +139,7 @@ jobs:
                 cpu: {
                   brand: data.cpu_brand,
                   model: normalizeCPUModel(data.cpu_brand, data.cpu_model),
-                  tdp: data.cpu_tdp ? parseInt(data.cpu_tdp) : undefined,
+                  tdp: data.cpu_tdp ? parseFloat(data.cpu_tdp) : undefined,
                   cores: parseInt(data.cpu_cores),
                   threads: parseInt(data.cpu_threads),
                   base_clock: parseFloat(data.base_clock),
@@ -208,10 +208,33 @@ jobs:
                   });
               }
 
+              if (data.dimensions) {
+                const [width, depth, height] = data.dimensions.split('x').map(d => parseFloat(d.trim()));
+                validationData.dimensions = {
+                  width,
+                  depth,
+                  height
+                };
+              }
+
+              if (data.power_adapter) {
+                const match = data.power_adapter.match(/(\d+(?:\.\d+)?)W.*?(\d+(?:\.\d+)?)[vV].*?(\d+(?:\.\d+)?)A/i);
+                if (match) {
+                  validationData.power = {
+                    adapter_wattage: parseFloat(match[1]),
+                    dc_input: `${match[2]}V/${match[3]}A`
+                  };
+                } else {
+                  validationData.power = {
+                    adapter_wattage: parseFloat(data.power_adapter)
+                  };
+                }
+              }
+
               validationData.memory = {
                 slots: parseInt(data.memory_slots),
                 type: data.memory_type,
-                speed: parseInt(data.memory_speed),
+                speed: parseFloat(data.memory_speed),
                 module_type: data.memory_module_type,
                 max_capacity: parseInt(data.memory_max)
               };
@@ -327,29 +350,6 @@ jobs:
 
               if (data.ir_receiver) {
                 validationData.ports.ir_receiver = data.ir_receiver === 'Yes';
-              }
-
-              if (data.dimensions) {
-                const [width, depth, height] = data.dimensions.split('x').map(d => parseInt(d.trim()));
-                validationData.dimensions = {
-                  width,
-                  depth,
-                  height
-                };
-              }
-
-              if (data.power_adapter) {
-                const match = data.power_adapter.match(/(\d+)W.*?(\d+)[vV].*?(\d+(?:\.\d+)?)A/i);
-                if (match) {
-                  validationData.power = {
-                    adapter_wattage: parseInt(match[1]),
-                    dc_input: `${match[2]}V/${match[3]}A`
-                  };
-                } else {
-                  validationData.power = {
-                    adapter_wattage: parseInt(data.power_adapter)
-                  };
-                }
               }
 
               const yamlString = yaml.dump(validationData, { indent: 2, skipInvalid: true });
