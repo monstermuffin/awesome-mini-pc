@@ -501,7 +501,10 @@ get_system_info() {
     
     if command_exists dmidecode && [ "$SUDO_AVAILABLE" = true ]; then
         memory_type=$(sudo dmidecode -t memory | grep -A20 "Memory Device" | grep "Type:" | grep -v "Unknown" | head -1 | sed 's/.*: //')
-        memory_speed=$(sudo dmidecode -t memory | grep -m1 "Configured Memory Speed:" | sed 's/.*: //')
+        memory_speed=$(sudo dmidecode -t memory | grep -A20 "Memory Device" | grep -m1 "Speed:" | grep -v "Unknown" | sed 's/.*: //')
+        if [ -z "$memory_speed" ]; then
+            memory_speed=$(sudo dmidecode -t memory | grep -m1 "Configured Memory Speed:" | sed 's/.*: //')
+        fi
         mem_slots=$(sudo dmidecode -t memory | grep -c "Memory Device")
         max_mem=$(sudo dmidecode -t memory | grep "Maximum Capacity" | sed 's/.*: //')
     else
@@ -544,7 +547,7 @@ get_system_info() {
     echo "GPU: Type: Integrated, Model: $gpu_model"
     echo 
     echo "Memory Type: $memory_type"
-    echo "Memory Speed: $memory_speed MT/s"
+    echo "Memory Maximum Speed: $memory_speed MT/s"
     echo "Memory Slots: $mem_slots"
     echo "Maximum Memory: $max_mem"
     echo 
