@@ -53,4 +53,4 @@ dimensions:
   height: 50
 power:
   adapter_wattage: 65
-  dc_input: 19V/42A
+  dc_input: 19V/3.42A
