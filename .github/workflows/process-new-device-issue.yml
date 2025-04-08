@@ -311,7 +311,7 @@ jobs:
                 })())
               };
 
-              // Clean up the validation data by removing any undefined or null values
+              // Clean up undefined or null values
               const cleanValidationData = JSON.parse(JSON.stringify(validationData));
 
               const yamlString = yaml.dump(cleanValidationData, {
@@ -320,8 +320,17 @@ jobs:
                 quotingType: '"',
                 forceQuotes: true,
                 lineWidth: -1,
-                noRefs: true
+                noRefs: true,
+                noCompatMode: true,
+                styles: {
+                  '!!null': 'empty',
+                  '!!str': 'plain'
+                }
               });
+
+              const fixedYamlString = yamlString
+                .replace(/: "([^"]*\\")([^"]*)"/g, ': "$1$2"')
+                .replace(/\\"/g, '"');
               
               const brand = data.brand.toLowerCase();
               const filePath = `data/devices/${brand}/${data.id}.yaml`;
@@ -365,7 +374,7 @@ jobs:
                 repo: context.repo.repo,
                 path: filePath,
                 message: `Add device data for ${data.brand} ${data.model}`,
-                content: Buffer.from(yamlString).toString('base64'),
+                content: Buffer.from(fixedYamlString).toString('base64'),
                 branch: branchName,
                 ...(existingFile && { sha: existingFile.data.sha })
               });
