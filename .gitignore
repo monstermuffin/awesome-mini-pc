@@ -18,3 +18,5 @@ yarn-error.log*
 *.tsbuildinfo
 .vite/
 src/generated/data.json
+test_issue_body.txt
+.venv/

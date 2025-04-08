@@ -1,0 +1,384 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import re
+import sys
+import yaml
+
+
+def normalize_cpu_model(cpu_brand, cpu_model):
+    if not cpu_model:
+        return cpu_model
+    
+    if cpu_brand == "Intel":
+        intel_core_regex = r'^i[3579]-\d+'
+        if re.match(intel_core_regex, cpu_model) and not cpu_model.startswith("Core"):
+            return f"Core {cpu_model}"
+    
+    return cpu_model
+
+
+def parse_core_config(core_config):
+    if not core_config or core_config == 'No response':
+        return None
+    
+    types = []
+    core_parts = [part.strip() for part in core_config.split(',')]
+    
+    for part in core_parts:
+        match = re.match(r'^([^:]+):\s*(\d+)', part)
+        if match:
+            core_type = match.group(1).strip()
+            count = int(match.group(2).strip())
+            
+            if count > 0:
+                types.append({
+                    "type": core_type,
+                    "count": count,
+                    "boost_clock": 0
+                })
+    
+    return {"types": types} if types else None
+
+
+def parse_issue_form(issue_body):
+    if not issue_body:
+        raise ValueError('Issue body is empty')
+
+    lines = issue_body.split('\n')
+    extracted_data = {}
+    
+    field_mapping = {
+        'Device ID': 'id',
+        'Brand': 'brand',
+        'Model': 'model',
+        'Release Date': 'release_date',
+        'CPU Brand': 'cpu_brand',
+        'CPU Model': 'cpu_model',
+        'CPU TDP (Watts)': 'cpu_tdp',
+        'CPU Cores': 'cpu_cores',
+        'CPU Threads': 'cpu_threads',
+        'Base Clock (GHz)': 'base_clock',
+        'Boost Clock (GHz)': 'boost_clock',
+        'CPU Architecture': 'cpu_architecture',
+        'CPU Socket Type': 'cpu_socket_type',
+        'Core Configuration': 'cpu_core_config',
+        'GPU Models': 'gpu_models',
+        'Memory Type': 'memory_type',
+        'Memory Module Type': 'memory_module_type',
+        'Memory Slots': 'memory_slots',
+        'Maximum Memory Capacity (GB)': 'memory_max',
+        'Memory Speed (MT/s)': 'memory_speed',
+        'Storage Details': 'storage_details',
+        'WiFi Standard': 'wifi_standard',
+        'WiFi Chipset': 'wifi_chipset',
+        'Bluetooth Version': 'bluetooth_version',
+        'Ethernet Ports': 'ethernet_ports',
+        'PCIe Slots': 'pcie_slots',
+        'OCuLink Ports': 'oculink_ports',
+        'USB Ports': 'usb_ports',
+        'Display Ports': 'display_ports',
+        'Audio Jacks': 'audio_jacks',
+        'SD Card Reader': 'sd_card_reader',
+        'Micro SD Card Reader': 'micro_sd_card_reader',
+        'IR Receiver': 'ir_receiver',
+        'Dimensions (mm)': 'dimensions',
+        'Power Adapter': 'power_adapter',
+        'Additional Information': 'additional_info'
+    }
+
+    current_field = None
+    current_value = []
+
+    for line in lines:
+        line = line.strip()
+        
+        if not line or line == 'Description' or line == 'Submission Confirmation':
+            continue
+
+        if line.startswith('### '):
+            if current_field and current_value:
+                field_name = field_mapping.get(current_field)
+                if field_name:
+                    extracted_data[field_name] = '\n'.join(current_value).strip()
+            
+            current_field = line[4:]
+            current_value = []
+            continue
+
+        if line == '_No response_':
+            continue
+
+        if current_field and not line.startswith('- [x]'):
+            current_value.append(line)
+
+    if current_field and current_value:
+        field_name = field_mapping.get(current_field)
+        if field_name:
+            extracted_data[field_name] = '\n'.join(current_value).strip()
+
+    return extracted_data
+
+
+def create_device_yaml(extracted_data):
+    device_id = f"{extracted_data['brand'].lower()}-{extracted_data['id'].lower()}"
+    
+    structured_data = {
+        "id": device_id,
+        "brand": extracted_data['brand'],
+        "model": extracted_data['model'],
+        "release_date": extracted_data['release_date'],
+
+        "cpu": {
+            "brand": extracted_data['cpu_brand'],
+            "model": normalize_cpu_model(extracted_data['cpu_brand'], extracted_data['cpu_model']),
+            "tdp": float(extracted_data['cpu_tdp']) if extracted_data.get('cpu_tdp') else None,
+            "cores": int(extracted_data['cpu_cores']),
+            "threads": int(extracted_data['cpu_threads']),
+            "base_clock": float(extracted_data['base_clock']),
+            "boost_clock": float(extracted_data['boost_clock']) if extracted_data.get('boost_clock') and extracted_data['boost_clock'] != 'No response' else None,
+            "architecture": extracted_data['cpu_architecture']
+        }
+    }
+    
+    if 'cpu_socket_type' in extracted_data and extracted_data['cpu_socket_type'] != 'None':
+        structured_data['cpu']['socket'] = {
+            "type": extracted_data['cpu_socket_type'],
+            "supports_cpu_swap": False
+        }
+    
+    if 'cpu_core_config' in extracted_data and extracted_data['cpu_core_config'] != 'No response':
+        core_config = parse_core_config(extracted_data['cpu_core_config'])
+        if core_config:
+            structured_data['cpu']['core_config'] = core_config
+    
+    if 'gpu_models' in extracted_data:
+        gpu_data = []
+        for line in extracted_data['gpu_models'].split('\n'):
+            if line.strip().startswith('Type:'):
+                gpu = {}
+                parts = [p.strip() for p in line.split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'type':
+                        gpu['type'] = value
+                    elif key_lower == 'model':
+                        gpu['model'] = value
+                    elif key_lower == 'vram':
+                        gpu['vram'] = value
+                gpu_data.append(gpu)
+        
+        if gpu_data:
+            structured_data['gpu'] = gpu_data
+    
+    structured_data['memory'] = {
+        "slots": int(extracted_data['memory_slots']),
+        "type": extracted_data['memory_type'],
+        "speed": float(extracted_data['memory_speed']),
+        "module_type": extracted_data['memory_module_type'],
+        "max_capacity": int(extracted_data['memory_max'])
+    }
+    
+    if 'storage_details' in extracted_data:
+        storage_data = []
+        for line in extracted_data['storage_details'].split('\n'):
+            if line.strip().startswith('Type:'):
+                storage = {}
+                parts = [p.strip() for p in line.split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'type':
+                        storage['type'] = value
+                    elif key_lower == 'form factor':
+                        storage['form_factor'] = value
+                    elif key_lower == 'interface':
+                        storage['interface'] = value
+                    elif key_lower == 'alt interface':
+                        storage['alt_interface'] = value
+                
+                if storage.get('type') == 'SATA' and 'interface' not in storage:
+                    storage['interface'] = 'SATA'
+                
+                storage_data.append(storage)
+        
+        if storage_data:
+            structured_data['storage'] = storage_data
+    
+    networking = {"ethernet": []}
+    
+    if 'ethernet_ports' in extracted_data:
+        for line in extracted_data['ethernet_ports'].split('\n'):
+            if line.strip().startswith('Type:'):
+                eth = {"ports": 1}
+                parts = [p.strip() for p in line.split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'type':
+                        eth['speed'] = value
+                    elif key_lower == 'chipset':
+                        eth['chipset'] = value
+                    elif key_lower == 'interface':
+                        eth['interface'] = value
+                networking['ethernet'].append(eth)
+    
+    if all(k in extracted_data for k in ['wifi_standard', 'wifi_chipset', 'bluetooth_version']):
+        networking['wifi'] = {
+            "chipset": extracted_data['wifi_chipset'],
+            "standard": extracted_data['wifi_standard'].replace("Wi-Fi ", "WiFi "),
+            "bluetooth": extracted_data['bluetooth_version']
+        }
+    
+    structured_data['networking'] = networking
+    
+    ports = {}
+    
+    if 'usb_ports' in extracted_data:
+        usb_a = []
+        usb_c = []
+        
+        for line in extracted_data['usb_ports'].split('\n'):
+            if line.strip().startswith('Type:'):
+                port = {}
+                parts = [p.strip() for p in line.split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'type':
+                        port['type'] = value
+                    elif key_lower == 'speed':
+                        port['speed'] = value
+                    elif key_lower == 'count':
+                        port['count'] = int(value)
+                    elif key_lower == 'alt mode':
+                        port['alt_mode'] = value
+                    elif key_lower == 'max resolution':
+                        port['max_resolution'] = value
+                    elif key_lower == 'thunderbolt':
+                        port['thunderbolt_version'] = value
+                
+                if port.get('type') and ('type-c' in port['type'].lower() or 'usb-c' in port['type'].lower() or 'usb4' in port['type'].lower()):
+                    usb_c.append(port)
+                else:
+                    usb_a.append(port)
+        
+        if usb_a:
+            ports['usb_a'] = usb_a
+        if usb_c:
+            ports['usb_c'] = usb_c
+    
+    if 'display_ports' in extracted_data:
+        hdmi_ports = []
+        dp_ports = []
+        
+        for line in extracted_data['display_ports'].split('\n'):
+            if line.strip().startswith('Type:'):
+                port = {}
+                parts = [p.strip() for p in line.split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'type':
+                        port['type'] = value
+                    elif key_lower == 'count':
+                        port['count'] = int(value)
+                    elif key_lower == 'version':
+                        port['version'] = value
+                    elif key_lower == 'form factor':
+                        port['form_factor'] = value
+                    elif key_lower == 'max resolution':
+                        port['max_resolution'] = value
+                
+                if port.get('type') and 'hdmi' in port['type'].lower():
+                    hdmi_ports.append(port)
+                elif port.get('type') and 'displayport' in port['type'].lower():
+                    dp_ports.append(port)
+        
+        if hdmi_ports:
+            ports['hdmi'] = hdmi_ports[0]
+        if dp_ports:
+            ports['displayport'] = dp_ports[0]
+    
+    if 'audio_jacks' in extracted_data and extracted_data['audio_jacks'] != 'None':
+        ports['audio_jack'] = int(extracted_data['audio_jacks'])
+    
+    if 'sd_card_reader' in extracted_data and extracted_data['sd_card_reader'] != 'None':
+        ports['sd_card_reader'] = extracted_data['sd_card_reader'] == 'Yes'
+    
+    if 'micro_sd_card_reader' in extracted_data and extracted_data['micro_sd_card_reader'] != 'None':
+        ports['micro_sd_card_reader'] = extracted_data['micro_sd_card_reader'] == 'Yes'
+    
+    if 'ir_receiver' in extracted_data and extracted_data['ir_receiver'] != 'None':
+        ports['ir_receiver'] = extracted_data['ir_receiver'] == 'Yes'
+    
+    structured_data['ports'] = ports
+    
+    if 'dimensions' in extracted_data:
+        try:
+            width, depth, height = [float(d.strip()) for d in extracted_data['dimensions'].split('x')]
+            structured_data['dimensions'] = {
+                "width": width,
+                "depth": depth,
+                "height": height
+            }
+        except ValueError:
+            pass
+    
+    if 'power_adapter' in extracted_data:
+        match = re.match(r'(\d+(?:\.\d+)?)W.*?(\d+(?:\.\d+)?)[vV].*?(\d+(?:\.\d+)?)A', extracted_data['power_adapter'])
+        power_data = {"adapter_wattage": float(match.group(1)) if match else float(re.search(r'\d+', extracted_data['power_adapter']).group())}
+        
+        if match:
+            power_data['dc_input'] = f"{match.group(2)}V/{match.group(3)}A"
+        
+        structured_data['power'] = power_data
+    
+    return {k: v for k, v in structured_data.items() if v is not None}
+
+
+def write_yaml_file(data, output_directory):
+    brand_dir = os.path.join(output_directory, data['brand'].lower())
+    os.makedirs(brand_dir, exist_ok=True)
+    file_path = os.path.join(brand_dir, f"{data['id'].split('-', 1)[1]}.yaml")
+    
+    with open(file_path, 'w') as f:
+        yaml.dump(data, f, default_flow_style=False, sort_keys=False, width=120)
+    
+    return file_path
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Process GitHub issue form into a device YAML file')
+    parser.add_argument('input_file', help='Input file containing the issue body')
+    parser.add_argument('--output-dir', default='data/devices', help='Output directory for the YAML file')
+    args = parser.parse_args()
+    
+    try:
+        with open(args.input_file, 'r') as f:
+            issue_body = f.read()
+        
+        extracted_data = parse_issue_form(issue_body)
+        structured_data = create_device_yaml(extracted_data)
+        file_path = write_yaml_file(structured_data, args.output_dir)
+        
+        print(f"Successfully created YAML file: {file_path}")
+        return 0
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main()) 
