@@ -141,7 +141,7 @@ jobs:
                   cores: parseInt(data.cpu_cores),
                   threads: parseInt(data.cpu_threads),
                   base_clock: parseFloat(data.base_clock),
-                  boost_clock: parseFloat(data.boost_clock),
+                  boost_clock: data.boost_clock ? parseFloat(data.boost_clock) : undefined,
                   architecture: data.cpu_architecture
                 }
               };

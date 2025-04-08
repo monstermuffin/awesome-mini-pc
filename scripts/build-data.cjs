@@ -16,7 +16,7 @@ const path = require('path');
  * @property {number} cores - Number of cores
  * @property {number} threads - Number of threads
  * @property {number} base_clock - Base clock speed in GHz
- * @property {number} boost_clock - Boost clock speed in GHz
+ * @property {number} [boost_clock] - Boost clock speed in GHz (optional)
  * @property {number} [tdp] - TDP in watts (optional)
  * @property {string} [chipset] - Optional chipset information
  * @property {string} [architecture] - Optional architecture information
@@ -161,7 +161,7 @@ function validateMiniPC(data) {
     }
   } else {
     if (data.cpu.cores === undefined || data.cpu.threads === undefined || 
-        data.cpu.base_clock === undefined || data.cpu.boost_clock === undefined) {
+        data.cpu.base_clock === undefined) {
       throw new Error('Missing required CPU performance specifications');
     }
   }

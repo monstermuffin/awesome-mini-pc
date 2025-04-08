@@ -110,10 +110,10 @@ body:
     id: cpu_boost_clock
     attributes:
       label: Boost Clock (GHz)
-      description: Maximum boost clock speed in GHz (not required for DIY systems)
+      description: Maximum boost clock speed in GHz (not required for DIY systems or CPUs without boost capability)
       placeholder: "3.5"
     validations:
-      required: true
+      required: false
 
   - type: input
     id: cpu_architecture

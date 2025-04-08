@@ -60,7 +60,7 @@ function validateRequiredFields(data, path, errors, deviceFile) {
   }
   
   if (data.cpu) {
-    const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'boost_clock', 'architecture'];
+    const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'architecture'];
     const isDIYMachine = data.cpu.socket?.supports_cpu_swap === true;
 
     const fieldsToCheck = isDIYMachine ? ['brand', 'model', 'architecture'] : requiredCpuFields;
