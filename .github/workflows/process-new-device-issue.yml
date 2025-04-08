@@ -48,7 +48,6 @@ jobs:
                 throw new Error('Issue body is empty');
               }
 
-              // Parse the issue form
               const lines = issueBody.split('\n');
               const data = {};
               
@@ -93,18 +92,14 @@ jobs:
               let currentField = null;
               let currentValue = [];
 
-              // Process each line
               for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 
-                // Skip empty lines and confirmation section
                 if (!line || line === 'Description' || line === 'Submission Confirmation') {
                   continue;
                 }
 
-                // Check if this is a field header
                 if (line.startsWith('### ')) {
-                  // Save previous field if exists
                   if (currentField && currentValue.length > 0) {
                     const fieldName = fieldMapping[currentField];
                     if (fieldName) {
@@ -112,24 +107,20 @@ jobs:
                     }
                   }
                   
-                  // Start new field
                   currentField = line.substring(4);
                   currentValue = [];
                   continue;
                 }
 
-                // Skip "No response" values
                 if (line === '_No response_') {
                   continue;
                 }
 
-                // If we have a current field and this isn't a checkbox line, add to value
                 if (currentField && !line.startsWith('- [x]')) {
                   currentValue.push(line);
                 }
               }
               
-              // Save last field
               if (currentField && currentValue.length > 0) {
                 const fieldName = fieldMapping[currentField];
                 if (fieldName) {
@@ -137,7 +128,6 @@ jobs:
                 }
               }
 
-              // Create validation structure
               const validationData = {
                 id: `${data.brand.toLowerCase()}-${data.id.toLowerCase()}`,
                 brand: data.brand,
@@ -146,7 +136,7 @@ jobs:
 
                 cpu: {
                   brand: data.cpu_brand,
-                  model: data.cpu_model,
+                  model: normalizeCPUModel(data.cpu_brand, data.cpu_model),
                   tdp: parseInt(data.cpu_tdp),
                   cores: parseInt(data.cpu_cores),
                   threads: parseInt(data.cpu_threads),
@@ -156,7 +146,20 @@ jobs:
                 }
               };
 
-              // Add CPU socket if specified
+              function normalizeCPUModel(cpuBrand, cpuModel) {
+                if (!cpuModel) return cpuModel;
+                
+                // Add "Core" prefix to Intel CPUs if needed
+                if (cpuBrand === "Intel") {
+                  const intelCoreRegex = /^i[3579]-\d+/;
+                  if (intelCoreRegex.test(cpuModel) && !cpuModel.startsWith("Core")) {
+                    return `Core ${cpuModel}`;
+                  }
+                }
+                
+                return cpuModel;
+              }
+
               if (data.cpu_socket_type && data.cpu_socket_type !== 'None') {
                 validationData.cpu.socket = {
                   type: data.cpu_socket_type,
@@ -164,7 +167,6 @@ jobs:
                 };
               }
 
-              // Add CPU core configuration if specified
               if (data.cpu_core_config) {
                 const coreTypes = data.cpu_core_config.split('\n')
                   .filter(line => line.trim().startsWith('Type:'))
@@ -188,7 +190,6 @@ jobs:
                 }
               }
 
-              // Parse GPU models
               if (data.gpu_models) {
                 validationData.gpu = data.gpu_models.split('\n')
                   .filter(line => line.trim().startsWith('Type:'))
@@ -205,7 +206,6 @@ jobs:
                   });
               }
 
-              // Memory configuration
               validationData.memory = {
                 slots: parseInt(data.memory_slots),
                 type: data.memory_type,
@@ -214,7 +214,6 @@ jobs:
                 max_capacity: parseInt(data.max_capacity)
               };
 
-              // Parse storage details
               if (data.storage_details) {
                 validationData.storage = data.storage_details.split('\n')
                   .filter(line => line.trim().startsWith('Type:'))
@@ -232,7 +231,6 @@ jobs:
                   });
               }
 
-              // Networking configuration
               validationData.networking = {
                 ethernet: data.ethernet_ports ? data.ethernet_ports.split('\n')
                   .filter(line => line.trim().startsWith('Type:'))
@@ -246,7 +244,7 @@ jobs:
                       if (key_lower === 'chipset') eth.chipset = value;
                       if (key_lower === 'interface') eth.interface = value;
                     });
-                    eth.ports = 1; // Default to 1 port per entry
+                    eth.ports = 1;
                     return eth;
                   }) : [],
                 wifi: data.wifi_standard ? {
@@ -256,10 +254,8 @@ jobs:
                 } : undefined
               };
 
-              // Ports configuration
               validationData.ports = {};
 
-              // USB ports
               if (data.usb_ports) {
                 const usb_a = [];
                 const usb_c = [];
@@ -280,7 +276,6 @@ jobs:
                       if (key_lower === 'thunderbolt') port.thunderbolt_version = value;
                     });
 
-                    // Determine if it's USB-A or USB-C based on the type
                     if (port.type.toLowerCase().includes('usb4') || port.type.toLowerCase().includes('type-c')) {
                       usb_c.push(port);
                     } else {
@@ -292,7 +287,6 @@ jobs:
                 if (usb_c.length > 0) validationData.ports.usb_c = usb_c;
               }
 
-              // Display ports
               if (data.display_ports) {
                 const display_ports = data.display_ports.split('\n')
                   .filter(line => line.includes('Version:') || line.includes('Count:'))
@@ -310,7 +304,6 @@ jobs:
                     return port;
                   });
 
-                // Split into HDMI and DisplayPort based on the first word
                 const hdmi = display_ports.filter(p => p.type?.toLowerCase().includes('hdmi'));
                 const dp = display_ports.filter(p => !p.type?.toLowerCase().includes('hdmi'));
 
@@ -318,7 +311,6 @@ jobs:
                 if (dp.length > 0) validationData.ports.displayport = dp[0];
               }
 
-              // Audio and SD card reader
               if (data.audio_jacks) {
                 validationData.ports.audio_jack = parseInt(data.audio_jacks);
               }
@@ -327,7 +319,6 @@ jobs:
                 validationData.ports.sd_card_reader = data.sd_card_reader === 'Yes';
               }
 
-              // Physical specifications
               if (data.dimensions) {
                 const [width, depth, height] = data.dimensions.split('x').map(d => parseInt(d.trim()));
                 validationData.dimensions = {
@@ -337,7 +328,6 @@ jobs:
                 };
               }
 
-              // Power adapter
               if (data.power_adapter) {
                 const match = data.power_adapter.match(/(\d+)W.*?(\d+)v.*?(\d+)A/i);
                 if (match) {
@@ -352,22 +342,18 @@ jobs:
                 }
               }
 
-              // Remove validation section and directly create PR
               const yamlString = yaml.dump(validationData, { indent: 2, skipInvalid: true });
               
-              // Use the GitHub API to create/update the file
               const brand = data.brand.toLowerCase();
               const filePath = `data/devices/${brand}/${data.id}.yaml`;
               const branchName = `new-device/${data.id}`;
 
-              // Get the current main branch SHA
               const mainRef = await github.rest.git.getRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 ref: 'heads/main'
               });
 
-              // Create a new branch from main
               try {
                 await github.rest.git.createRef({
                   owner: context.repo.owner,
@@ -376,12 +362,11 @@ jobs:
                   sha: mainRef.data.object.sha
                 });
               } catch (error) {
-                if (error.status !== 422) { // 422 means branch already exists
+                if (error.status !== 422) {
                   throw error;
                 }
               }
 
-              // Create the file in the new branch
               await github.rest.repos.createOrUpdateFileContents({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -391,7 +376,6 @@ jobs:
                 branch: branchName
               });
               
-              // Create PR
               const pr = await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -401,7 +385,6 @@ jobs:
                 base: 'main'
               });
               
-              // Add labels to PR
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -409,7 +392,6 @@ jobs:
                 labels: ['new-device', 'automated-pr']
               });
               
-              // Comment on the issue
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
