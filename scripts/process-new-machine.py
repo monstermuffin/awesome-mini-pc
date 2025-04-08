@@ -226,7 +226,7 @@ def create_device_yaml(extracted_data):
         if storage_data:
             structured_data['storage'] = storage_data
     
-    networking = {"ethernet": []}
+    networking = {"ethernet": [], "wifi": {"standard": "None", "chipset": "None", "bluetooth": "None"}}
     
     if 'ethernet_ports' in extracted_data:
         for line in extracted_data['ethernet_ports'].split('\n'):
@@ -246,19 +246,13 @@ def create_device_yaml(extracted_data):
                         eth['interface'] = value
                 networking['ethernet'].append(eth)
     
-    networking['wifi'] = {
-        "standard": "None",
-        "chipset": "None",
-        "bluetooth": "None"
-    }
-    
-    if 'wifi_standard' in extracted_data and extracted_data['wifi_standard']:
+    if 'wifi_standard' in extracted_data and extracted_data['wifi_standard'] != 'No response':
         networking['wifi']['standard'] = extracted_data['wifi_standard'].replace("Wi-Fi ", "WiFi ")
-    
-    if 'wifi_chipset' in extracted_data and extracted_data['wifi_chipset']:
-        networking['wifi']['chipset'] = extracted_data['wifi_chipset']
-    
-    if 'bluetooth_version' in extracted_data and extracted_data['bluetooth_version']:
+        
+    if 'wifi_chipset' in extracted_data and extracted_data['wifi_chipset'] != 'No response':
+        networking['wifi']['chipset'] = extracted_data['wifi_chipset'] 
+        
+    if 'bluetooth_version' in extracted_data and extracted_data['bluetooth_version'] != 'No response':
         networking['wifi']['bluetooth'] = extracted_data['bluetooth_version']
     
     structured_data['networking'] = networking
