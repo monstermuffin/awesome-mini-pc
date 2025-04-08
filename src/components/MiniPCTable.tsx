@@ -626,7 +626,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       fontWeight: 'medium', 
                       color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2' 
                     }}>
-                      {device.memory.speed}MHz
+                      {device.memory.speed}MT/s
                     </Box>
                   </TableCell>
                   <TableCell>
@@ -893,7 +893,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     Type: {detailDevice.memory.type} {detailDevice.memory.module_type}
                   </Typography>
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    Speed: {detailDevice.memory.speed}MHz
+                    Speed: {detailDevice.memory.speed}MT/s
                   </Typography>
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
                     Slots: {detailDevice.memory.slots} ({detailDevice.memory.module_type})

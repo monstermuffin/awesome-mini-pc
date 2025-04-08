@@ -144,7 +144,7 @@ When submitting a new device, you'll need to fill out the following information:
 - **Memory Module Type**: SODIMM, DIMM, or Soldered.
 - **Memory Slots**: Number of accessible memory slots (0 if soldered only).
 - **Maximum Memory Capacity**: Maximum supported RAM in GB.
-- **Memory Speed**: Maximum supported memory speed in MHz.
+- **Memory Speed**: Maximum supported memory speed in MT/s.
 
 ### Storage Information
 - **Storage Details**: List each storage option using the following format (one per line).

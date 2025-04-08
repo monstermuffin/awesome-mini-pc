@@ -544,7 +544,7 @@ get_system_info() {
     echo "GPU: Type: Integrated, Model: $gpu_model"
     echo 
     echo "Memory Type: $memory_type"
-    echo "Memory Speed: $memory_speed"
+    echo "Memory Speed: $memory_speed MT/s"
     echo "Memory Slots: $mem_slots"
     echo "Maximum Memory: $max_mem"
     echo 

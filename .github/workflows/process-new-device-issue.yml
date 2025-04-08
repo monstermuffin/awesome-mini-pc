@@ -71,8 +71,8 @@ jobs:
                 'Memory Type': 'memory_type',
                 'Memory Module Type': 'memory_module_type',
                 'Memory Slots': 'memory_slots',
-                'Maximum Memory Capacity (GB)': 'max_capacity',
-                'Memory Speed (MHz)': 'memory_speed',
+                'Maximum Memory Capacity (GB)': 'memory_max',
+                'Memory Speed (MT/s)': 'memory_speed',
                 'Storage Details': 'storage_details',
                 'WiFi Standard': 'wifi_standard',
                 'WiFi Chipset': 'wifi_chipset',
@@ -211,7 +211,7 @@ jobs:
                 type: data.memory_type,
                 speed: parseInt(data.memory_speed),
                 module_type: data.memory_module_type,
-                max_capacity: parseInt(data.max_capacity)
+                max_capacity: parseInt(data.memory_max)
               };
 
               if (data.storage_details) {

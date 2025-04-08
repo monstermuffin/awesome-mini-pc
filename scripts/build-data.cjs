@@ -27,7 +27,7 @@ const path = require('path');
  * @typedef {Object} Memory
  * @property {number} slots - Number of memory slots
  * @property {string} type - Memory type (e.g., "DDR4", "DDR5")
- * @property {number} speed - Memory speed in MHz
+ * @property {number} speed - Memory speed in MT/s
  * @property {string} [module_type] - Module type (e.g., "SODIMM", "DIMM")
  * @property {number} max_capacity - Maximum memory capacity in GB
  */

@@ -379,12 +379,12 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       />
 
       <RangeFilter
-        title="Memory Speed (MHz)"
+        title="Memory Speed (MT/s)"
         range={filterOptions.memorySpeedRange}
         value={selectedFilters.memorySpeed}
         onChange={(value) => onFilterChange('memorySpeed', value)}
         step={100}
-        unit="MHz"
+        unit="MT/s"
       />
 
       <RangeFilter

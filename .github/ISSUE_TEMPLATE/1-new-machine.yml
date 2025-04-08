@@ -231,8 +231,8 @@ body:
   - type: input
     id: memory_speed
     attributes:
-      label: Memory Speed (MHz)
-      description: Maximum supported memory speed in MHz
+      label: Memory Speed (MT/s)
+      description: Maximum supported memory speed in MT/s
       placeholder: "3200"
     validations:
       required: true
