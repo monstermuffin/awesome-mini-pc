@@ -366,7 +366,7 @@ body:
     id: dimensions
     attributes:
       label: Dimensions (mm)
-      description: Width x Depth x Height in millimeters
+      description: Width x Depth x Height in millimeters. Volume will be calculated automatically.
       placeholder: "211 x 116 x 28"
     validations:
       required: true

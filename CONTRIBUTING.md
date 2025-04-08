@@ -183,7 +183,7 @@ When submitting a new device, you'll need to fill out the following information:
 - **SD Card Reader**: Whether it has an SD card reader ("Yes"/"No").
 
 ### Physical Information
-- **Dimensions**: Width x Depth x Height in millimeters (e.g., `211 x 116 x 28`).
+- **Dimensions**: Width x Depth x Height in millimeters (e.g., `211 x 116 x 28`). Volume will be calculated automatically from this information.
 - **Power Adapter**: Wattage and voltage information (e.g., `120W (19V/6.32A)`).
 
 ### Additional Information
