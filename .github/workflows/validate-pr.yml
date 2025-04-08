@@ -5,6 +5,8 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - 'data/devices/**'
+  repository_dispatch:
+    types: [validate_new_pr]
 
 jobs:
   validate_data:
@@ -36,11 +38,20 @@ jobs:
             const { execSync } = require('child_process');
             
             try {
-              // Get changed files in the PR
+              let pullNumber;
+              
+              if (context.eventName === 'repository_dispatch') {
+                pullNumber = context.payload.client_payload.pull_number;
+                console.log(`Triggered by repository_dispatch for PR #${pullNumber}`);
+              } else {
+                pullNumber = context.payload.pull_request.number;
+                console.log(`Triggered by pull_request event for PR #${pullNumber}`);
+              }
+              
               const { data: files } = await github.rest.pulls.listFiles({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number
+                pull_number: pullNumber
               });
               
               const deviceFiles = files
@@ -54,7 +65,6 @@ jobs:
               
               console.log('Validating device files:', deviceFiles.join(', '));
               
-              // Validate all files or just the changed ones
               let output;
               if (deviceFiles.length > 0) {
                 output = execSync(`node scripts/validate-data.cjs ${deviceFiles.join(' ')}`, { encoding: 'utf8' });
@@ -67,11 +77,17 @@ jobs:
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
+                issue_number: pullNumber,
                 body: '✅ Data validation passed! All device files are correctly formatted.\n\nThis PR is now ready for manual review and merge.'
               });
 
-              const issueMatch = context.payload.pull_request.body.match(/#(\d+)/);
+              const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pullNumber
+              });
+              
+              const issueMatch = pr.body.match(/#(\d+)/);
               if (issueMatch) {
                 const issueNumber = parseInt(issueMatch[1]);
                 
@@ -79,7 +95,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issueNumber,
-                  body: `### ✅ Validation Successful! \n\nYour device submission has passed all validation checks in PR #${context.payload.pull_request.number}.\n\nChanges will be reviewed and merged into the database.`
+                  body: `### ✅ Validation Successful! \n\nYour device submission has passed all validation checks in PR #${pullNumber}.\n\nChanges will be reviewed and merged into the database.`
                 });
               }
               
@@ -126,14 +142,27 @@ jobs:
                 errorMessage += '```\n' + errorOutput + '\n```\n';
               }
 
+              let pullNumber;
+              if (context.eventName === 'repository_dispatch') {
+                pullNumber = context.payload.client_payload.pull_number;
+              } else {
+                pullNumber = context.payload.pull_request.number;
+              }
+
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
+                issue_number: pullNumber,
                 body: errorMessage
               });
 
-              const issueMatch = context.payload.pull_request.body.match(/#(\d+)/);
+              const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pullNumber
+              });
+
+              const issueMatch = pr.body.match(/#(\d+)/);
               if (issueMatch) {
                 const issueNumber = parseInt(issueMatch[1]);
                 
@@ -141,18 +170,18 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issueNumber,
-                  body: `### Validation Failed in PR #${context.payload.pull_request.number}\n\n${errorMessage}\n\nPlease edit your issue with the corrections. A new PR will be created automatically with your changes.`
+                  body: `### Validation Failed in PR #${pullNumber}\n\n${errorMessage}\n\nPlease edit your issue with the corrections. A new PR will be created automatically with your changes.`
                 });
               }
 
               await github.rest.pulls.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: context.payload.pull_request.number,
+                pull_number: pullNumber,
                 state: 'closed'
               });
 
-              const branchName = context.payload.pull_request.head.ref;
+              const branchName = pr.head.ref;
               await github.rest.git.deleteRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

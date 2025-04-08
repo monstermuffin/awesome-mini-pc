@@ -186,6 +186,23 @@ jobs:
                 body: `Thank you for your submission! A Pull Request has been created: #${pr.data.number}\n\nThe PR will now be automatically validated. If any issues are found, they will be reported in the PR and here.`
               });
               
+              try {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                
+                await github.rest.repos.createDispatchEvent({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  event_type: 'validate_new_pr',
+                  client_payload: {
+                    pull_number: pr.data.number
+                  }
+                });
+                
+                console.log(`Triggered validation workflow for PR #${pr.data.number}`);
+              } catch (triggerError) {
+                console.error('Error triggering validation workflow:', triggerError);
+              }
+              
               console.log(`Created PR #${pr.data.number}`);
             } catch (error) {
               console.error('Error creating PR:', error);
