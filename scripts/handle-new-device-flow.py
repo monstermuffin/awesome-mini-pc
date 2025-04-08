@@ -129,13 +129,14 @@ def main():
             repo.get_branch(branch_name)
             print(f"Branch '{branch_name}' already exists.")
             branch_exists = True
-        except UnknownObjectException:
-            print(f"Branch '{branch_name}' not found (UnknownObjectException), proceeding with creation.")
-            branch_exists = False
         except GithubException as e:
-            print(f"::error::Unexpected GitHub error checking for branch '{branch_name}': {e}")
-            print(f"Status: {e.status}, Data: {e.data}")
-            sys.exit(1)
+            if e.status == 404:
+                print(f"Branch '{branch_name}' not found (GithubException Status 404), proceeding with creation.")
+                branch_exists = False
+            else:
+                print(f"::error::Unexpected GitHub error checking for branch '{branch_name}': {e}")
+                print(f"Status: {e.status}, Data: {e.data}")
+                sys.exit(1)
         except Exception as e:
             print(f"::error::Non-GitHub error checking for branch '{branch_name}': {e}")
             sys.exit(1)
