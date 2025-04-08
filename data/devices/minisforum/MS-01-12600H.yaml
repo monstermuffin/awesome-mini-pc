@@ -12,6 +12,14 @@ cpu:
   boost_clock: 4.5
   tdp: 45
   architecture: "Alder Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 4
+        boost_clock: 4.5
+      - type: "E-core"
+        count: 8
+        boost_clock: 3.3
 
 gpu:
   - model: "Intel Iris Xe"

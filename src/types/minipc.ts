@@ -14,6 +14,13 @@ export interface MiniPC {
     tdp: number;
     chipset?: string; // Optional chipset information
     architecture?: string; // Optional architecture information
+    core_config?: {
+      types: Array<{
+        type: string; // e.g., "Performance-core", "Efficient-core"
+        count: number;
+        boost_clock: number; // Boost clock for this core type
+      }>;
+    };
     socket?: {
       type: string; // e.g., "AM5", "LGA 1700"
       supports_cpu_swap: boolean;

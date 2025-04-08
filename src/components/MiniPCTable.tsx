@@ -499,6 +499,40 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     {device.cpu.model !== 'DIY' && (
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.3 }}>
                         {device.cpu.cores} cores ({device.cpu.threads} threads) • {device.cpu.base_clock}GHz - {device.cpu.boost_clock}GHz
+                        {device.cpu.core_config && (
+                          <Tooltip 
+                            title={
+                              <Box>
+                                <Typography variant="caption" fontWeight="bold" display="block" sx={{ mb: 0.5 }}>
+                                  Core Configuration:
+                                </Typography>
+                                {device.cpu.core_config.types.map((coreType, index) => (
+                                  <Typography key={index} variant="caption" display="block">
+                                    {coreType.count}× {coreType.type}: {coreType.boost_clock}GHz
+                                  </Typography>
+                                ))}
+                              </Box>
+                            } 
+                            arrow
+                          >
+                            <Box 
+                              component="span"
+                              sx={{ 
+                                ml: 0.5,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                borderRadius: '4px',
+                                px: 0.5,
+                                fontSize: '0.7rem',
+                                cursor: 'help'
+                              }}
+                            >
+                              Hybrid
+                            </Box>
+                          </Tooltip>
+                        )}
                       </Typography>
                     )}
                     <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.3 }}>
@@ -812,6 +846,18 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     <Typography variant="body2" sx={{ mb: 0.5 }}>
                       Cores: {detailDevice.cpu.cores} (Threads: {detailDevice.cpu.threads})
                     </Typography>
+                  )}
+                  {detailDevice.cpu.core_config && (
+                    <Box sx={{ mb: 1, pl: 1.5 }}>
+                      <Typography variant="body2" fontStyle="italic" sx={{ mb: 0.5 }}>
+                        Core Configuration:
+                      </Typography>
+                      {detailDevice.cpu.core_config.types.map((coreType, idx) => (
+                        <Typography key={idx} variant="body2" sx={{ pl: 1, mb: 0.5 }}>
+                          • {coreType.count}× {coreType.type}: {coreType.boost_clock}GHz
+                        </Typography>
+                      ))}
+                    </Box>
                   )}
                   <Typography variant="body2" sx={{ mb: 0.5 }}>TDP: {detailDevice.cpu.tdp}W</Typography>
                   {detailDevice.cpu.chipset && (

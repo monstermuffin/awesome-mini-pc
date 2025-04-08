@@ -1,9 +1,7 @@
-// @ts-check
 const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 
-// Define known valid values
 const VALID_CPU_BRANDS = ['Intel', 'AMD', 'ARM', 'Qualcomm', 'Apple'];
 const VALID_MEMORY_TYPES = ['DDR3', 'DDR3L', 'DDR4', 'DDR5', 'LPDDR4', 'LPDDR4X', 'LPDDR5'];
 const VALID_MEMORY_MODULE_TYPES = ['SODIMM', 'DIMM', 'Soldered', 'SO-DIMM'];
@@ -33,7 +31,6 @@ const VALID_ETHERNET_INTERFACES = ['RJ45', 'SFP', 'SFP+', 'SFP28', '10GBASE-T'];
  * @param {string} deviceFile - File being validated
  */
 function validateRequiredFields(data, path, errors, deviceFile) {
-  // Basic required fields
   const requiredTopLevel = ['id', 'brand', 'model', 'release_date', 'cpu', 'memory', 'storage', 'networking'];
   for (const field of requiredTopLevel) {
     if (!data[field]) {
@@ -47,7 +44,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
     }
   }
   
-  // Validate notes format if present (should test this more)
   if (data.notes) {
     const notes = data.notes.trim().split('\n');
     for (const note of notes) {
@@ -63,12 +59,10 @@ function validateRequiredFields(data, path, errors, deviceFile) {
     }
   }
   
-  // CPU required fields
   if (data.cpu) {
     const requiredCpuFields = ['brand', 'model', 'cores', 'threads', 'base_clock', 'boost_clock', 'architecture'];
     const isDIYMachine = data.cpu.socket?.supports_cpu_swap === true;
 
-    // For DIY machines, only brand, model and architecture are required
     const fieldsToCheck = isDIYMachine ? ['brand', 'model', 'architecture'] : requiredCpuFields;
 
     for (const field of fieldsToCheck) {
@@ -83,7 +77,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
       }
     }
 
-    // For DIY machines, socket information is required
     if (isDIYMachine) {
       if (!data.cpu.socket?.type) {
         errors.push({
@@ -95,9 +88,65 @@ function validateRequiredFields(data, path, errors, deviceFile) {
         });
       }
     }
+    
+    if (data.cpu.core_config) {
+      if (!Array.isArray(data.cpu.core_config.types)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `CPU core_config.types must be an array`,
+          path: `${path}.cpu.core_config.types`,
+          critical: true
+        });
+      } else {
+        let totalCores = 0;
+        data.cpu.core_config.types.forEach((coreType, index) => {
+          if (!coreType.type) {
+            errors.push({
+              deviceId: data.id || 'unknown',
+              file: deviceFile,
+              message: `Missing core type name in core_config.types[${index}]`,
+              path: `${path}.cpu.core_config.types[${index}].type`,
+              critical: true
+            });
+          }
+          
+          if (coreType.count === undefined || typeof coreType.count !== 'number') {
+            errors.push({
+              deviceId: data.id || 'unknown',
+              file: deviceFile,
+              message: `Missing or invalid core count in core_config.types[${index}]`,
+              path: `${path}.cpu.core_config.types[${index}].count`,
+              critical: true
+            });
+          } else {
+            totalCores += coreType.count;
+          }
+          
+          if (coreType.boost_clock === undefined || typeof coreType.boost_clock !== 'number' || coreType.boost_clock <= 0) {
+            errors.push({
+              deviceId: data.id || 'unknown',
+              file: deviceFile,
+              message: `Missing or invalid boost_clock in core_config.types[${index}]`,
+              path: `${path}.cpu.core_config.types[${index}].boost_clock`,
+              critical: true
+            });
+          }
+        });
+        
+        if (totalCores !== data.cpu.cores) {
+          errors.push({
+            deviceId: data.id || 'unknown',
+            file: deviceFile,
+            message: `Sum of core counts in core_config (${totalCores}) does not match total cores (${data.cpu.cores})`,
+            path: `${path}.cpu.core_config`,
+            critical: true
+          });
+        }
+      }
+    }
   }
   
-  // Memory required fields
   if (data.memory) {
     const requiredMemoryFields = ['max_capacity', 'slots', 'type', 'speed'];
     for (const field of requiredMemoryFields) {
@@ -123,7 +172,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
     }
   }
   
-  // Networking required fields
   if (data.networking) {
     if (!data.networking.ethernet || !Array.isArray(data.networking.ethernet)) {
       errors.push({
@@ -174,7 +222,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
     }
   }
   
-  // Storage
   if (data.storage && Array.isArray(data.storage)) {
     data.storage.forEach((storage, index) => {
       const requiredStorageFields = ['type', 'form_factor', 'interface'];
@@ -200,7 +247,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
     });
   }
 
-  // GPU validation
   if (data.gpu) {
     if (Array.isArray(data.gpu)) {
       data.gpu.forEach((gpu, index) => {
@@ -213,7 +259,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
             critical: true
           });
         }
-        // Validate GPU type
         if (gpu.type && !['Integrated', 'Discrete'].includes(gpu.type)) {
           errors.push({
             deviceId: data.id || 'unknown',
@@ -223,7 +268,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
             critical: true
           });
         }
-        // Require VRAM for discrete GPUs
         if (gpu.type === 'Discrete' && !gpu.vram) {
           errors.push({
             deviceId: data.id || 'unknown',
@@ -245,7 +289,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
     }
   }
 
-  // Expansion validation
   if (data.expansion) {
     if (data.expansion.oculink_ports && Array.isArray(data.expansion.oculink_ports)) {
       data.expansion.oculink_ports.forEach((port, index) => {
@@ -271,7 +314,6 @@ function validateRequiredFields(data, path, errors, deviceFile) {
  * @param {string} deviceFile - File being validated
  */
 function validateDataTypes(data, path, errors, deviceFile) {
-  // Check ID format
   if (data.id && typeof data.id !== 'string') {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -282,7 +324,6 @@ function validateDataTypes(data, path, errors, deviceFile) {
     });
   }
   
-  // Check brand and model are strings
   if (data.brand && typeof data.brand !== 'string') {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -302,7 +343,6 @@ function validateDataTypes(data, path, errors, deviceFile) {
     });
   }
   
-  // Check release_date format
   if (data.release_date) {
     const yearRegex = /^[0-9]{4}$/;
     if (typeof data.release_date !== 'string' || !yearRegex.test(data.release_date)) {
@@ -316,11 +356,9 @@ function validateDataTypes(data, path, errors, deviceFile) {
     }
   }
   
-  // CPU numeric values
   if (data.cpu) {
     const isDIYMachine = data.cpu.socket?.supports_cpu_swap === true;
 
-    // Only validate CPU specs for non-DIY machines
     if (!isDIYMachine) {
       if (data.cpu.cores !== undefined && (!Number.isInteger(data.cpu.cores) || data.cpu.cores <= 0)) {
         errors.push({
@@ -363,7 +401,6 @@ function validateDataTypes(data, path, errors, deviceFile) {
       }
     }
 
-    // TDP validation - only check if provided
     if (data.cpu.tdp !== undefined && (typeof data.cpu.tdp !== 'number' || data.cpu.tdp <= 0)) {
       errors.push({
         deviceId: data.id || 'unknown',
@@ -375,7 +412,6 @@ function validateDataTypes(data, path, errors, deviceFile) {
     }
   }
   
-  // Memory numeric values
   if (data.memory) {
     if (data.memory.max_capacity !== undefined && (!Number.isInteger(data.memory.max_capacity) || data.memory.max_capacity <= 0)) {
       errors.push({
@@ -408,7 +444,6 @@ function validateDataTypes(data, path, errors, deviceFile) {
     }
   }
 
-  // Validate CPU socket if present
   if (data.cpu?.socket) {
     if (typeof data.cpu.socket.type !== 'string') {
       errors.push({
@@ -439,7 +474,6 @@ function validateDataTypes(data, path, errors, deviceFile) {
  * @param {string} deviceFile - File being validated
  */
 function validateEnumValues(data, path, errors, deviceFile) {
-  // CPU brand
   if (data.cpu && data.cpu.brand && !VALID_CPU_BRANDS.includes(data.cpu.brand)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -450,7 +484,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
     });
   }
   
-  // Memory type
   if (data.memory && data.memory.type && !VALID_MEMORY_TYPES.includes(data.memory.type)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -461,7 +494,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
     });
   }
   
-  // Memory module type
   if (data.memory && data.memory.module_type && !VALID_MEMORY_MODULE_TYPES.includes(data.memory.module_type)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -472,7 +504,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
     });
   }
   
-  // Storage type
   if (data.storage && Array.isArray(data.storage)) {
     data.storage.forEach((storage, index) => {
       if (storage.type && !VALID_STORAGE_TYPES.includes(storage.type)) {
@@ -487,7 +518,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
     });
   }
   
-  // WiFi standard
   if (data.networking && data.networking.wifi && data.networking.wifi.standard && 
      !VALID_WIFI_STANDARDS.includes(data.networking.wifi.standard)) {
     errors.push({
@@ -499,7 +529,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
     });
   }
   
-  // Ethernet speed
   if (data.networking && data.networking.ethernet && Array.isArray(data.networking.ethernet)) {
     data.networking.ethernet.forEach((eth, index) => {
       if (eth.speed && !VALID_ETHERNET_SPEEDS.includes(eth.speed)) {
@@ -514,7 +543,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
     });
   }
   
-  // PCIe slots
   if (data.expansion && data.expansion.pcie_slots && Array.isArray(data.expansion.pcie_slots)) {
     data.expansion.pcie_slots.forEach((slot, index) => {
       if (slot.type && !VALID_PCIE_TYPES.includes(slot.type)) {
@@ -539,7 +567,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
     });
   }
 
-  // CPU socket type
   if (data.cpu?.socket?.type && !VALID_CPU_SOCKETS.includes(data.cpu.socket.type)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -550,7 +577,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
     });
   }
 
-  // OCuLink version validation
   if (data.expansion?.oculink_ports) {
     data.expansion.oculink_ports.forEach((port, index) => {
       if (port.version && !VALID_OCULINK_VERSIONS.includes(port.version)) {
@@ -574,7 +600,6 @@ function validateEnumValues(data, path, errors, deviceFile) {
  * @param {string} deviceFile - File being validated
  */
 function validateLogicalConstraints(data, path, errors, deviceFile) {
-  // CPU base_clock should be less than or equal to boost_clock
   if (data.cpu && data.cpu.base_clock !== undefined && data.cpu.boost_clock !== undefined) {
     if (data.cpu.base_clock > data.cpu.boost_clock) {
       errors.push({
@@ -587,7 +612,6 @@ function validateLogicalConstraints(data, path, errors, deviceFile) {
     }
   }
   
-  // CPU threads should be greater than or equal to cores
   if (data.cpu && data.cpu.cores !== undefined && data.cpu.threads !== undefined) {
     if (data.cpu.threads < data.cpu.cores) {
       errors.push({
@@ -600,7 +624,6 @@ function validateLogicalConstraints(data, path, errors, deviceFile) {
     }
   }
   
-  // Memory slots should match the module type
   if (data.memory && data.memory.slots !== undefined && data.memory.module_type) {
     if (data.memory.module_type === 'Soldered' && data.memory.slots > 0) {
       errors.push({
@@ -613,7 +636,6 @@ function validateLogicalConstraints(data, path, errors, deviceFile) {
     }
   }
   
-  // ID should match the expected format
   if (data.id && data.brand) {
     const expectedPrefix = data.brand.toLowerCase().replace(/\s+/g, '-');
     if (!data.id.startsWith(expectedPrefix)) {
@@ -627,7 +649,6 @@ function validateLogicalConstraints(data, path, errors, deviceFile) {
     }
   }
 
-  // Validate Thunderbolt compatibility and version
   if (data.ports?.usb_c && Array.isArray(data.ports.usb_c)) {
     data.ports.usb_c.forEach((port, index) => {
       if (port.thunderbolt_compatible === true && !port.thunderbolt_version) {
@@ -651,7 +672,6 @@ function validateLogicalConstraints(data, path, errors, deviceFile) {
  * @param {string} deviceFile - File being validated
  */
 function validateFieldValues(data, path, errors, deviceFile) {
-  // CPU brand validation
   if (data.cpu?.brand && !VALID_CPU_BRANDS.includes(data.cpu.brand)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -662,7 +682,6 @@ function validateFieldValues(data, path, errors, deviceFile) {
     });
   }
 
-  // Memory type validation
   if (data.memory?.type && !VALID_MEMORY_TYPES.includes(data.memory.type)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -673,7 +692,6 @@ function validateFieldValues(data, path, errors, deviceFile) {
     });
   }
 
-  // Memory module type validation
   if (data.memory?.module_type && !VALID_MEMORY_MODULE_TYPES.includes(data.memory.module_type)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -684,7 +702,6 @@ function validateFieldValues(data, path, errors, deviceFile) {
     });
   }
 
-  // Storage validation
   if (data.storage && Array.isArray(data.storage)) {
     data.storage.forEach((storage, index) => {
       if (storage.type && !VALID_STORAGE_TYPES.includes(storage.type)) {
@@ -699,7 +716,6 @@ function validateFieldValues(data, path, errors, deviceFile) {
     });
   }
 
-  // WiFi standard validation
   if (data.networking?.wifi?.standard && !VALID_WIFI_STANDARDS.includes(data.networking.wifi.standard)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -710,7 +726,6 @@ function validateFieldValues(data, path, errors, deviceFile) {
     });
   }
 
-  // Ethernet validation
   if (data.networking?.ethernet && Array.isArray(data.networking.ethernet)) {
     data.networking.ethernet.forEach((eth, index) => {
       if (eth.speed && !VALID_ETHERNET_SPEEDS.includes(eth.speed)) {
@@ -734,7 +749,6 @@ function validateFieldValues(data, path, errors, deviceFile) {
     });
   }
 
-  // CPU socket validation for DIY machines
   if (data.cpu?.socket?.type && !VALID_CPU_SOCKETS.includes(data.cpu.socket.type)) {
     errors.push({
       deviceId: data.id || 'unknown',
@@ -745,7 +759,6 @@ function validateFieldValues(data, path, errors, deviceFile) {
     });
   }
 
-  // OCuLink validation
   if (data.expansion?.oculink_ports && Array.isArray(data.expansion.oculink_ports)) {
     data.expansion.oculink_ports.forEach((port, index) => {
       if (port.version && !VALID_OCULINK_VERSIONS.includes(port.version)) {
@@ -773,7 +786,6 @@ function validateDevice(filePath, deviceFile) {
     const content = fs.readFileSync(filePath, 'utf-8');
     const data = yaml.load(content);
     
-    // Run all validations
     validateRequiredFields(data, '', errors, deviceFile);
     validateDataTypes(data, '', errors, deviceFile);
     validateEnumValues(data, '', errors, deviceFile);
@@ -813,7 +825,6 @@ async function validateAllDevices() {
         const content = fs.readFileSync(filePath, 'utf8');
         const data = yaml.load(content);
         
-        // Validate the device data
         validateRequiredFields(data, '', errors, filePath);
         validateFieldValues(data, '', errors, filePath);
         
