@@ -370,6 +370,21 @@ jobs:
                 ...(existingFile && { sha: existingFile.data.sha })
               });
               
+              // Wait for GH - This might fix validate not running?
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
+              try {
+                await github.rest.repos.getContent({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  path: filePath,
+                  ref: branchName
+                });
+              } catch (error) {
+                console.error('File not found after creation, waiting longer...');
+                await new Promise(resolve => setTimeout(resolve, 3000));
+              }
+              
               const pr = await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
