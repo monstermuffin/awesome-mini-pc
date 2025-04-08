@@ -131,228 +131,196 @@ jobs:
               }
 
               const validationData = {
+                // Basic information
                 id: `${data.brand.toLowerCase()}-${data.id.toLowerCase()}`,
                 brand: data.brand,
-                model: data.model,
-                release_date: data.release_date,
+                model: `"${data.model}"`,
+                release_date: `"${data.release_date}"`,
 
+                // CPU information
                 cpu: {
                   brand: data.cpu_brand,
-                  model: normalizeCPUModel(data.cpu_brand, data.cpu_model),
+                  model: `"${normalizeCPUModel(data.cpu_brand, data.cpu_model)}"`,
                   tdp: data.cpu_tdp ? parseFloat(data.cpu_tdp) : undefined,
                   cores: parseInt(data.cpu_cores),
                   threads: parseInt(data.cpu_threads),
                   base_clock: parseFloat(data.base_clock),
                   boost_clock: data.boost_clock ? parseFloat(data.boost_clock) : undefined,
-                  architecture: data.cpu_architecture
-                }
-              };
+                  architecture: `"${data.cpu_architecture}"`
+                },
 
-              function normalizeCPUModel(cpuBrand, cpuModel) {
-                if (!cpuModel) return cpuModel;
-                
-                // Add "Core" prefix to Intel CPUs if needed
-                if (cpuBrand === "Intel") {
-                  const intelCoreRegex = /^i[3579]-\d+/;
-                  if (intelCoreRegex.test(cpuModel) && !cpuModel.startsWith("Core")) {
-                    return `Core ${cpuModel}`;
-                  }
-                }
-                
-                return cpuModel;
-              }
+                // GPU information
+                ...(data.gpu_models && {
+                  gpu: data.gpu_models.split('\n')
+                    .filter(line => line.trim().startsWith('Type:'))
+                    .map(line => {
+                      const parts = line.split(',').map(p => p.trim());
+                      const gpu = {};
+                      parts.forEach(part => {
+                        const [key, value] = part.split(':').map(s => s.trim());
+                        if (key.toLowerCase() === 'type') gpu.type = `"${value}"`;
+                        if (key.toLowerCase() === 'model') gpu.model = `"${value}"`;
+                        if (key.toLowerCase() === 'vram') gpu.vram = `"${value}"`;
+                      });
+                      return gpu;
+                    })
+                }),
 
-              if (data.cpu_socket_type && data.cpu_socket_type !== 'None') {
-                validationData.cpu.socket = {
-                  type: data.cpu_socket_type,
-                  supports_cpu_swap: true
-                };
-              }
+                // Memory information
+                memory: {
+                  slots: parseInt(data.memory_slots),
+                  type: data.memory_type,
+                  speed: parseFloat(data.memory_speed),
+                  module_type: `"${data.memory_module_type}"`,
+                  max_capacity: parseInt(data.memory_max)
+                },
 
-              if (data.cpu_core_config) {
-                const coreTypes = data.cpu_core_config.split('\n')
-                  .filter(line => line.trim().startsWith('Type:'))
-                  .map(line => {
-                    const parts = line.split(',').map(p => p.trim());
-                    const coreType = {};
-                    parts.forEach(part => {
-                      const [key, value] = part.split(':').map(s => s.trim());
-                      const key_lower = key.toLowerCase();
-                      if (key_lower === 'type') coreType.type = value;
-                      if (key_lower === 'count') coreType.count = parseInt(value);
-                      if (key_lower === 'boost clock') coreType.boost_clock = parseFloat(value);
-                    });
-                    return coreType;
-                  });
-                  
-                if (coreTypes.length > 0) {
-                  validationData.cpu.core_config = {
-                    types: coreTypes
-                  };
-                }
-              }
+                // Storage information
+                ...(data.storage_details && {
+                  storage: data.storage_details.split('\n')
+                    .filter(line => line.trim().startsWith('Type:'))
+                    .map(line => {
+                      const parts = line.split(',').map(p => p.trim());
+                      const storage = {};
+                      parts.forEach(part => {
+                        const [key, value] = part.split(':').map(s => s.trim());
+                        const key_lower = key.toLowerCase();
+                        if (key_lower === 'type') storage.type = `"${value}"`;
+                        if (key_lower === 'form factor') storage.form_factor = `"${value}"`;
+                        if (key_lower === 'interface') storage.interface = `"${value}"`;
+                        if (key_lower === 'alt interface') storage.alt_interface = `"${value}"`;
+                      });
+                      return storage;
+                    })
+                }),
 
-              if (data.gpu_models) {
-                validationData.gpu = data.gpu_models.split('\n')
-                  .filter(line => line.trim().startsWith('Type:'))
-                  .map(line => {
-                    const parts = line.split(',').map(p => p.trim());
-                    const gpu = {};
-                    parts.forEach(part => {
-                      const [key, value] = part.split(':').map(s => s.trim());
-                      if (key.toLowerCase() === 'type') gpu.type = value;
-                      if (key.toLowerCase() === 'model') gpu.model = value;
-                      if (key.toLowerCase() === 'vram') gpu.vram = value;
-                    });
-                    return gpu;
-                  });
-              }
-
-              if (data.dimensions) {
-                const [width, depth, height] = data.dimensions.split('x').map(d => parseFloat(d.trim()));
-                validationData.dimensions = {
-                  width,
-                  depth,
-                  height
-                };
-              }
-
-              if (data.power_adapter) {
-                const match = data.power_adapter.match(/(\d+(?:\.\d+)?)W.*?(\d+(?:\.\d+)?)[vV].*?(\d+(?:\.\d+)?)A/i);
-                if (match) {
-                  validationData.power = {
-                    adapter_wattage: parseFloat(match[1]),
-                    dc_input: `${match[2]}V/${match[3]}A`
-                  };
-                } else {
-                  validationData.power = {
-                    adapter_wattage: parseFloat(data.power_adapter)
-                  };
-                }
-              }
-
-              validationData.memory = {
-                slots: parseInt(data.memory_slots),
-                type: data.memory_type,
-                speed: parseFloat(data.memory_speed),
-                module_type: data.memory_module_type,
-                max_capacity: parseInt(data.memory_max)
-              };
-
-              if (data.storage_details) {
-                validationData.storage = data.storage_details.split('\n')
-                  .filter(line => line.trim().startsWith('Type:'))
-                  .map(line => {
-                    const parts = line.split(',').map(p => p.trim());
-                    const storage = {};
-                    parts.forEach(part => {
-                      const [key, value] = part.split(':').map(s => s.trim());
-                      const key_lower = key.toLowerCase();
-                      if (key_lower === 'type') storage.type = value;
-                      if (key_lower === 'form factor') storage.form_factor = value;
-                      if (key_lower === 'interface') storage.interface = value;
-                    });
-                    return storage;
-                  });
-              }
-
-              validationData.networking = {
-                ethernet: data.ethernet_ports ? data.ethernet_ports.split('\n')
-                  .filter(line => line.trim().startsWith('Type:'))
-                  .map(line => {
-                    const parts = line.split(',').map(p => p.trim());
-                    const eth = {};
-                    parts.forEach(part => {
-                      const [key, value] = part.split(':').map(s => s.trim());
-                      const key_lower = key.toLowerCase();
-                      if (key_lower === 'type') eth.speed = value;
-                      if (key_lower === 'chipset') eth.chipset = value;
-                      if (key_lower === 'interface') eth.interface = value;
-                    });
-                    eth.ports = 1;
-                    return eth;
-                  }) : [],
-                wifi: data.wifi_standard ? {
-                  chipset: data.wifi_chipset,
-                  standard: data.wifi_standard,
-                  bluetooth: data.bluetooth_version
-                } : undefined
-              };
-
-              validationData.ports = {};
-
-              if (data.usb_ports) {
-                const usb_a = [];
-                const usb_c = [];
-
-                data.usb_ports.split('\n')
-                  .filter(line => line.trim().startsWith('Type:'))
-                  .forEach(line => {
-                    const parts = line.split(',').map(p => p.trim());
-                    const port = {};
-                    parts.forEach(part => {
-                      const [key, value] = part.split(':').map(s => s.trim());
-                      const key_lower = key.toLowerCase();
-                      if (key_lower === 'type') port.type = value;
-                      if (key_lower === 'speed') port.speed = value;
-                      if (key_lower === 'count') port.count = parseInt(value);
-                      if (key_lower === 'alt mode') port.alt_mode = value;
-                      if (key_lower === 'max resolution') port.max_resolution = value;
-                      if (key_lower === 'thunderbolt') port.thunderbolt_version = value;
-                    });
-
-                    if (port.type.toLowerCase().includes('usb4') || port.type.toLowerCase().includes('type-c')) {
-                      usb_c.push(port);
-                    } else {
-                      usb_a.push(port);
+                // Networking information
+                networking: {
+                  ethernet: data.ethernet_ports ? data.ethernet_ports.split('\n')
+                    .filter(line => line.trim().startsWith('Type:'))
+                    .map(line => {
+                      const parts = line.split(',').map(p => p.trim());
+                      const eth = {};
+                      parts.forEach(part => {
+                        const [key, value] = part.split(':').map(s => s.trim());
+                        const key_lower = key.toLowerCase();
+                        if (key_lower === 'type') eth.speed = `"${value}"`;
+                        if (key_lower === 'chipset') eth.chipset = `"${value}"`;
+                        if (key_lower === 'interface') eth.interface = `"${value}"`;
+                      });
+                      eth.ports = 1;
+                      return eth;
+                    }) : [],
+                  ...(data.wifi_standard && {
+                    wifi: {
+                      chipset: `"${data.wifi_chipset}"`,
+                      standard: `"${data.wifi_standard}"`,
+                      bluetooth: `"${data.bluetooth_version}"`
                     }
-                  });
+                  })
+                },
 
-                if (usb_a.length > 0) validationData.ports.usb_a = usb_a;
-                if (usb_c.length > 0) validationData.ports.usb_c = usb_c;
-              }
+                // Ports information
+                ports: {
+                  ...(data.usb_ports && (() => {
+                    const usb_a = [];
+                    const usb_c = [];
 
-              if (data.display_ports) {
-                const display_ports = data.display_ports.split('\n')
-                  .filter(line => line.includes('Version:') || line.includes('Count:'))
-                  .map(line => {
-                    const parts = line.split(',').map(p => p.trim());
-                    const port = {};
-                    parts.forEach(part => {
-                      const [key, value] = part.split(':').map(s => s.trim());
-                      const key_lower = key.toLowerCase();
-                      if (key_lower === 'count') port.count = parseInt(value);
-                      if (key_lower === 'version') port.version = value;
-                      if (key_lower === 'form factor') port.form_factor = value;
-                      if (key_lower === 'max resolution') port.max_resolution = value;
-                    });
-                    return port;
-                  });
+                    data.usb_ports.split('\n')
+                      .filter(line => line.trim().startsWith('Type:'))
+                      .forEach(line => {
+                        const parts = line.split(',').map(p => p.trim());
+                        const port = {};
+                        parts.forEach(part => {
+                          const [key, value] = part.split(':').map(s => s.trim());
+                          const key_lower = key.toLowerCase();
+                          if (key_lower === 'type') port.type = `"${value}"`;
+                          if (key_lower === 'speed') port.speed = `"${value}"`;
+                          if (key_lower === 'count') port.count = parseInt(value);
+                          if (key_lower === 'alt mode') port.alt_mode = `"${value}"`;
+                          if (key_lower === 'max resolution') port.max_resolution = `"${value}"`;
+                          if (key_lower === 'thunderbolt') port.thunderbolt_version = `"${value}"`;
+                        });
 
-                const hdmi = display_ports.filter(p => p.type?.toLowerCase().includes('hdmi'));
-                const dp = display_ports.filter(p => !p.type?.toLowerCase().includes('hdmi'));
+                        if (port.type.toLowerCase().includes('usb4') || port.type.toLowerCase().includes('type-c')) {
+                          usb_c.push(port);
+                        } else {
+                          usb_a.push(port);
+                        }
+                      });
 
-                if (hdmi.length > 0) validationData.ports.hdmi = hdmi[0];
-                if (dp.length > 0) validationData.ports.displayport = dp[0];
-              }
+                    return {
+                      ...(usb_a.length > 0 && { usb_a }),
+                      ...(usb_c.length > 0 && { usb_c })
+                    };
+                  })()),
 
-              if (data.audio_jacks) {
-                validationData.ports.audio_jack = parseInt(data.audio_jacks);
-              }
+                  ...(data.display_ports && (() => {
+                    const display_ports = data.display_ports.split('\n')
+                      .filter(line => line.includes('Version:') || line.includes('Count:'))
+                      .map(line => {
+                        const parts = line.split(',').map(p => p.trim());
+                        const port = {};
+                        parts.forEach(part => {
+                          const [key, value] = part.split(':').map(s => s.trim());
+                          const key_lower = key.toLowerCase();
+                          if (key_lower === 'count') port.count = parseInt(value);
+                          if (key_lower === 'version') port.version = `"${value}"`;
+                          if (key_lower === 'form factor') port.form_factor = `"${value}"`;
+                          if (key_lower === 'max resolution') port.max_resolution = `"${value}"`;
+                        });
+                        return port;
+                      });
 
-              if (data.sd_card_reader) {
-                validationData.ports.sd_card_reader = data.sd_card_reader === 'Yes';
-              }
+                    const hdmi = display_ports.filter(p => p.type?.toLowerCase().includes('hdmi'));
+                    const dp = display_ports.filter(p => !p.type?.toLowerCase().includes('hdmi'));
 
-              if (data.micro_sd_card_reader) {
-                validationData.ports.micro_sd_card_reader = data.micro_sd_card_reader === 'Yes';
-              }
+                    return {
+                      ...(hdmi.length > 0 && { hdmi: hdmi[0] }),
+                      ...(dp.length > 0 && { displayport: dp[0] })
+                    };
+                  })()),
 
-              if (data.ir_receiver) {
-                validationData.ports.ir_receiver = data.ir_receiver === 'Yes';
-              }
+                  ...(data.audio_jacks && { audio_jack: parseInt(data.audio_jacks) }),
+                  ...(data.sd_card_reader && { sd_card_reader: data.sd_card_reader === 'Yes' }),
+                  ...(data.micro_sd_card_reader && { micro_sd_card_reader: data.micro_sd_card_reader === 'Yes' }),
+                  ...(data.ir_receiver && { ir_receiver: data.ir_receiver === 'Yes' })
+                },
 
-              const yamlString = yaml.dump(validationData, { indent: 2, skipInvalid: true });
+                // Physical specifications
+                ...(data.dimensions && (() => {
+                  const [width, depth, height] = data.dimensions.split('x').map(d => parseFloat(d.trim()));
+                  return {
+                    dimensions: {
+                      width,
+                      depth,
+                      height
+                    }
+                  };
+                })()),
+
+                // Power specifications
+                ...(data.power_adapter && (() => {
+                  const match = data.power_adapter.match(/(\d+(?:\.\d+)?)W.*?(\d+(?:\.\d+)?)[vV].*?(\d+(?:\.\d+)?)A/i);
+                  return {
+                    power: {
+                      adapter_wattage: parseFloat(match ? match[1] : data.power_adapter),
+                      ...(match && { dc_input: `"${match[2]}V/${match[3]}A"` })
+                    }
+                  };
+                })())
+              };
+
+              // Clean up the validation data by removing any undefined or null values
+              const cleanValidationData = JSON.parse(JSON.stringify(validationData));
+
+              const yamlString = yaml.dump(cleanValidationData, {
+                indent: 2,
+                skipInvalid: true,
+                quotingType: '"',
+                forceQuotes: false,
+                lineWidth: -1
+              });
               
               const brand = data.brand.toLowerCase();
               const filePath = `data/devices/${brand}/${data.id}.yaml`;
@@ -430,4 +398,18 @@ jobs:
             } catch (error) {
               console.error('Error creating PR:', error);
               core.setFailed(error.message);
+            } 
+
+            function normalizeCPUModel(cpuBrand, cpuModel) {
+              if (!cpuModel) return cpuModel;
+              
+              // Add "Core" prefix to Intel CPUs if needed
+              if (cpuBrand === "Intel") {
+                const intelCoreRegex = /^i[3579]-\d+/;
+                if (intelCoreRegex.test(cpuModel) && !cpuModel.startsWith("Core")) {
+                  return `Core ${cpuModel}`;
+                }
+              }
+              
+              return cpuModel;
             } 
