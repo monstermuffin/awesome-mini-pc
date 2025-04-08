@@ -111,7 +111,7 @@ def main():
     print(f"Generated file path: {file_path}")
     
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             yaml_content = f.read()
     except FileNotFoundError:
         print(f"::error::Generated YAML file not found at {file_path} after running process-new-machine.py")
