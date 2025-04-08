@@ -12,21 +12,10 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-      statuses: write
-      checks: write
       
     steps:
-      - name: Debug Event
-        run: |
-          echo "Event name: ${{ github.event_name }}"
-          echo "Action: ${{ github.event.action }}"
-          echo "PR number: ${{ github.event.pull_request.number }}"
-          echo "SHA: ${{ github.event.pull_request.head.sha }}"
-
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -48,15 +37,6 @@ jobs:
               const output = execSync('node scripts/validate-data.cjs', { encoding: 'utf8' });
               console.log('Validation output:', output);
               
-              await github.rest.repos.createCommitStatus({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                sha: context.sha,
-                state: 'success',
-                context: 'PR Validation',
-                description: 'Device data validation passed'
-              });
-              
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -77,15 +57,6 @@ jobs:
               }
               
             } catch (error) {
-              await github.rest.repos.createCommitStatus({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                sha: context.sha,
-                state: 'failure',
-                context: 'PR Validation',
-                description: 'Device data validation failed'
-              });
-
               const errorOutput = error.stdout || error.stderr;
               console.error('Validation failed:', errorOutput);
               
