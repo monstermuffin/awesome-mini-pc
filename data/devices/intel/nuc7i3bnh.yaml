@@ -1,0 +1,59 @@
+id: intel-nuc7i3bnh
+brand: Intel
+model: NUC7i3BNH
+release_date: '2017'
+cpu:
+  brand: Intel
+  model: Core i3-7100U
+  tdp: 15.0
+  cores: 2
+  threads: 4
+  base_clock: 2.4
+  architecture: Kaby Lake
+gpu:
+- type: Integrated
+  model: Intel HD Graphics 620
+memory:
+  slots: 2
+  type: DDR4
+  speed: 2300.0
+  module_type: SODIMM
+  max_capacity: 32
+storage:
+- type: M.2
+  form_factor: '2280'
+  interface: PCIe 3.0 x4
+  alt_interface: SATA
+- type: SATA
+  form_factor: 2.5"
+  interface: SATA
+networking:
+  ethernet:
+  - ports: 1
+    speed: 1GbE
+    chipset: I219-V
+    interface: RJ45
+ports:
+  usb_a:
+  - type: USB 3.0
+    speed: 5Gbps
+    count: 4
+  usb_c:
+  - type: USB-C
+    count: 1
+    speed: 10Gbps
+    alt_mode: DisplayPort 1.2
+  hdmi:
+    type: HDMI
+    count: 1
+    version: '2.0'
+    form_factor: Full-size
+    max_resolution: 4K@60Hz
+  micro_sd_card_reader: true
+dimensions:
+  width: 114.3
+  depth: 111.8
+  height: 50.8
+power:
+  adapter_wattage: 65.0
+  dc_input: 19V/3.42A
