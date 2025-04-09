@@ -22,8 +22,8 @@ jobs:
 
       - name: Create requirements file
         run: |
+          mkdir -p .github/workflows
           echo "pyyaml==6.0.2" > .github/workflows/requirements.txt
-          echo "PyGithub==2.6.1" >> .github/workflows/requirements.txt
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -36,17 +36,162 @@ jobs:
         run: |
           pip install -r .github/workflows/requirements.txt
 
-      - name: Generate App Token
-        id: generate_token
-        uses: actions/create-github-app-token@v1
+      - name: Parse Issue and Save to File
+        id: save_issue
+        uses: actions/github-script@v7
         with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          script: |
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            
+            const issueBody = issue.data.body;
+            if (!issueBody) {
+              throw new Error('Issue body is empty');
+            }
+            
+            console.log("Issue body content (first 500 chars):");
+            console.log(issueBody.substring(0, 500));
+            console.log("...");
+            
+            const fs = require('fs');
+            fs.writeFileSync('issue_body.txt', issueBody);
+            
+            const lines = issueBody.split('\n');
+            let deviceId = '';
+            let brand = '';
+            
+            let currentField = null;
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i].trim();
+              
+              if (line.startsWith('### Device ID')) {
+                currentField = 'id';
+                continue;
+              } else if (line.startsWith('### Brand')) {
+                currentField = 'brand';
+                continue;
+              }
+              
+              if (currentField === 'id' && line && !line.startsWith('### ')) {
+                deviceId = line;
+                currentField = null;
+              } else if (currentField === 'brand' && line && !line.startsWith('### ')) {
+                brand = line;
+                currentField = null;
+              }
+              
+              if (deviceId && brand) break;
+            }
+            
+            core.setOutput('device_id', deviceId.toLowerCase());
+            core.setOutput('brand', brand.toLowerCase());
+            console.log(`Extracted device ID: ${deviceId}, brand: ${brand}`);
 
-      - name: Process Issue and Create PR
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+      - name: Process Issue Form to YAML
+        id: process_issue
         run: |
-          python scripts/handle-new-device-flow.py
+          python scripts/process-new-machine.py issue_body.txt
+
+      - name: Create Branch and PR
+        id: create_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deviceId = '${{ steps.save_issue.outputs.device_id }}';
+            const brand = '${{ steps.save_issue.outputs.brand }}';
+            
+            if (!deviceId || !brand) {
+              throw new Error('Failed to extract device ID or brand from issue');
+            }
+
+            const branchName = `new-device/${deviceId}`;
+            const filePath = `data/devices/${brand}/${deviceId}.yaml`;
+
+            try {
+              const mainRef = await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'heads/main'
+              });
+
+              try {
+                await github.rest.git.createRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `refs/heads/${branchName}`,
+                  sha: mainRef.data.object.sha
+                });
+              } catch (error) {
+                if (error.status !== 422) {
+                  throw error;
+                }
+                console.log(`Branch ${branchName} already exists`);
+              }
+
+              const fs = require('fs');
+              const yamlContent = fs.readFileSync(filePath, 'utf8');
+
+              let existingFile;
+              try {
+                existingFile = await github.rest.repos.getContent({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  path: filePath,
+                  ref: branchName
+                });
+              } catch (error) {
+                if (error.status !== 404) {
+                  throw error;
+                }
+              }
+
+              await github.rest.repos.createOrUpdateFileContents({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: filePath,
+                message: `Add device data for ${brand} ${deviceId}`,
+                content: Buffer.from(yamlContent).toString('base64'),
+                branch: branchName,
+                ...(existingFile && { sha: existingFile.data.sha })
+              });
+
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
+              const latestCommit = await github.rest.repos.getBranch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                branch: branchName
+              });
+
+              const pr = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Add Device: ${brand} ${deviceId}`,
+                body: `Adds data for **${brand} ${deviceId}** based on issue #${context.issue.number}.\n\nCloses #${context.issue.number}`,
+                head: branchName,
+                base: 'main',
+                maintainer_can_modify: true
+              });
+
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.data.number,
+                labels: ['automated-pr']
+              });
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `Thank you for your submission! A Pull Request has been created: #${pr.data.number}\n\nThe PR will now be automatically validated. If any issues are found, they will be reported in the PR and here.`
+              });
+              
+              console.log(`Created PR #${pr.data.number} - validation will be triggered automatically by PR webhook`);
+            } catch (error) {
+              console.error('Error creating PR:', error);
+              core.setFailed(error.message);
+            } 
