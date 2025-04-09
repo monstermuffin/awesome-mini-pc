@@ -861,10 +861,9 @@ function App() {
             Features
           </Typography>
           <Typography component="ul" variant="body2">
-            <li>Compare technical specifications across multiple mini PC models.</li>
+            <li>Compare technical specifications across multiple PCs.</li>
             <li>Filter by CPU, memory, storage, and other specifications.</li>
             <li>Detailed information about expansion options, connectivity, and dimensions.</li>
-            <li>Comparison of selected devices.</li>
           </Typography>
           <Typography variant="subtitle1" sx={{ 
             fontWeight: 600, 
