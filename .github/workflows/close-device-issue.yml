@@ -6,8 +6,7 @@ on:
     branches:
       - main
     paths:
-      - 'data/devices/**/*.yaml'
-      - 'data/devices/**/*.yml'
+      - 'data/devices/**'
 
 jobs:
   close_issue:
@@ -15,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      contents: write
       
     steps:
       - name: Generate App Token
@@ -50,4 +50,26 @@ jobs:
                 issue_number: issueNumber,
                 state: 'closed'
               });
+            } 
+
+      - name: Delete source branch
+        if: github.event.pull_request.merged == true
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.generate_token.outputs.token }}
+          script: |
+            const branchName = context.payload.pull_request.head.ref;
+            if (branchName !== 'main' && branchName !== 'master') {
+              try {
+                await github.rest.git.deleteRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `heads/${branchName}`
+                });
+                console.log(`Successfully deleted branch ${branchName}`);
+              } catch (error) {
+                console.error(`Failed to delete branch ${branchName}:`, error.message);
+              }
+            } else {
+              console.log(`Branch ${branchName} is a protected branch and will not be deleted.`);
             } 
