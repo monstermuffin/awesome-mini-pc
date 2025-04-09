@@ -33,6 +33,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Count Devices
+        id: count_devices
+        run: |
+          COUNT=$(find ./data/devices -type f \( -name "*.yaml" -o -name "*.yml" \) | wc -l)
+          echo "COUNT=$COUNT"
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -52,6 +59,14 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Create Stats JSON
+        if: startsWith(github.ref, 'refs/heads/main')
+        run: |
+          mkdir -p ./dist
+          echo '{ "deviceCount": ${{ steps.count_devices.outputs.count }} }' > ./dist/stats.json
+          echo 'Created ./dist/stats.json'
+          cat ./dist/stats.json
 
       - name: Setup Pages
         if: startsWith(github.ref, 'refs/heads/main')
