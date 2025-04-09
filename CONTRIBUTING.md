@@ -1,15 +1,14 @@
 # Contributing to Awesome Mini PC
-Thank you for your interest in contributing to Awesome Mini PC! Contributing a device means the device will be added to the [Awesome Mini PC](https://awesomeminipc.com) database once it has been validated.
+Thank you for your interest in contributing to Awesome Mini PC. Contributing a device means the device will be added to the [Awesome Mini PC](https://awesomeminipc.com) database once it has been validated.
 
 ## Finding Device Information
-The key to a valuable contribution is detailed and accurate information. Here's how to find specifications for your device:
+In order to add a device to the database, accurate information will need to be collected about your device, this includes things like chipset information, port numbers and types, power input etc. The following will help you gather this information.
 
-### Why Detailed Information Matters
-Most manufacturers don't publish comprehensive technical details about their mini PCs, this is why I created this project.
-
-Collecting as much detailed information as possible about devices allows this database to become the comprehensive resource it is intended to be.
 
 ### Tools for Windows Users:
+> [!TIP]
+> Using tools like Device Manager, System Information, HWiNFO, CPU-Z, and GPU-Z will simplify gathering accurate hardware details on Windows.
+
 - **Device Manager**: For detailed hardware identification with chipset information.
    - Press `Win+X` and select "Device Manager".
    - Expand categories like "Network adapters", "Display adapters", etc.
@@ -20,14 +19,14 @@ Collecting as much detailed information as possible about devices allows this da
    - Navigate through categories to find detailed hardware information.
 
 - **HWiNFO**: A comprehensive hardware information tool.
-   - Download from [hwinfo.com](https://www.hwinfo.com/)
+   - Download from [hwinfo.com](https://www.hwinfo.com/).
    - Provides detailed information about every component.
 
 - **CPU-Z and GPU-Z**: Specialized tools for CPU and GPU details.
    - Download from [cpuid.com](https://www.cpuid.com/softwares/cpu-z.html) and [techpowerup.com](https://www.techpowerup.com/gpuz/).
 
 ### Tools for Linux Users:
-I've created a bash script that can automatically gather most of the information needed for your submission. To use it:
+I've created a bash script that can automatically gather some of the information needed for your submission. To use it:
 
 1. **Download the script**:
    ```bash
@@ -44,16 +43,13 @@ I've created a bash script that can automatically gather most of the information
    sudo ./gather-system-info.sh
    ```
 
+> [!IMPORTANT]
+> Running the script with `sudo` is required for accessing detailed hardware information.
+
 4. **Review the output**: The script saves all information to `awesome-mini-pc-info.txt` in the current directory.
 
-**Note about software installation**: The script will attempt to install the following packages if they're not already present on your system:
-- `pciutils` - for PCI device information (lspci command)
-- `usbutils` - for USB device information (lsusb command)
-- `lshw` - for detailed hardware listing
-- `dmidecode` - for BIOS/firmware information
-- `inxi` - for comprehensive system information
-
-The script will use your distribution's package manager (apt, dnf, yum, pacman, or zypper) to install them.
+> [!IMPORTANT]
+> The script will attempt to install necessary packages (`pciutils`, `usbutils`, `lshw`, `dmidecode`, `inxi`) if they are missing. Ensure your system's package manager (apt, dnf, yum, pacman, zypper) is configured correctly.
 
 The script will automatically detect:
 - System manufacturer and model.
@@ -75,7 +71,7 @@ Alternatively, you can manually run these commands:
 Alternatively, alternatively, you can get this information yourself. You're a Linux user, you can figure it out.
 
 ### Physical Inspection:
-For some details, physical inspection may be necessary:
+For some details, physical inspection may/will be necessary:
 - Count the number and type of ports visually.
 - Open the case (if possible) to check memory slots, M.2 slots, etc.
 - Look for model numbers printed on chips.
@@ -86,18 +82,20 @@ The BIOS/UEFI can provide information about:
 - Memory speed and timing capabilities.
 - Storage interface options.
 - CPU power limits.
-- Available PCIe lanes.
 
 ## Handling Different Variants of the Same Model
 When submitting different variants of the same model:
 - **Use the parent ID with a descriptor**: If adding a variant of an existing model, use the parent ID followed by a hyphen and the differentiating feature:
-   - Example: For a Minisforum HX90 with a Ryzen 5950X: `minisforum-hx90-5950x`.
-   - Example: For an Intel NUC with a different CPU: `intel-nuc12-i7`.
-- **For Barebones/DIY versions**: Append `-diy` to indicate a configurable version:
-   - Example: `asrock-deskmini-b660-diy`.
-- **For DIY systems**, mark the CPU-specific fields as "DIY" or specify the range of supported processors. A DIY system in this context is a system that allows you to add/remove/change the CPU.
+   - Example: For a Minisforum HX90 with a Ryzen 5950X: `hx90-5950x`.
+   - Example: For an Intel NUC with a different CPU: `nuc12-i7`.
+- **For Barebones/DIY versions**: 
+   - Append `-diy` to indicate a configurable version: Example: `deskmini-b660-diy`.
+   - Mark the CPU-specific fields as "DIY" or specify the range of supported processors. A DIY system in this context is a system that allows you to add/remove/change the CPU.
 
 ## Contributing a New Device via GitHub Issues (Recommended)
+> [!TIP]
+> Using the GitHub Issue template is the easiest way to contribute, as automation handles the YAML creation and initial validation.
+
 1. **Create a new issue** using the [New Device](https://github.com/monstermuffin/awesome-mini-pc/issues/new?template=1-new-machine.yml) template.
 2. **Fill out the form** with as much accurate information as possible. More about this is below.
 3. **Submit the issue**.
@@ -119,6 +117,9 @@ When submitting a new device, you'll need to fill out the following information:
 - **Release Date**: The year the device was released.
 
 ### CPU Information
+> [!NOTE]
+> For DIY/barebones systems where the CPU is user-provided, mark CPU-specific fields like TDP, Cores/Threads, and Clock speeds as "DIY" or specify the supported range if known. The `CPU Socket Type` becomes required for these systems.
+
 - **CPU Brand**: Manufacturer of the CPU (Intel, AMD, ARM, etc.).
 - **CPU Model**: The specific model of the CPU.
   - For DIY/configurable systems, you can enter "DIY" or specify the range of supported processors
@@ -135,6 +136,9 @@ When submitting a new device, you'll need to fill out the following information:
   - The total count of all core types should match the CPU Cores value.
 
 ### Graphics Information
+> [!NOTE]
+> List *all* graphics units present (integrated and discrete). Specify VRAM only for discrete GPUs.
+
 - **GPU Models**: List each GPU using the format "Type: Integrated/Discrete, Model: GPU Model, VRAM: Amount" (one per line).
   - Example: `Type: Integrated, Model: Intel Iris Pro Graphics 580`
   - Example: `Type: Discrete, Model: NVIDIA RTX 3060, VRAM: 6GB`
@@ -154,6 +158,9 @@ When submitting a new device, you'll need to fill out the following information:
   - Use the `Alt Interface` field when a storage slot supports multiple interfaces (e.g., many M.2 slots can operate in either PCIe mode or SATA mode). This helps users understand the full flexibility of the storage options.
 
 ### Networking Information
+> [!NOTE]
+> Be specific with WiFi standards (e.g., `WiFi 6E` not just `WiFi 6`) and include the chipset model for both WiFi and Ethernet controllers if known.
+
 - **WiFi Standard**: WiFi 6, WiFi 6E, etc. (or "None"). Leave blank if not supported.
   - Example: `WiFi 6E` for 6GHz support
   - Example: `WiFi 5` for 802.11ac
@@ -177,6 +184,9 @@ When submitting a new device, you'll need to fill out the following information:
 - **OCuLink Ports**: Number and version of OCuLink ports if present (e.g., `1x OCuLink 2.0`).
 
 ### Ports Information
+> [!NOTE]
+> For USB ports, specify the Type (e.g., USB 3.2 Gen2, USB4), Speed (if applicable), Count, and any Alternate Modes (DisplayPort, Power Delivery, Thunderbolt version).
+
 - **USB Ports**: List with detailed format (one per line):
   - `Type: USB 3.2 Gen2, Speed: 10Gbps, Count: 2`
   - `Type: USB4, Count: 2, Alt Mode: DisplayPort, Max Resolution: 8K@30Hz, Thunderbolt: 3`
@@ -195,6 +205,9 @@ When submitting a new device, you'll need to fill out the following information:
 - **Notes**: Notable comments, observations, or special considerations users should be aware of (e.g., "Requires specific riser for PCIE use, SKU: 1234567890"). One per line.
 
 ## Contributing a New Device Directly (Advanced)
+> [!WARNING]
+> This method requires familiarity with Git, GitHub Pull Requests, and YAML syntax. Errors in the YAML structure or missing required fields *will* cause the validation checks to fail.
+
 If you are comfortable with Git and YAML, you can submit devices directly via pull requests:
 
 1. **Fork the repository** to your GitHub account.
@@ -206,11 +219,12 @@ If you are comfortable with Git and YAML, you can submit devices directly via pu
 7. **Create a pull request** with a clear title and description of the device you're adding.
 
 ### Important Notes for Direct Submissions
-- The validation process will reject PRs with incorrect formatting.
-- Pay special attention to indentation and data types (strings vs. numbers).
-- String values that might be interpreted as numbers or booleans should be quoted.
-- Reference existing YAML files in the repository as templates.
-- Nested lists and objects must follow the exact structure of the existing device files.
+> [!IMPORTANT]
+> - The validation process will reject PRs with incorrect formatting.
+> - Pay special attention to indentation and data types (strings vs. numbers).
+> - String values that might be interpreted as numbers or booleans should be quoted.
+> - Reference existing YAML files in the repository as templates.
+> - Nested lists and objects must follow the exact structure of the existing device files.
 
 ## Modifying Existing Devices or Correcting Information
 If you need to update information for an existing device or correct errors in the database:
@@ -230,6 +244,9 @@ If you need to update information for an existing device or correct errors in th
    - For corrections, explain why the current information is incorrect.
 
 ### Additional Guidelines for Corrections
+> [!IMPORTANT]
+> If possible, provide evidence for your corrections. Evidence can be in the form of links to manufacturer documentation, diagnostic tool output, images or outputs from devices you own etc.
+
 - **Minor corrections** (typos, formatting) does not need extensive explanation.
 - **Specification changes** require verifiable evidence (e.g., device manual, manufacturer website, diagnostic tool output).
 - **Performance-related changes** (e.g., maximum RAM speed, maximum display resolution) should include test results or official documentation.

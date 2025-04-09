@@ -1,4 +1,7 @@
-# Awesome Mini PC - This project is very much a work in progress.
+# Awesome Mini PC
+
+> [!IMPORTANT]  
+> This project is actively under development.
 
 [![Build Status](https://github.com/monstermuffin/awesome-mini-pcs/actions/workflows/build-deploy.yml/badge.svg)](https://github.com/monstermuffin/awesome-mini-pcs/actions/workflows/build-deploy.yml)
 [![Device Count](https://img.shields.io/badge/dynamic/json?url=https://awesomeminipc.com/stats.json&query=$.deviceCount&label=devices&color=blue)](https://github.com/monstermuffin/awesome-mini-pcs/tree/main/data/devices)
@@ -35,4 +38,5 @@ Anyone can contribute new device information, I am counting on it for this to be
 3. Submit the issue.
 4. Our automation will handle the rest.
 
-For more detailed contribution guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md).
+> [!TIP]
+> For more detailed contribution guidelines, including how to gather information and submit updates, please see [CONTRIBUTING.md](CONTRIBUTING.md).
