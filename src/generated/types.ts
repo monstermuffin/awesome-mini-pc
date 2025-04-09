@@ -3,10 +3,10 @@ export const BRANDS = ["Intel","Minisforum"] as const;
 export const CPU_BRANDS = ["AMD","Intel"] as const;
 export const MEMORY_TYPES = ["DDR3L","DDR4","DDR5"] as const;
 export const MEMORY_MODULE_TYPES = ["SO-DIMM","SODIMM"] as const;
-export const WIFI_STANDARDS = ["WiFi 5","WiFi 6","WiFi 6E"] as const;
+export const WIFI_STANDARDS = ["None","WiFi 5","WiFi 6","WiFi 6E"] as const;
 export const ETHERNET_SPEEDS = ["10GbE","1GbE","2.5GbE"] as const;
-export const STORAGE_TYPES = ["M.2"] as const;
-export const STORAGE_INTERFACES = ["PCIe 2.0 x4","PCIe 3.0 x2","PCIe 3.0 x4","PCIe 4.0 x1","PCIe 4.0 x4"] as const;
+export const STORAGE_TYPES = ["M.2","SATA"] as const;
+export const STORAGE_INTERFACES = ["PCIe 2.0 x4","PCIe 3.0 x2","PCIe 3.0 x4","PCIe 4.0 x1","PCIe 4.0 x4","SATA"] as const;
 
 export type Brand = typeof BRANDS[number];
 export type CpuBrand = typeof CPU_BRANDS[number];
