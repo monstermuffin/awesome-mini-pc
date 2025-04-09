@@ -17,16 +17,24 @@ jobs:
       issues: write
       
     steps:
+      - name: Generate App Token
+        if: github.event.pull_request.merged == true
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Close linked issue
+        if: github.event.pull_request.merged == true
         uses: actions/github-script@v7
         with:
+          github-token: ${{ steps.generate_token.outputs.token }}
           script: |
-            // Get the linked issue number from the PR body
             const issueMatch = context.payload.pull_request.body.match(/#(\d+)/);
             if (issueMatch) {
               const issueNumber = parseInt(issueMatch[1]);
               
-              // Comment on the issue
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -36,7 +44,6 @@ jobs:
                       `Thank you for contributing to the Awesome Mini PC database.`
               });
               
-              // Close the issue
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
