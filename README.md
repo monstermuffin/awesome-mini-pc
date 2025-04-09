@@ -1,10 +1,9 @@
 # Awesome Mini PC
+[![Build Status](https://github.com/monstermuffin/awesome-mini-pcs/actions/workflows/build-deploy.yml/badge.svg)](https://github.com/monstermuffin/awesome-mini-pcs/actions/workflows/build-deploy.yml)
+[![Device Count](https://img.shields.io/badge/dynamic/json?url=https://awesomeminipc.com/stats.json&query=$.deviceCount&label=devices&color=blue)](https://github.com/monstermuffin/awesome-mini-pcs/tree/main/data/devices)
 
 > [!IMPORTANT]  
 > This project is actively under development.
-
-[![Build Status](https://github.com/monstermuffin/awesome-mini-pcs/actions/workflows/build-deploy.yml/badge.svg)](https://github.com/monstermuffin/awesome-mini-pcs/actions/workflows/build-deploy.yml)
-[![Device Count](https://img.shields.io/badge/dynamic/json?url=https://awesomeminipc.com/stats.json&query=$.deviceCount&label=devices&color=blue)](https://github.com/monstermuffin/awesome-mini-pcs/tree/main/data/devices)
 
 This repository contains the data and code for [Awesome Mini PC](https://awesomeminipc.com), an attempt to catalog all the mini PCs, SBCs and egnerally useful homelab/self-hosting machines.
 
