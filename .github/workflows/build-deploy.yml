@@ -1,10 +1,20 @@
 name: Build and Deploy
 
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'src/**'
+      - 'data/devices/**'
+      - 'public/**'
+      - 'scripts/build-data.cjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'index.html'
+      - 'index.css'
+      - 'tsconfig.json'
+      - 'tsconfig.node.json'
 
 permissions:
   contents: read
