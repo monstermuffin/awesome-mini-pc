@@ -95,10 +95,18 @@ jobs:
         run: |
           python scripts/process-new-machine.py issue_body.txt
 
+      - name: Generate App Token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Create Branch and PR
         id: create_pr
         uses: actions/github-script@v7
         with:
+          github-token: ${{ steps.generate_token.outputs.token }}
           script: |
             const deviceId = '${{ steps.save_issue.outputs.device_id }}';
             const brand = '${{ steps.save_issue.outputs.brand }}';
