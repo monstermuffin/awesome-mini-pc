@@ -16,7 +16,7 @@ Most of the time I end up having to scour Reddit to find this information from p
 The project consists of:
 
 1. **Data**: Structured YAML files in `data/devices/` containing detailed specifications for each device, organized by manufacturer.
-2. **Frontend**: A React-based web application with powerful filtering capabilities to browse and compare devices.
+2. **Frontend**: A React-based web application with filtering/comparison capabilities to browse and compare devices.
 3. **Contribution Workflow**: GitHub Actions workflows to make contributing new devices easy.
 
 ### Data Structure
