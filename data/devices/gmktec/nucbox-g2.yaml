@@ -1,0 +1,66 @@
+id: nucbox-g2
+brand: GMKTec
+model: NucBox G2
+release_date: "2024"
+
+cpu:
+  brand: "Intel"
+  model: "N100"
+  cores: 4
+  threads: 4
+  base_clock: 1.8
+  boost_clock: 3.4
+  tdp: 6
+  architecture: "Alder Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR5"
+  speed: 4800
+  slots: 0
+  max_capacity: 12
+  module_type: "Soldered"
+
+storage:
+  - type: "M.2"
+    form_factor: "2242"
+    interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "1GbE"
+      chipset: "Intel I226V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Realtek RTL8852BE"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 1"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 87
+  depth: 87
+  height: 39.5
+  weight: 397
+
+power:
+  adapter_wattage: 36
+  dc_input: "12V/3A" 
