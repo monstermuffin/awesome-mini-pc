@@ -36,7 +36,7 @@ networking:
   ethernet:
     - ports: 1
       speed: "2.5GbE"
-      chipset: "Realtek"
+      chipset: "Realtek RTL8125"
       interface: "RJ45"
   wifi:
     standard: "WiFi 6E"
