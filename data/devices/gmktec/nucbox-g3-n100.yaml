@@ -1,0 +1,64 @@
+id: gmktec-nucbox-g3-n100
+brand: GMKTec
+model: NucBox G3
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "N100"
+  cores: 4
+  threads: 4
+  base_clock: 1.8
+  boost_clock: 3.4
+  tdp: 6
+  architecture: "Alder Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 1
+  max_capacity: 32
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0"
+  - type: "M.2"
+    form_factor: "2242"
+    interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Intel I225V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Realtek RTL8852BE"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 1"
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 115
+  depth: 108
+  height: 44
+
+power:
+  adapter_wattage: 36
+  dc_input: "12V/3A" 
