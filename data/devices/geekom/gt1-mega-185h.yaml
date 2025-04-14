@@ -67,4 +67,5 @@ dimensions:
   height: 50
 
 power:
-  dc_input: "19V" 
+  adapter_wattage: 120
+  dc_input: "19V/6.32A"
