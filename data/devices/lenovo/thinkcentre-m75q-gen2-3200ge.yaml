@@ -1,0 +1,82 @@
+id: m75q-gen2-3200ge
+brand: Lenovo
+model: ThinkCentre M75q Gen 2
+release_date: "2020"
+
+cpu:
+  brand: "AMD"
+  model: "Ryzen 3 PRO 3200GE"
+  cores: 4
+  threads: 4
+  base_clock: 3.3
+  boost_clock: 3.8
+  tdp: 35
+  architecture: "Zen+"
+  socket:
+    type: "AM4"
+    supports_cpu_swap: true
+
+gpu:
+  - model: "AMD Radeon Vega 8"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA 6.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8111FP"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 5"
+    chipset: "Intel Wireless-AC 9260"
+    bluetooth: "5.1"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 1"
+  displayport:
+    count: 1
+    version: "1.4"
+  hdmi:
+    count: 1
+    version: "1.4b"
+  audio_jack: 1
+
+dimensions:
+  width: 179
+  depth: 183
+  height: 37
+  weight: 1250
+
+power:
+  adapter_wattage: 65/90
+  dc_input: "19V/2.35A"
+
+Notes:
+  - There are many varients of WLAN/Bluetooth cards available for this model, these can be found found [in the manual.](https://psref.lenovo.com/syspool/Sys/PDF/ThinkCentre/ThinkCentre_M75q_Gen_2/ThinkCentre_M75q_Gen_2_Spec.PDF)

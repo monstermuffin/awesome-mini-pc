@@ -1,0 +1,84 @@
+id: m75q-gen1-2400ge
+brand: Lenovo
+model: ThinkCentre M75q Gen 1
+release_date: "2019"
+
+cpu:
+  brand: "AMD"
+  model: "Ryzen 5 PRO 2400GE"
+  cores: 4
+  threads: 8
+  base_clock: 3.2
+  boost_clock: 3.8
+  tdp: 35
+  architecture: "Zen"
+  socket:
+    type: "AM4"
+    supports_cpu_swap: true
+
+gpu:
+  - model: "AMD Radeon Vega 11"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 2666
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8111"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi"
+    chipset: "N/A"
+    bluetooth: "5.0"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 3.1"
+      speed: "Gen 1"
+    - count: 1
+      type: "USB 3.1"
+      speed: "Gen 1"
+      features: "Always On"
+    - count: 3
+      type: "USB 2.0"
+  usb_c:
+    - count: 1
+      type: "USB 3.1"
+      speed: "Gen 1"
+  displayport:
+    count: 1
+    version: "1.2"
+  hdmi:
+    count: 1
+    version: "1.4"
+  audio_jack: 2
+
+dimensions:
+  width: 179
+  depth: 183
+  height: 37
+  weight: 1300
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V/2.35A"
+
+notes: |-
+  - Supports AMD Raven Ridge and Picasso architectures only
+  - Does not support Renoir or Cezanne series due to chipset and BIOS limitations
