@@ -11,6 +11,7 @@ cpu:
   base_clock: 2.0
   boost_clock: 4.5
   tdp: 25
+  architecture: "Zen 3"
 
 gpu:
   - model: "AMD Radeon Vega 8"
