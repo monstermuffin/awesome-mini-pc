@@ -1,0 +1,69 @@
+id: gmktec-m5-plus
+brand: GMKTec
+model: M5 Plus
+release_date: "2023"
+
+cpu:
+  brand: "AMD"
+  model: "Ryzen 7 5825U"
+  cores: 8
+  threads: 16
+  base_clock: 2.0
+  boost_clock: 4.5
+  tdp: 25
+
+gpu:
+  - model: "AMD Radeon Vega 8"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "MediaTek MT7922"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      alt_mode: "DisplayPort"
+  displayport:
+    count: 1
+    max_resolution: "4K@60Hz"
+  hdmi:
+    count: 1
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 128
+  depth: 127
+  height: 52
+  weight: 450
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V/3.42A" 
