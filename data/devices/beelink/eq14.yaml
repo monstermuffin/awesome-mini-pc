@@ -1,0 +1,67 @@
+id: eq14
+brand: Beelink
+model: EQ14
+release_date: "2024"
+
+cpu:
+  brand: "Intel"
+  model: "N150"
+  cores: 4
+  threads: 4
+  base_clock: 2.9
+  boost_clock: 3.6
+  tdp: 6
+  architecture: "Twin Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 1
+  max_capacity: 32
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "1GbE"
+      chipset: "Realtek RTL8168/8111"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX101"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 2"
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+  hdmi:
+    count: 2
+  audio_jack: 1
+
+dimensions:
+  width: 126
+  depth: 126
+  height: 39
+  weight: 493
+
+power:
+  adapter_wattage: 48
+  dc_input: "12V/4A" 
