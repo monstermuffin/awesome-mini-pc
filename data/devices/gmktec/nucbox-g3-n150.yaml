@@ -11,7 +11,7 @@ cpu:
   base_clock: 1.8
   boost_clock: 3.6
   tdp: 6
-  architecture: "Alder Lake"
+  architecture: "Twin Lake"
 
 gpu:
   - model: "Intel UHD Graphics"

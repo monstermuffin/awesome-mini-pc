@@ -8,6 +8,7 @@ cpu:
   model: "N150"
   cores: 4
   threads: 4
+  base_clock: 1.8
   boost_clock: 3.6
   tdp: 6
   architecture: "Twin Lake"
