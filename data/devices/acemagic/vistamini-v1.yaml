@@ -1,0 +1,67 @@
+id: vistamini-v1
+brand: Acemagic
+model: VistaMini V1
+release_date: "2025"
+
+cpu:
+  brand: "Intel"
+  model: "N150"
+  cores: 4
+  threads: 4
+  boost_clock: 3.6
+  tdp: 6
+  architecture: "Twin Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 2666
+  slots: 1
+  max_capacity: 16
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8168/8111"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Realtek RTL8821CE"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 100
+  depth: 100
+  height: 32
+  weight: 245
+
+power:
+  adapter_wattage: 30
+  dc_input: "12V/2.5A" 
