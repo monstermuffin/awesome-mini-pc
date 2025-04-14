@@ -1,0 +1,71 @@
+id: um870-slim
+brand: Minisforum
+model: UM870 Slim
+release_date: "2024"
+
+cpu:
+  brand: "AMD"
+  model: "Ryzen 7 8745H"
+  cores: 8
+  threads: 16
+  base_clock: 3.8
+  boost_clock: 4.9
+  tdp: 65
+  architecture: "Zen 4"
+
+gpu:
+  - model: "AMD Radeon 780M"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 5600
+  slots: 2
+  max_capacity: 96
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "MediaTek MT7902"
+    bluetooth: "5.3"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+    - count: 2
+      type: "USB 2.0"
+  usb_c:
+    - count: 1
+      type: "USB4"
+  displayport:
+    count: 1
+    version: "1.4"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "8K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 130
+  depth: 126.5
+  height: 50
+
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A" 
