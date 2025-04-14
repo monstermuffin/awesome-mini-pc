@@ -1,0 +1,73 @@
+id: nucbox-k8-plus
+brand: GMKTec
+model: NucBox K8 Plus
+release_date: "2024"
+
+cpu:
+  brand: "AMD"
+  model: "Ryzen 7 8845HS"
+  cores: 8
+  threads: 16
+  base_clock: 3.0
+  boost_clock: 5.1
+  tdp: 65
+
+gpu:
+  - model: "AMD Radeon 780M"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 5600
+  slots: 2
+  max_capacity: 96
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel I226V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX200"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+    - count: 2
+      type: "USB 2.0"
+  usb_c:
+    - count: 2
+      type: "USB4"
+      speed: "40Gbps"
+  displayport:
+    count: 1
+    version: "2.1"
+    max_resolution: "8K@60Hz"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "8K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 132
+  depth: 125
+  height: 58
+  weight: 1049
+
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A" 

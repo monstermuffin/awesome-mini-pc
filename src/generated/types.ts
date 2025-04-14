@@ -28,7 +28,7 @@ export const RANGES = {
   },
   "memorySpeed": {
     "min": 1866,
-    "max": 5200
+    "max": 5600
   },
   "volume": {
     "min": 0.53,
