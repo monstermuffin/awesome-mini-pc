@@ -1,0 +1,70 @@
+id: gt1-mega-125h
+brand: GEEKOM
+model: GT1 Mega
+release_date: "2024"
+
+cpu:
+  brand: "Intel"
+  model: "Core Ultra 5 125H"
+  cores: 14
+  threads: 18
+  base_clock: 2.5
+  boost_clock: 4.5
+  tdp: 28
+  architecture: "Meteor Lake"
+
+gpu:
+  - model: "Intel Arc"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 5600
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2242"
+    interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel I226-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 7"
+    chipset: "Intel BE200"
+    bluetooth: "5.4"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 1
+      type: "USB 2.0"
+  usb_c:
+    - count: 2
+      type: "USB4"
+      speed: "40Gbps"
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "8K@60Hz"
+  audio_jack: 1
+  card_reader: 1
+
+dimensions:
+  width: 130
+  depth: 126.5
+  height: 50
+
+power:
+  dc_input: "19V" 
