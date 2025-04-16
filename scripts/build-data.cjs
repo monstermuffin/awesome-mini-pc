@@ -335,6 +335,7 @@ async function main() {
                 data._sourcePath = `${vendor}/${file}`;
                 data._vendor = vendor;
                 data._device = file.replace(/\.ya?ml$/, '');
+                console.log(`--> Adding device with id: ${data.id} from file: ${vendor}/${file}`);
                 devices.push(data);
               }
             } else {
