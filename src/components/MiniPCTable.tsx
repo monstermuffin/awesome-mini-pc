@@ -787,7 +787,6 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
           </Table>
         </TableContainer>
       </Paper>
-
       {/* Detailed device dialog */}
       <Dialog
         open={!!detailDevice}
@@ -828,7 +827,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
             </DialogTitle>
             <DialogContent dividers sx={{ px: 3, py: 2 }}>
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                     color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                     display: 'flex',
@@ -878,7 +877,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                   )}
                 </Grid>
                 
-                <Grid item xs={12} md={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 6
+                  }}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                     color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                     display: 'flex',
@@ -908,7 +911,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                 </Grid>
                 
                 {detailDevice?.gpu && (
-                  <Grid item xs={12} md={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                       color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                       display: 'flex',
@@ -938,13 +945,19 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                 )}
                 
                 {/* Storage and Expansion sections */}
-                <Grid item xs={12} sx={{ 
-                  pt: 2, 
-                  mt: 2, 
-                  borderTop: theme => `1px solid ${theme.palette.divider}`
-                }}>
+                <Grid
+                  sx={{ 
+                    pt: 2, 
+                    mt: 2, 
+                    borderTop: theme => `1px solid ${theme.palette.divider}`
+                  }}
+                  size={12}>
                   <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        md: 6
+                      }}>
                       <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                         color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                         display: 'flex',
@@ -964,7 +977,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     </Grid>
 
                     {((detailDevice?.expansion?.pcie_slots?.length ?? 0) > 0 || (detailDevice?.expansion?.oculink_ports?.length ?? 0) > 0) && (
-                      <Grid item xs={12} md={6}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          md: 6
+                        }}>
                         <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                           color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                           display: 'flex',
@@ -1042,7 +1059,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                 </Grid>
 
                 {/* Ethernet section */}
-                <Grid item xs={12} md={6}>
+                <Grid
+                  size={{
+                    xs: 12,
+                    md: 6
+                  }}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                     color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                     display: 'flex',
@@ -1109,7 +1130,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                 
                 {/* WiFi section */}
                 {detailDevice?.networking?.wifi && (
-                  <Grid item xs={12} md={6}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                       color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                       display: 'flex',
@@ -1139,12 +1164,14 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
 
                 {/* Ports section */}
                 {detailDevice?.ports && (
-                  <Grid item xs={12} sx={{ 
-                    pt: 2, 
-                    mt: 2, 
-                    borderTop: theme => `1px solid ${theme.palette.divider}`,
-                    width: '100%' 
-                  }}>
+                  <Grid
+                    sx={{ 
+                      pt: 2, 
+                      mt: 2, 
+                      borderTop: theme => `1px solid ${theme.palette.divider}`,
+                      width: '100%' 
+                    }}
+                    size={12}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                       color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                       display: 'flex',
@@ -1162,7 +1189,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
 
                     <Grid container spacing={3} sx={{ width: '100%' }}>
                       {/* USB Ports Section */}
-                      <Grid item xs={12} md={6}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          md: 6
+                        }}>
                         <Box sx={{ mb: 2, width: '100%' }}>
                           <Typography variant="subtitle2" sx={{ 
                             fontWeight: 600, 
@@ -1270,7 +1301,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       </Grid>
 
                       {/* Display Outputs Section */}
-                      <Grid item xs={12} md={6}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          md: 6
+                        }}>
                         <Box sx={{ mb: 2, width: '100%' }}>
                           <Typography variant="subtitle2" sx={{ 
                             fontWeight: 600, 
@@ -1377,7 +1412,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       </Grid>
 
                       {/* Other Ports Section */}
-                      <Grid item xs={12} md={6}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          md: 6
+                        }}>
                         <Box sx={{ mb: 2, width: '100%' }}>
                           <Typography variant="subtitle2" sx={{ 
                             fontWeight: 600, 
@@ -1460,14 +1499,20 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                 )}
 
                 {/* Dimensions and Power sections at the bottom */}
-                <Grid item xs={12} sx={{ 
-                  pt: 2, 
-                  mt: 2, 
-                  borderTop: theme => `1px solid ${theme.palette.divider}`
-                }}>
+                <Grid
+                  sx={{ 
+                    pt: 2, 
+                    mt: 2, 
+                    borderTop: theme => `1px solid ${theme.palette.divider}`
+                  }}
+                  size={12}>
                   <Grid container spacing={3}>
                     {detailDevice.dimensions && (
-                      <Grid item xs={12} md={6}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          md: 6
+                        }}>
                         <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                           color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                           display: 'flex',
@@ -1505,7 +1550,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     )}
                     
                     {detailDevice.power && (
-                      <Grid item xs={12} md={6}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          md: 6
+                        }}>
                         <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                           color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                           display: 'flex',
@@ -1533,11 +1582,13 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
 
                 {/* Notes section - moved to end and styled like other sections */}
                 {detailDevice.notes && (
-                  <Grid item xs={12} sx={{ 
-                    pt: 2, 
-                    mt: 2, 
-                    borderTop: theme => `1px solid ${theme.palette.divider}`
-                  }}>
+                  <Grid
+                    sx={{ 
+                      pt: 2, 
+                      mt: 2, 
+                      borderTop: theme => `1px solid ${theme.palette.divider}`
+                    }}
+                    size={12}>
                     <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                       color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
                       display: 'flex',
