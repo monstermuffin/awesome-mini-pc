@@ -143,6 +143,13 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
     }
   };
 
+  const formatVolume = (volume: number): string => {
+    if (volume < 0.01) {
+      return '<0.01L';
+    }
+    return `${volume.toFixed(2)}L`;
+  };
+
   const StorageCell = ({ device, showDetails = false }: { device: MiniPC; showDetails?: boolean }) => {
     const storageGroups: Record<string, Array<{ interface: string; form_factor?: string; alt_interface?: string }>> = {};
 
@@ -750,11 +757,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     )}
                   </TableCell>
                   <TableCell>
-                    {device.dimensions?.volume && (
+                    {device.dimensions?.volume !== undefined && (
                       <Box sx={{ 
                         fontWeight: 'medium'
                       }}>
-                        {device.dimensions.volume.toFixed(2)}L
+                        {formatVolume(device.dimensions.volume)}
                       </Box>
                     )}
                   </TableCell>
@@ -1578,7 +1585,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                         <Typography variant="body2" sx={{ mb: 0.5 }}>
                           {detailDevice.dimensions.width} × {detailDevice.dimensions.depth} × {detailDevice.dimensions.height} mm
                         </Typography>
-                        {detailDevice.dimensions.volume && (
+                        {detailDevice.dimensions.volume !== undefined && (
                           <Box sx={{ mt: 1, mb: 0.5 }}>
                             <Typography variant="subtitle2" sx={{ 
                               fontWeight: 600, 
@@ -1590,7 +1597,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                               Volume
                             </Typography>
                             <Typography variant="body2">
-                              {detailDevice.dimensions.volume.toFixed(2)}L
+                              {formatVolume(detailDevice.dimensions.volume)}
                             </Typography>
                           </Box>
                         )}
