@@ -636,18 +636,22 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     {(() => {
                       interface EthernetGroup {
                         count: number;
-                        chipset: string;
+                        chipsets: string[];
                         interface: string;
+                        speed: string;
                       }
                       
                       const ethernetGroups: Record<string, EthernetGroup> = {};
                       
                       device.networking.ethernet.forEach(eth => {
-                        const key = eth.speed;
+                        const key = `${eth.speed}_${eth.interface}`;
                         if (!ethernetGroups[key]) {
-                          ethernetGroups[key] = { count: eth.ports, chipset: eth.chipset, interface: eth.interface };
+                          ethernetGroups[key] = { count: eth.ports, chipsets: [eth.chipset], interface: eth.interface, speed: eth.speed };
                         } else {
                           ethernetGroups[key].count += eth.ports;
+                          if (!ethernetGroups[key].chipsets.includes(eth.chipset)) {
+                            ethernetGroups[key].chipsets.push(eth.chipset);
+                          }
                         }
                       });
                       
@@ -669,10 +673,10 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                                     }} 
                                   />
                                 )}
-                                {key}
+                                {info.speed}
                               </Box>
                               <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                                {info.interface} • {info.chipset}
+                                {info.interface} • {info.chipsets.join(', ')}
                               </Typography>
                             </Box>
                           ))}
@@ -1057,18 +1061,22 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                   {(() => {
                     interface EthernetGroup {
                       count: number;
-                      chipset: string;
+                      chipsets: string[];
                       interface: string;
+                      speed: string;
                     }
                     
                     const ethernetGroups: Record<string, EthernetGroup> = {};
                     
                     detailDevice?.networking?.ethernet?.forEach(eth => {
-                      const key = eth.speed;
+                      const key = `${eth.speed}_${eth.interface}`;
                       if (!ethernetGroups[key]) {
-                        ethernetGroups[key] = { count: eth.ports, chipset: eth.chipset, interface: eth.interface };
+                        ethernetGroups[key] = { count: eth.ports, chipsets: [eth.chipset], interface: eth.interface, speed: eth.speed };
                       } else {
                         ethernetGroups[key].count += eth.ports;
+                        if (!ethernetGroups[key].chipsets.includes(eth.chipset)) {
+                          ethernetGroups[key].chipsets.push(eth.chipset);
+                        }
                       }
                     });
                     
@@ -1090,10 +1098,10 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                                   }} 
                                 />
                               )}
-                              {key}
+                              {info.speed}
                             </Box>
                             <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                              {info.interface} • {info.chipset}
+                              {info.interface} • {info.chipsets.join(', ')}
                             </Typography>
                           </Box>
                         ))}
