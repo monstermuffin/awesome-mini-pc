@@ -578,21 +578,27 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     )}
                   </TableCell>
                   <TableCell>
-                    {device.gpu && device.gpu.map((gpu, index) => (
-                      <Box key={index} sx={{ mb: index < device.gpu!.length - 1 ? 1 : 0 }}>
-                        <Typography variant="body2" component="div" sx={{ 
-                          fontWeight: 500,
-                          whiteSpace: 'normal',
-                          overflow: 'visible',
-                          lineHeight: 1.3,
-                        }}>
-                          {gpu.model}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                          {gpu.type}{gpu.vram && ` • ${gpu.vram} VRAM`}
-                        </Typography>
-                      </Box>
-                    ))}
+                    {device.gpu && device.gpu.length > 0 ? (
+                      device.gpu.map((gpu, index) => (
+                        <Box key={index} sx={{ mb: index < device.gpu!.length - 1 ? 1 : 0 }}>
+                          <Typography variant="body2" component="div" sx={{ 
+                            fontWeight: 500,
+                            whiteSpace: 'normal',
+                            overflow: 'visible',
+                            lineHeight: 1.3,
+                          }}>
+                            {gpu.model}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                            {gpu.type}{gpu.vram && ` • ${gpu.vram} VRAM`}
+                          </Typography>
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        No Graphics
+                      </Typography>
+                    )}
                   </TableCell>
                   <TableCell align="right">
                     <Box sx={{ 
@@ -633,56 +639,62 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     <StorageCell device={device} showDetails={false} />
                   </TableCell>
                   <TableCell>
-                    {(() => {
-                      interface EthernetGroup {
-                        count: number;
-                        chipsets: string[];
-                        interface: string;
-                        speed: string;
-                      }
-                      
-                      const ethernetGroups: Record<string, EthernetGroup> = {};
-                      
-                      (device.networking?.ethernet || []).forEach(eth => {
-                        const key = `${eth.speed}_${eth.interface}`;
-                        if (!ethernetGroups[key]) {
-                          ethernetGroups[key] = { count: eth.ports, chipsets: [eth.chipset], interface: eth.interface, speed: eth.speed };
-                        } else {
-                          ethernetGroups[key].count += eth.ports;
-                          if (!ethernetGroups[key].chipsets.includes(eth.chipset)) {
-                            ethernetGroups[key].chipsets.push(eth.chipset);
-                          }
+                    {device.networking?.ethernet && device.networking.ethernet.length > 0 ? (
+                      (() => {
+                        interface EthernetGroup {
+                          count: number;
+                          chipsets: string[];
+                          interface: string;
+                          speed: string;
                         }
-                      });
-                      
-                      return (
-                        <>
-                          {Object.entries(ethernetGroups).map(([, info]: [string, EthernetGroup], index: number) => (
-                            <Box key={index} sx={{ mb: 0.5 }}>
-                              <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                {info.count > 1 && (
-                                  <Chip 
-                                    label={`${info.count}×`} 
-                                    size="small" 
-                                    sx={{ 
-                                      height: 20, 
-                                      fontSize: '0.7rem',
-                                      bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
-                                      color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                                      fontWeight: 600,
-                                    }} 
-                                  />
-                                )}
-                                {info.speed}
+                        
+                        const ethernetGroups: Record<string, EthernetGroup> = {};
+                        
+                        device.networking.ethernet.forEach(eth => {
+                          const key = `${eth.speed}_${eth.interface}`;
+                          if (!ethernetGroups[key]) {
+                            ethernetGroups[key] = { count: eth.ports, chipsets: [eth.chipset], interface: eth.interface, speed: eth.speed };
+                          } else {
+                            ethernetGroups[key].count += eth.ports;
+                            if (!ethernetGroups[key].chipsets.includes(eth.chipset)) {
+                              ethernetGroups[key].chipsets.push(eth.chipset);
+                            }
+                          }
+                        });
+                        
+                        return (
+                          <>
+                            {Object.entries(ethernetGroups).map(([, info]: [string, EthernetGroup], index: number) => (
+                              <Box key={index} sx={{ mb: 0.5 }}>
+                                <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  {info.count > 1 && (
+                                    <Chip 
+                                      label={`${info.count}×`} 
+                                      size="small" 
+                                      sx={{ 
+                                        height: 20, 
+                                        fontSize: '0.7rem',
+                                        bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
+                                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                                        fontWeight: 600,
+                                      }} 
+                                    />
+                                  )}
+                                  {info.speed}
+                                </Box>
+                                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                  {info.interface} • {info.chipsets.join(', ')}
+                                </Typography>
                               </Box>
-                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                                {info.interface} • {info.chipsets.join(', ')}
-                              </Typography>
-                            </Box>
-                          ))}
-                        </>
-                      );
-                    })()}
+                            ))}
+                          </>
+                        );
+                      })()
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        No Ethernet
+                      </Typography>
+                    )}
                   </TableCell>
                   <TableCell>
                     {device.networking?.wifi ? (
