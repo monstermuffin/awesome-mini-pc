@@ -1,0 +1,90 @@
+id: minisforum-msa2-7945hx
+brand: Minisforum
+model: MS-A2
+release_date: "2025"
+
+cpu:
+  brand: AMD
+  model: Ryzen 9 7945HX
+  cores: 16
+  threads: 32
+  base_clock: 2.5
+  boost_clock: 5.4
+  tdp: 100
+  architecture: "Zen 4"
+
+gpu:
+  - model: "AMD Radeon 610M"
+    type: "Integrated"
+
+memory:
+  slots: 2
+  type: DDR5
+  speed: 5200
+  module_type: "SO-DIMM"
+  max_capacity: 96
+
+storage:
+  - type: M.2
+    form_factor: "2280/U.2"
+    interface: "PCIe 4.0 x4"
+  - type: M.2
+    form_factor: "2280/22110"
+    interface: "PCIe 4.0 x4"
+  - type: M.2
+    form_factor: "2280/22110"
+    interface: "PCIe 4.0 x4"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Intel I226-V"
+      interface: "RJ45"
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125"
+      interface: "RJ45"
+    - ports: 2
+      speed: "10GbE"
+      chipset: "Intel X710"
+      interface: "SFP+"
+  wifi:
+    chipset: "N/A"
+    standard: "WiFi 6E"
+    bluetooth: "5.2"
+
+expansion:
+  pcie_slots:
+    - version: "PCIe 4.0 x8"
+      form_factor: "Low-profile"
+
+ports:
+  usb_a:
+    - type: "USB 3.2 Gen2"
+      speed: "10Gbps"
+      count: 1
+    - type: "USB 3.2 Gen1"
+      speed: "5Gbps"
+      count: 2
+    - type: "USB 2.0"
+      count: 1
+  usb_c:
+    - type: "USB 3.2 Gen2"
+      speed: "10Gbps"
+      alt_mode: "DisplayPort 2.0"
+      count: 2
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "8K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 196
+  depth: 189
+  height: 48
+
+power:
+  adapter_wattage: 240
+  dc_input: "19V/12.63A" 
