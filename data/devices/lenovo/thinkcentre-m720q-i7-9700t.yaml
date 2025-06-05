@@ -82,6 +82,7 @@ dimensions:
   width: 179
   depth: 183
   height: 35
+  weight: 1300
 
 power:
   adapter_wattage: 90
