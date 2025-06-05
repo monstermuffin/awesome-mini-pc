@@ -631,20 +631,18 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       lineHeight: 1.3,
                       mb: 0.3
                     }}>
+                      {device.memory.type}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{
+                      whiteSpace: 'normal',
+                      overflow: 'visible',
+                      lineHeight: 1.3,
+                    }}>
                       {device.memory.module_type === 'Soldered' || device.memory.module_type === 'Embedded'
-                        ? `${device.memory.type} - ${formatMemoryCapacity(device.memory.max_capacity)}`
-                        : device.memory.type
+                        ? formatMemoryCapacity(device.memory.max_capacity)
+                        : `${device.memory.slots}x slots, Max ${formatMemoryCapacity(device.memory.max_capacity)}`
                       }
                     </Typography>
-                    {device.memory.module_type !== 'Soldered' && device.memory.module_type !== 'Embedded' && (
-                      <Typography variant="caption" color="text.secondary" sx={{
-                        whiteSpace: 'normal',
-                        overflow: 'visible',
-                        lineHeight: 1.3,
-                      }}>
-                        {device.memory.slots}x slots, Max {formatMemoryCapacity(device.memory.max_capacity)}
-                      </Typography>
-                    )}
                   </TableCell>
                   <TableCell sx={{ whiteSpace: 'normal' }}>{device.memory.module_type}</TableCell>
                   <TableCell align="right">
