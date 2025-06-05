@@ -1,0 +1,83 @@
+id: sei12-i5-12450h
+brand: Beelink
+model: SEi12
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i5-12450H"
+  cores: 8
+  threads: 12
+  base_clock: 2.0
+  boost_clock: 4.4
+  tdp: 45
+  architecture: "Alder Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 4
+        boost_clock: 4.4
+      - type: "E-core"
+        count: 4
+        boost_clock: 3.3
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8168/8111"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX201"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 126
+  depth: 113
+  height: 42
+  weight: 500
+
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A" 
