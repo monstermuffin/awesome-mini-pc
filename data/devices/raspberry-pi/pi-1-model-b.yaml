@@ -1,0 +1,69 @@
+id: pi-1-model-b
+brand: Raspberry Pi Foundation
+model: Raspberry Pi Model B
+release_date: "2012"
+
+cpu:
+  brand: "Broadcom"
+  model: "BCM2835 ARM1176JZF-S"
+  cores: 1
+  threads: 1
+  base_clock: 0.7
+  tdp: 3.5
+  architecture: "ARMv6Z"
+
+gpu:
+  - model: "VideoCore IV"
+    type: "Integrated"
+
+memory:
+  type: "DDR2"
+  speed: 400
+  slots: 1
+  max_capacity: 0.512
+  module_type: "Soldered"
+
+storage:
+  - type: "SD Card"
+    form_factor: "SD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "100Mbps"
+      chipset: "SMSC LAN9512"
+      interface: "RJ45"
+  wifi:
+    standard: "None"
+    chipset: "None"
+    bluetooth: "None"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "1.3"
+    max_resolution: "1920x1200"
+  composite_video: 1
+  audio_jack: 1
+
+dimensions:
+  width: 85.6
+  depth: 56
+  height: 21
+  weight: 45
+
+power:
+  adapter_wattage: 5
+  dc_input: "5V/1A"
+
+notes: |-
+  - First Raspberry Pi computer released
+  - Originally shipped with 256MB RAM, later upgraded to 512MB
+  - 26-pin GPIO header
+  - Foundation model of the Raspberry Pi series
+  - Designed for education and learning programming 

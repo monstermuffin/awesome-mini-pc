@@ -1,0 +1,80 @@
+id: pi-4-model-b-4gb
+brand: Raspberry Pi Foundation
+model: Raspberry Pi 4 Model B
+release_date: "2019"
+
+cpu:
+  brand: "Broadcom"
+  model: "BCM2711 Cortex-A72"
+  cores: 4
+  threads: 4
+  base_clock: 1.5
+  boost_clock: 1.8
+  tdp: 6.4
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "VideoCore VI"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR4"
+  speed: 3200
+  slots: 1
+  max_capacity: 4
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Broadcom BCM54213PE"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 5"
+    chipset: "Cypress CYW43455"
+    bluetooth: "5.0"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.0"
+      speed: "5Gbps"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power only"
+  hdmi:
+    count: 2
+    version: "2.0"
+    form_factor: "Micro HDMI"
+    max_resolution: "4K@60Hz"
+
+dimensions:
+  width: 85.6
+  depth: 56
+  height: 19.5
+  weight: 46
+
+power:
+  adapter_wattage: 15
+  dc_input: "5V/3A"
+
+notes: |-
+  - Major architectural upgrade with BCM2711 SoC
+  - True Gigabit Ethernet (not limited by USB)
+  - Dual 4K display support via 2x micro HDMI
+  - USB 3.0 support for faster storage
+  - USB-C power connector
+  - Three times faster than Raspberry Pi 3
+  - H.265 hardware video decode
+  - 4GB RAM supports desktop computing tasks
+  - Common Pi 4 configuration 

@@ -1,0 +1,70 @@
+id: pi-3-model-b
+brand: Raspberry Pi Foundation
+model: Raspberry Pi 3 Model B
+release_date: "2016"
+
+cpu:
+  brand: "Broadcom"
+  model: "BCM2837 Cortex-A53"
+  cores: 4
+  threads: 4
+  base_clock: 1.2
+  tdp: 4
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "VideoCore IV"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR2"
+  speed: 900
+  slots: 1
+  max_capacity: 1
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "100Mbps"
+      chipset: "SMSC LAN9514"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 4"
+    chipset: "Broadcom BCM43438"
+    bluetooth: "4.1"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 2.0"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "1.3"
+    max_resolution: "1920x1200"
+  composite_video: 1
+  audio_jack: 1
+
+dimensions:
+  width: 85.6
+  depth: 56
+  height: 17
+  weight: 45
+
+power:
+  adapter_wattage: 5
+  dc_input: "5V/2.5A"
+
+notes: |-
+  - First Raspberry Pi with built-in Wi-Fi and Bluetooth
+  - 64-bit processor architecture (ARMv8)
+  - 10x performance increase over original Pi
+  - Backward compatible with Pi 1 and Pi 2
+  - USB boot capability
+  - 2.4GHz Wi-Fi and Bluetooth 4.1 LE 

@@ -1,0 +1,68 @@
+id: pi-3-model-a-plus
+brand: Raspberry Pi Foundation
+model: Raspberry Pi 3 Model A+
+release_date: "2018"
+
+cpu:
+  brand: "Broadcom"
+  model: "BCM2837B0 Cortex-A53"
+  cores: 4
+  threads: 4
+  base_clock: 1.4
+  tdp: 4
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "VideoCore IV"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR2"
+  speed: 900
+  slots: 1
+  max_capacity: 0.512
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 0
+  wifi:
+    standard: "WiFi 5"
+    chipset: "Cypress CYW43455"
+    bluetooth: "4.2"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 2.0"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "1.3"
+    max_resolution: "1920x1200"
+  composite_video: 1
+  audio_jack: 1
+
+dimensions:
+  width: 65
+  depth: 56
+  height: 12
+  weight: 29
+
+power:
+  adapter_wattage: 5
+  dc_input: "5V/2.5A"
+
+notes: |-
+  - Compact version with Pi 3 B+ performance
+  - 512MB RAM (half of Pi 3 B+)
+  - Same processor as Pi 3 B+ but lower power
+  - No Ethernet port to keep compact size
+  - Dual-band Wi-Fi and Bluetooth included
+  - Final Model A form factor release
+  - Smaller footprint than Model B variants 

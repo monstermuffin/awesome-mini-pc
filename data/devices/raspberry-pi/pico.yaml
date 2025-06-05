@@ -1,0 +1,62 @@
+id: pico
+brand: Raspberry Pi Foundation
+model: Raspberry Pi Pico
+release_date: "2021"
+
+cpu:
+  brand: "Raspberry Pi"
+  model: "RP2040 Cortex-M0+"
+  cores: 2
+  threads: 2
+  base_clock: 0.133
+  tdp: 0.1
+  architecture: "ARMv6-M"
+
+memory:
+  type: "SRAM"
+  speed: 133
+  slots: 1
+  max_capacity: 0.000264
+  module_type: "Embedded"
+
+storage:
+  - type: "Flash"
+    capacity: 2
+    interface: "Embedded"
+
+networking:
+  ethernet:
+    - ports: 0
+  wifi:
+    standard: "None"
+    chipset: "None"
+    bluetooth: "None"
+
+ports:
+  gpio_pins: 26
+  usb_micro:
+    - count: 1
+      type: "Micro USB"
+      speed: "12Mbps"
+
+dimensions:
+  width: 51
+  depth: 21
+  height: 3
+  weight: 3
+
+power:
+  adapter_wattage: 1
+  dc_input: "5V/0.2A or 3.3V direct"
+
+notes: |-
+  - First Raspberry Pi microcontroller board
+  - Custom RP2040 chip designed by Raspberry Pi
+  - Dual-core ARM Cortex-M0+ at 133MHz
+  - 264KB SRAM, 2MB Flash storage
+  - No Linux OS - programmed directly in C/C++, MicroPython, or CircuitPython
+  - 26 GPIO pins with SPI, I2C, UART support
+  - Ultra-low power consumption
+  - Used in embedded systems and real-time applications
+  - Castellated edge for surface mounting
+  - Arduino-like programming model 

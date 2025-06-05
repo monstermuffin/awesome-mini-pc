@@ -1,0 +1,69 @@
+id: pi-zero-2-w
+brand: Raspberry Pi Foundation
+model: Raspberry Pi Zero 2 W
+release_date: "2021"
+
+cpu:
+  brand: "Broadcom"
+  model: "RP3A0-AU SiP Cortex-A53"
+  cores: 4
+  threads: 4
+  base_clock: 1.0
+  tdp: 1
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "VideoCore IV"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR2"
+  speed: 900
+  slots: 1
+  max_capacity: 0.512
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 0
+  wifi:
+    standard: "WiFi 4"
+    chipset: "Broadcom BCM43438"
+    bluetooth: "4.2"
+
+ports:
+  usb_micro:
+    - count: 1
+      type: "Micro USB OTG"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "1.3"
+    form_factor: "Mini HDMI"
+    max_resolution: "1920x1200"
+
+dimensions:
+  width: 65
+  depth: 30
+  height: 5
+  weight: 10
+
+power:
+  adapter_wattage: 2.5
+  dc_input: "5V/0.5A"
+
+notes: |-
+  - Major performance upgrade with quad-core processor
+  - 5x faster than original Zero W
+  - Same compact form factor maintained
+  - System-in-Package (SiP) design for space efficiency
+  - 64-bit processor architecture
+  - Perfect balance of performance and size for IoT
+  - Built-in 2.4GHz Wi-Fi and Bluetooth 4.2
+  - Compatible with existing Zero accessories
+  - Camera and display connectors included 

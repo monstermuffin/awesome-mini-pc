@@ -1,0 +1,68 @@
+id: pi-zero
+brand: Raspberry Pi Foundation
+model: Raspberry Pi Zero
+release_date: "2015"
+
+cpu:
+  brand: "Broadcom"
+  model: "BCM2835 ARM1176JZF-S"
+  cores: 1
+  threads: 1
+  base_clock: 1.0
+  tdp: 0.5
+  architecture: "ARMv6Z"
+
+gpu:
+  - model: "VideoCore IV"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR2"
+  speed: 400
+  slots: 1
+  max_capacity: 0.512
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 0
+  wifi:
+    standard: "None"
+    chipset: "None"
+    bluetooth: "None"
+
+ports:
+  usb_micro:
+    - count: 1
+      type: "Micro USB OTG"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "1.3"
+    form_factor: "Mini HDMI"
+    max_resolution: "1920x1200"
+
+dimensions:
+  width: 65
+  depth: 30
+  height: 5
+  weight: 9
+
+power:
+  adapter_wattage: 2.5
+  dc_input: "5V/0.5A"
+
+notes: |-
+  - Compact size and $5 price point
+  - Half the size of Model A+
+  - 40-pin GPIO header (unpopulated, solder-on)
+  - No built-in connectivity - requires USB adapters
+  - Used in embedded projects and IoT
+  - Camera connector (CSI) available
+  - Single-core but same architecture as original Pi
+  - Extremely low power consumption

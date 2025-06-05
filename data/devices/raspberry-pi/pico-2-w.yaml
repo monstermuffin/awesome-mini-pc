@@ -1,0 +1,62 @@
+id: pico-2-w
+brand: Raspberry Pi Foundation
+model: Raspberry Pi Pico 2 W
+release_date: "2024"
+
+cpu:
+  brand: "Raspberry Pi"
+  model: "RP2350 Cortex-M33"
+  cores: 2
+  threads: 2
+  base_clock: 0.150
+  tdp: 0.2
+  architecture: "ARMv8-M"
+
+memory:
+  type: "SRAM"
+  speed: 150
+  slots: 1
+  max_capacity: 0.00052
+  module_type: "Embedded"
+
+storage:
+  - type: "Flash"
+    capacity: 4
+    interface: "Embedded"
+
+networking:
+  ethernet:
+    - ports: 0
+  wifi:
+    standard: "WiFi 4"
+    chipset: "Infineon CYW43439"
+    bluetooth: "5.2"
+
+ports:
+  gpio_pins: 30
+  usb_micro:
+    - count: 1
+      type: "Micro USB"
+      speed: "12Mbps"
+
+dimensions:
+  width: 51
+  depth: 21
+  height: 3
+  weight: 3
+
+power:
+  adapter_wattage: 1
+  dc_input: "5V/0.2A or 3.3V direct"
+
+notes: |-
+  - Latest microcontroller with wireless connectivity
+  - RP2350 processor with ARM Cortex-M33 cores
+  - 2.4GHz 802.11n Wi-Fi and Bluetooth 5.2
+  - 520KB SRAM and 4MB Flash storage
+  - 30 GPIO pins for maximum flexibility
+  - Enhanced security and cryptographic features
+  - Used in advanced IoT and wireless projects
+  - Backward compatible with original Pico W software
+  - Support for both ARM and RISC-V architectures
+  - Professional-grade wireless microcontroller 

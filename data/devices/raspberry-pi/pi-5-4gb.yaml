@@ -1,0 +1,85 @@
+id: pi-5-4gb
+brand: Raspberry Pi Foundation
+model: Raspberry Pi 5
+release_date: "2023"
+
+cpu:
+  brand: "Broadcom"
+  model: "BCM2712 Cortex-A76"
+  cores: 4
+  threads: 4
+  base_clock: 2.4
+  tdp: 8
+  architecture: "ARMv8.2-A"
+
+gpu:
+  - model: "VideoCore VII"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR4X"
+  speed: 4267
+  slots: 1
+  max_capacity: 4
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+expansion:
+  pcie_slots:
+    - version: "PCIe 2.0 x1"
+      form_factor: "M.2 Key-E"
+      note: "For NVMe SSD via HAT"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Broadcom BCM54213PE"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 5"
+    chipset: "Cypress CYW43455"
+    bluetooth: "5.0"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.0"
+      speed: "5Gbps"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power only"
+  hdmi:
+    count: 2
+    version: "2.0"
+    form_factor: "Micro HDMI"
+    max_resolution: "4K@60Hz"
+
+dimensions:
+  width: 85
+  depth: 56
+  height: 19
+  weight: 45
+
+power:
+  adapter_wattage: 27
+  dc_input: "5V/5A"
+
+notes: |-
+  - Performance increase with 2-3x Pi 4 performance
+  - First Pi with PCIe slot for NVMe SSD support
+  - Real-time clock with battery backup option
+  - Power button support
+  - In-house RP1 I/O controller chip
+  - Improved thermal design with active cooling recommended
+  - VideoCore VII GPU with hardware-accelerated H.265 encode/decode
+  - Dual 4-lane MIPI camera/display interfaces
+  - Cryptographic acceleration support 

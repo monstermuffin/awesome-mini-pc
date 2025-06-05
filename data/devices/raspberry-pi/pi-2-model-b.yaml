@@ -1,0 +1,70 @@
+id: pi-2-model-b
+brand: Raspberry Pi Foundation
+model: Raspberry Pi 2 Model B
+release_date: "2015"
+
+cpu:
+  brand: "Broadcom"
+  model: "BCM2836 Cortex-A7"
+  cores: 4
+  threads: 4
+  base_clock: 0.9
+  tdp: 4
+  architecture: "ARMv7-A"
+
+gpu:
+  - model: "VideoCore IV"
+    type: "Integrated"
+
+memory:
+  type: "DDR2"
+  speed: 450
+  slots: 1
+  max_capacity: 1
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "100Mbps"
+      chipset: "SMSC LAN9514"
+      interface: "RJ45"
+  wifi:
+    standard: "None"
+    chipset: "None"
+    bluetooth: "None"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 2.0"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "1.3"
+    max_resolution: "1920x1200"
+  composite_video: 1
+  audio_jack: 1
+
+dimensions:
+  width: 85.6
+  depth: 56
+  height: 17
+  weight: 45
+
+power:
+  adapter_wattage: 5
+  dc_input: "5V/2A"
+
+notes: |-
+  - Major performance upgrade with quad-core processor
+  - 6x faster than original Raspberry Pi
+  - 1GB RAM - significant increase from previous models
+  - Same form factor as Model B+
+  - 40-pin GPIO header
+  - Introduced ARMv7 architecture support 

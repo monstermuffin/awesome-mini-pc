@@ -1,0 +1,62 @@
+id: pico-2
+brand: Raspberry Pi Foundation
+model: Raspberry Pi Pico 2
+release_date: "2024"
+
+cpu:
+  brand: "Raspberry Pi"
+  model: "RP2350 Cortex-M33"
+  cores: 2
+  threads: 2
+  base_clock: 0.150
+  tdp: 0.15
+  architecture: "ARMv8-M"
+
+memory:
+  type: "SRAM"
+  speed: 150
+  slots: 1
+  max_capacity: 0.00052
+  module_type: "Embedded"
+
+storage:
+  - type: "Flash"
+    capacity: 4
+    interface: "Embedded"
+
+networking:
+  ethernet:
+    - ports: 0
+  wifi:
+    standard: "None"
+    chipset: "None"
+    bluetooth: "None"
+
+ports:
+  gpio_pins: 30
+  usb_micro:
+    - count: 1
+      type: "Micro USB"
+      speed: "12Mbps"
+
+dimensions:
+  width: 51
+  depth: 21
+  height: 3
+  weight: 3
+
+power:
+  adapter_wattage: 1
+  dc_input: "5V/0.2A or 3.3V direct"
+
+notes: |-
+  - Next-generation microcontroller with RP2350 chip
+  - Dual-core ARM Cortex-M33 at 150MHz (up from M0+)
+  - 520KB SRAM (doubled from original), 4MB Flash
+  - Hardware and software compatible with original Pico
+  - Enhanced security features and cryptographic acceleration
+  - Support for both ARM and RISC-V instruction sets
+  - More GPIO pins (30 vs 26)
+  - Improved performance while maintaining low power
+  - Backward compatible with existing Pico software
+  - Future-ready microcontroller platform 
