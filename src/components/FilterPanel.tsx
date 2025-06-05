@@ -182,15 +182,21 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   // Extract all available WiFi chipsets from devices
   const wifiChipsets = new Set<string>();
   devices.forEach(device => {
-    wifiChipsets.add(device.networking.wifi.chipset);
+    if (device.networking?.wifi?.chipset) {
+      wifiChipsets.add(device.networking.wifi.chipset);
+    }
   });
 
   // Extract all available Ethernet chipsets from devices
   const ethernetChipsets = new Set<string>();
   devices.forEach(device => {
-    device.networking.ethernet.forEach(eth => {
-      ethernetChipsets.add(eth.chipset);
-    });
+    if (device.networking?.ethernet) {
+      device.networking.ethernet.forEach(eth => {
+        if (eth.chipset) {
+          ethernetChipsets.add(eth.chipset);
+        }
+      });
+    }
   });
 
   // Extract all available release years from devices

@@ -354,16 +354,16 @@ function App() {
     if (selectedFilters.memorySlotsCount.size > 0 && !selectedFilters.memorySlotsCount.has(device.memory.slots.toString())) {
       return false;
     }
-    if (selectedFilters.wifiStandards.size > 0 && !selectedFilters.wifiStandards.has(device.networking.wifi.standard)) {
+    if (selectedFilters.wifiStandards.size > 0 && (!device.networking?.wifi?.standard || !selectedFilters.wifiStandards.has(device.networking.wifi.standard))) {
       return false;
     }
-    if (selectedFilters.wifiChipsets.size > 0 && !selectedFilters.wifiChipsets.has(device.networking.wifi.chipset)) {
+    if (selectedFilters.wifiChipsets.size > 0 && (!device.networking?.wifi?.chipset || !selectedFilters.wifiChipsets.has(device.networking.wifi.chipset))) {
       return false;
     }
-    if (selectedFilters.ethernetSpeeds.size > 0 && !device.networking.ethernet.some(eth => selectedFilters.ethernetSpeeds.has(eth.speed))) {
+    if (selectedFilters.ethernetSpeeds.size > 0 && (!device.networking?.ethernet || !device.networking.ethernet.some(eth => selectedFilters.ethernetSpeeds.has(eth.speed)))) {
       return false;
     }
-    if (selectedFilters.ethernetChipsets.size > 0 && !device.networking.ethernet.some(eth => selectedFilters.ethernetChipsets.has(eth.chipset))) {
+    if (selectedFilters.ethernetChipsets.size > 0 && (!device.networking?.ethernet || !device.networking.ethernet.some(eth => selectedFilters.ethernetChipsets.has(eth.chipset)))) {
       return false;
     }
     if (selectedFilters.storageTypes.size > 0 && !device.storage.some(s => selectedFilters.storageTypes.has(s.type))) {

@@ -643,7 +643,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       
                       const ethernetGroups: Record<string, EthernetGroup> = {};
                       
-                      device.networking.ethernet.forEach(eth => {
+                      (device.networking?.ethernet || []).forEach(eth => {
                         const key = `${eth.speed}_${eth.interface}`;
                         if (!ethernetGroups[key]) {
                           ethernetGroups[key] = { count: eth.ports, chipsets: [eth.chipset], interface: eth.interface, speed: eth.speed };
@@ -685,29 +685,39 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     })()}
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2" sx={{ lineHeight: 1.3 }}>
-                      <Box component="span" sx={{ 
-                        fontWeight: 'medium',
-                        display: 'flex', 
-                        alignItems: 'center',
-                        gap: 1 
-                      }}>
-                        {device.networking.wifi.standard}
-                      </Box>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                        {device.networking.wifi.chipset}
+                    {device.networking?.wifi ? (
+                      <>
+                        <Typography variant="body2" sx={{ lineHeight: 1.3 }}>
+                          <Box component="span" sx={{ 
+                            fontWeight: 'medium',
+                            display: 'flex', 
+                            alignItems: 'center',
+                            gap: 1 
+                          }}>
+                            {device.networking.wifi.standard}
+                          </Box>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                            {device.networking.wifi.chipset}
+                          </Typography>
+                        </Typography>
+                        {device.networking.wifi.bluetooth && (
+                          <Box sx={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 0.5,
+                            mt: 0.3
+                          }}>
+                            <Typography variant="caption" color="text.secondary" component="div">
+                              BT {device.networking.wifi.bluetooth}
+                            </Typography>
+                          </Box>
+                        )}
+                      </>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        No WiFi
                       </Typography>
-                    </Typography>
-                    <Box sx={{ 
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.5,
-                      mt: 0.3
-                    }}>
-                      <Typography variant="caption" color="text.secondary" component="div">
-                        BT {device.networking.wifi.bluetooth}
-                      </Typography>
-                    </Box>
+                    )}
                   </TableCell>
                   <TableCell>
                     {device.dimensions?.volume && (
