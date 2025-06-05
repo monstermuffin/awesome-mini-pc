@@ -631,18 +631,20 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       lineHeight: 1.3,
                       mb: 0.3
                     }}>
-                      {device.memory.type}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{
-                      whiteSpace: 'normal',
-                      overflow: 'visible',
-                      lineHeight: 1.3,
-                    }}>
-                      {device.memory.module_type === 'Soldered' 
-                        ? `${formatMemoryCapacity(device.memory.max_capacity)} RAM (Soldered)`
-                        : `${device.memory.slots}x slots, Max ${formatMemoryCapacity(device.memory.max_capacity)}`
+                      {device.memory.module_type === 'Soldered' || device.memory.module_type === 'Embedded'
+                        ? `${device.memory.type} - ${formatMemoryCapacity(device.memory.max_capacity)}`
+                        : device.memory.type
                       }
                     </Typography>
+                    {device.memory.module_type !== 'Soldered' && device.memory.module_type !== 'Embedded' && (
+                      <Typography variant="caption" color="text.secondary" sx={{
+                        whiteSpace: 'normal',
+                        overflow: 'visible',
+                        lineHeight: 1.3,
+                      }}>
+                        {device.memory.slots}x slots, Max {formatMemoryCapacity(device.memory.max_capacity)}
+                      </Typography>
+                    )}
                   </TableCell>
                   <TableCell sx={{ whiteSpace: 'normal' }}>{device.memory.module_type}</TableCell>
                   <TableCell align="right">
@@ -937,19 +939,19 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     }
                   }}>Memory</Typography>
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    Type: {detailDevice.memory.type} {detailDevice.memory.module_type}
+                    Type: {detailDevice.memory.type} ({detailDevice.memory.module_type})
                   </Typography>
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
                     Speed: {detailDevice.memory.speed}MT/s
                   </Typography>
-                  {detailDevice.memory.module_type === 'Soldered' ? (
+                  {detailDevice.memory.module_type === 'Soldered' || detailDevice.memory.module_type === 'Embedded' ? (
                     <Typography variant="body2" sx={{ mb: 0.5 }}>
                       Installed RAM: {formatMemoryCapacity(detailDevice.memory.max_capacity)}
                     </Typography>
                   ) : (
                     <>
                       <Typography variant="body2" sx={{ mb: 0.5 }}>
-                        Slots: {detailDevice.memory.slots} ({detailDevice.memory.module_type})
+                        Slots: {detailDevice.memory.slots}
                       </Typography>
                       <Typography variant="body2" sx={{ mb: 0.5 }}>
                         Max Capacity: {formatMemoryCapacity(detailDevice.memory.max_capacity)}
