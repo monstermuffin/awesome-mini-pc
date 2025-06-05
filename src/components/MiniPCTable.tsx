@@ -638,7 +638,10 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       overflow: 'visible',
                       lineHeight: 1.3,
                     }}>
-                      {device.memory.slots}x slots, Max {formatMemoryCapacity(device.memory.max_capacity)}
+                      {device.memory.module_type === 'Soldered' 
+                        ? `${formatMemoryCapacity(device.memory.max_capacity)} RAM (Soldered)`
+                        : `${device.memory.slots}x slots, Max ${formatMemoryCapacity(device.memory.max_capacity)}`
+                      }
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ whiteSpace: 'normal' }}>{device.memory.module_type}</TableCell>
@@ -939,12 +942,20 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
                     Speed: {detailDevice.memory.speed}MT/s
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    Slots: {detailDevice.memory.slots} ({detailDevice.memory.module_type})
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    Max Capacity: {formatMemoryCapacity(detailDevice.memory.max_capacity)}
-                  </Typography>
+                  {detailDevice.memory.module_type === 'Soldered' ? (
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                      Installed RAM: {formatMemoryCapacity(detailDevice.memory.max_capacity)}
+                    </Typography>
+                  ) : (
+                    <>
+                      <Typography variant="body2" sx={{ mb: 0.5 }}>
+                        Slots: {detailDevice.memory.slots} ({detailDevice.memory.module_type})
+                      </Typography>
+                      <Typography variant="body2" sx={{ mb: 0.5 }}>
+                        Max Capacity: {formatMemoryCapacity(detailDevice.memory.max_capacity)}
+                      </Typography>
+                    </>
+                  )}
                 </Grid>
                 
                 {detailDevice?.gpu && (
