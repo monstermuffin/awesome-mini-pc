@@ -1,0 +1,107 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommitTypeAll(chore)",
+    ":semanticCommitScopeDisabled"
+  ],
+
+  "labels": ["dependencies"],
+  "assigneesFromCodeOwners": true,
+  "reviewersFromCodeOwners": true,
+  "platformAutomerge": true,
+  "packageRules": [
+    {
+      "description": "Auto-merge non-major updates",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true,
+      "labels": ["dependencies", "automerge"]
+    },
+    {
+      "description": "Auto-merge security updates",
+      "matchDepTypes": ["devDependencies", "dependencies"],
+      "matchUpdateTypes": ["patch"],
+      "isVulnerabilityAlert": true,
+      "automerge": true,
+      "labels": ["dependencies", "security", "automerge"]
+    },
+    {
+      "description": "Group React ecosystem updates",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
+      ],
+      "groupName": "React ecosystem",
+      "labels": ["dependencies", "react"]
+    },
+    {
+      "description": "Group Material-UI updates",
+      "matchPackagePatterns": ["^@mui/"],
+      "groupName": "Material-UI",
+      "labels": ["dependencies", "material-ui"]
+    },
+    {
+      "description": "Group ESLint updates",
+      "matchPackagePatterns": ["eslint", "@typescript-eslint/"],
+      "groupName": "ESLint ecosystem",
+      "labels": ["dependencies", "eslint"]
+    },
+    {
+      "description": "Group build tools",
+      "matchPackageNames": [
+        "vite",
+        "@vitejs/plugin-react",
+        "typescript"
+      ],
+      "groupName": "Build tools",
+      "labels": ["dependencies", "build-tools"]
+    },
+    {
+      "description": "Major updates require manual approval",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "major-update"],
+      "addLabels": ["needs-review"],
+      "prPriority": 10
+    },
+    {
+      "description": "Node.js types - allow major updates but require review",
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "nodejs", "major-update"]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "automerge": true,
+    "labels": ["dependencies", "security", "vulnerability"]
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true,
+    "commitMessageAction": "Update",
+    "labels": ["dependencies", "lockfile-maintenance"]
+  },
+
+  "commitMessagePrefix": "chore(deps): ",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "prBodyDefinitions": {
+    "Age": "[![age](https://developer.mend.io/api/mc/badges/age/npm/{{depName}}/{{newVersion}}?slim=true)](https://docs.renovatebot.com/merge-confidence/)",
+    "Adoption": "[![adoption](https://developer.mend.io/api/mc/badges/adoption/npm/{{depName}}/{{newVersion}}?slim=true)](https://docs.renovatebot.com/merge-confidence/)",
+    "Passing": "[![passing](https://developer.mend.io/api/mc/badges/compatibility/npm/{{depName}}/{{currentVersion}}/{{newVersion}}?slim=true)](https://docs.renovatebot.com/merge-confidence/)",
+    "Confidence": "[![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/{{depName}}/{{currentVersion}}/{{newVersion}}?slim=true)](https://docs.renovatebot.com/merge-confidence/)"
+  },
+  "prBodyColumns": [
+    "Package",
+    "Change",
+    "Age",
+    "Adoption",
+    "Passing",
+    "Confidence"
+  ]
+} 
