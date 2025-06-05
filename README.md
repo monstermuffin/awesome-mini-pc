@@ -35,7 +35,7 @@ Anyone can contribute new device information, I am counting on it for this to be
 1. Open an issue using the "New Device" template.
 2. Fill out the device specifications.
 3. Submit the issue.
-4. Our automation will handle the rest.
+4. Automations will handle the rest.
 
 > [!TIP]
 > For more detailed contribution guidelines, including how to gather information and submit updates, please see [CONTRIBUTING.md](CONTRIBUTING.md).
