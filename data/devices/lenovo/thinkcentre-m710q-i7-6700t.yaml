@@ -1,0 +1,83 @@
+id: m710q-i7-6700t
+brand: Lenovo
+model: ThinkCentre M710q
+release_date: "2016"
+
+cpu:
+  brand: "Intel"
+  model: "Core i7-6700T"
+  cores: 4
+  threads: 8
+  base_clock: 2.8
+  boost_clock: 3.6
+  tdp: 35
+  architecture: "Skylake"
+  socket:
+    type: "LGA1151"
+    supports_cpu_swap: true
+
+gpu:
+  - model: "Intel HD Graphics 530"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 2133
+  slots: 2
+  max_capacity: 32
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA 6.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 5"
+    chipset: "Intel 802.11ac"
+    bluetooth: "4.1"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.1"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 3.1"
+      speed: "Gen 1"
+      features: "Always On, Fast Charge"
+  displayport:
+    count: 2
+    version: "1.2"
+  vga:
+    count: 1
+    note: "Optional, replaces one DisplayPort"
+  audio_jack: 1
+
+dimensions:
+  width: 179
+  depth: 183
+  height: 35
+  weight: 1300
+
+power:
+  adapter_wattage: 65
+  dc_input: "19.5V/3.33A"
+
+notes: |-
+  - CPU is upgradeable to any LGA1151 6th/7th gen Intel processor (Core i3/i5/i7)
+  - Intel B250 chipset limits to 6th/7th generation CPUs only
+  - High-performance 6th generation variant with hyperthreading
+  - Optional I/O expansion box available for legacy ports (serial, parallel, PS/2)
+  - Wi-Fi/Bluetooth via optional M.2 2230 card
+  - Some configurations include VGA port replacing one DisplayPort
+  - Supports dual drives (one 2.5" + one M.2 SSD) 
