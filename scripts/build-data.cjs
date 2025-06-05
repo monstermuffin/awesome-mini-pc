@@ -179,17 +179,19 @@ function validateMiniPC(data) {
     throw new Error('Storage must be an array');
   }
 
-  if (!data.networking || !data.networking.wifi || !data.networking.ethernet) {
-    throw new Error('Missing or invalid networking information');
-  }
+  if (data.networking) {
+    if (data.networking.wifi) {
+      if (!data.networking.wifi.chipset) {
+        throw new Error('WiFi chipset is required when wifi section is present');
+      }
+    }
 
-  if (!data.networking.wifi.chipset) {
-    throw new Error('WiFi chipset is required');
-  }
-
-  for (const eth of data.networking.ethernet) {
-    if (!eth.chipset || !eth.speed) {
-      throw new Error('Ethernet entries must include chipset and speed');
+    if (data.networking.ethernet && Array.isArray(data.networking.ethernet)) {
+      for (const eth of data.networking.ethernet) {
+        if (!eth.chipset || !eth.speed) {
+          throw new Error('Ethernet entries must include chipset and speed');
+        }
+      }
     }
   }
 
@@ -229,11 +231,17 @@ function extractMetadata(devices) {
     if (pc.memory.module_type) {
       metadata.memoryModuleTypes.add(pc.memory.module_type);
     }
-    metadata.wifiStandards.add(pc.networking.wifi.standard);
-    
-    pc.networking.ethernet.forEach(eth => {
-      metadata.ethernetSpeeds.add(eth.speed);
-    });
+    if (pc.networking) {
+      if (pc.networking.wifi) {
+        metadata.wifiStandards.add(pc.networking.wifi.standard);
+      }
+      
+      if (pc.networking.ethernet && Array.isArray(pc.networking.ethernet)) {
+        pc.networking.ethernet.forEach(eth => {
+          metadata.ethernetSpeeds.add(eth.speed);
+        });
+      }
+    }
 
     pc.storage.forEach(storage => {
       metadata.storageTypes.add(storage.type);
