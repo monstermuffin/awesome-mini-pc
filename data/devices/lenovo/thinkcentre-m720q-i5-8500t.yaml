@@ -1,0 +1,96 @@
+id: m720q-i5-8500t
+brand: Lenovo
+model: ThinkCentre M720q
+release_date: "2018"
+
+cpu:
+  brand: "Intel"
+  model: "Core i5-8500T"
+  cores: 6
+  threads: 6
+  base_clock: 2.1
+  boost_clock: 3.5
+  tdp: 35
+  architecture: "Coffee Lake"
+  socket:
+    type: "LGA1151"
+    supports_cpu_swap: true
+
+gpu:
+  - model: "Intel UHD Graphics 630"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 2666
+  slots: 2
+  max_capacity: 32
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe NVMe"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA 6.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Intel I219-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 5"
+    chipset: "Intel Wireless-AC 8265"
+    bluetooth: "4.2"
+
+expansion:
+  pcie_slots:
+    - type: "x16"
+      version: "3.0"
+      full_height: false
+      length: "single-slot"
+      additional_info: "Requires riser card 01AJ940"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.1"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 3.1"
+      speed: "Gen 1"
+    - count: 1
+      type: "USB 3.1"
+      speed: "Gen 2"
+      features: "Fast Charge"
+  usb_c:
+    - count: 1
+      type: "USB 3.1"
+      speed: "Gen 1"
+  displayport:
+    count: 1
+    version: "1.2"
+  hdmi:
+    count: 1
+    version: "1.4"
+  audio_jack: 1
+
+dimensions:
+  width: 179
+  depth: 183
+  height: 35
+
+power:
+  adapter_wattage: 65
+  dc_input: "19.5V/3.33A"
+
+notes: |-
+  - CPU is upgradeable to any LGA1151 8th/9th gen Intel processor (Celeron, Pentium Gold, Core i3/i5/i7/i9)
+  - Standard 65W CPUs can be installed but will be power-limited to 35W by system firmware
+  - Supports up to Intel Core i9-9900T (8C/16T) with BIOS update
+  - PCIe expansion available with riser cards: 01AJ929 (x4), 01AJ902 (x8), 01AJ940 (x8 to x16)
+  - Various wireless module options: Intel 8265, 3165, Realtek RTL8821CE, RTL8822BE
+  - Supports dual drives (one 2.5" + one M.2 SSD) 
