@@ -128,6 +128,21 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
     return `${age} years old`;
   };
 
+  const formatMemoryCapacity = (capacityGB: number): string => {
+    if (capacityGB < 0.001) {
+      // Less than 1MB, show as KB
+      const capacityKB = capacityGB * 1024 * 1024;
+      return `${Math.round(capacityKB)}KB`;
+    } else if (capacityGB < 1) {
+      // Less than 1GB, show as MB
+      const capacityMB = capacityGB * 1024;
+      return `${capacityMB % 1 === 0 ? Math.round(capacityMB) : capacityMB.toFixed(1)}MB`;
+    } else {
+      // 1GB or more, show as GB
+      return `${capacityGB % 1 === 0 ? Math.round(capacityGB) : capacityGB.toFixed(1)}GB`;
+    }
+  };
+
   const StorageCell = ({ device, showDetails = false }: { device: MiniPC; showDetails?: boolean }) => {
     const storageGroups: Record<string, Array<{ interface: string; form_factor?: string; alt_interface?: string }>> = {};
 
@@ -623,7 +638,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       overflow: 'visible',
                       lineHeight: 1.3,
                     }}>
-                      {device.memory.slots}x slots, Max {device.memory.max_capacity}GB
+                      {device.memory.slots}x slots, Max {formatMemoryCapacity(device.memory.max_capacity)}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ whiteSpace: 'normal' }}>{device.memory.module_type}</TableCell>
@@ -928,7 +943,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     Slots: {detailDevice.memory.slots} ({detailDevice.memory.module_type})
                   </Typography>
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    Max Capacity: {detailDevice.memory.max_capacity}GB
+                    Max Capacity: {formatMemoryCapacity(detailDevice.memory.max_capacity)}
                   </Typography>
                 </Grid>
                 
