@@ -29,8 +29,6 @@ storage:
     interface: "SD"
 
 networking:
-  ethernet:
-    - ports: 0
   wifi:
     standard: "WiFi 4"
     chipset: "Broadcom BCM43438"

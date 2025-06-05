@@ -34,10 +34,7 @@ networking:
       speed: "100Mbps"
       chipset: "SMSC LAN9512"
       interface: "RJ45"
-  wifi:
-    standard: "None"
-    chipset: "None"
-    bluetooth: "None"
+
 
 ports:
   usb_a:

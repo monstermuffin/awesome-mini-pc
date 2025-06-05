@@ -28,14 +28,6 @@ storage:
     form_factor: "MicroSD"
     interface: "SD"
 
-networking:
-  ethernet:
-    - ports: 0
-  wifi:
-    standard: "None"
-    chipset: "None"
-    bluetooth: "None"
-
 ports:
   usb_a:
     - count: 1
