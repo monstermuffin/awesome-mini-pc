@@ -657,7 +657,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       
                       return (
                         <>
-                          {Object.entries(ethernetGroups).map(([key, info]: [string, EthernetGroup], index: number) => (
+                          {Object.entries(ethernetGroups).map(([, info]: [string, EthernetGroup], index: number) => (
                             <Box key={index} sx={{ mb: 0.5 }}>
                               <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
                                 {info.count > 1 && (
@@ -1082,7 +1082,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     
                     return (
                       <>
-                        {Object.entries(ethernetGroups).map(([key, info]: [string, EthernetGroup], index: number) => (
+                        {Object.entries(ethernetGroups).map(([, info]: [string, EthernetGroup], index: number) => (
                           <Box key={index} sx={{ mb: 0.5 }}>
                             <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
                               {info.count > 1 && (
