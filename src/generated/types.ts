@@ -6,7 +6,7 @@ export const MEMORY_MODULE_TYPES = ["SO-DIMM","SODIMM","Soldered"] as const;
 export const WIFI_STANDARDS = ["None","WiFi","WiFi 5","WiFi 6","WiFi 6E","WiFi 7"] as const;
 export const ETHERNET_SPEEDS = ["10GbE","1GbE","2.5GbE"] as const;
 export const STORAGE_TYPES = ["M.2","SATA"] as const;
-export const STORAGE_INTERFACES = ["PCIe 2.0 x4","PCIe 3.0","PCIe 3.0 x2","PCIe 3.0 x4","PCIe 4.0","PCIe 4.0 x1","PCIe 4.0 x4","SATA","SATA 6.0"] as const;
+export const STORAGE_INTERFACES = ["PCIe 2.0 x4","PCIe 3.0","PCIe 3.0 x2","PCIe 3.0 x4","PCIe 4.0","PCIe 4.0 x1","PCIe 4.0 x4","PCIe NVMe","SATA","SATA 6.0"] as const;
 
 export type Brand = typeof BRANDS[number];
 export type CpuBrand = typeof CPU_BRANDS[number];
