@@ -1061,7 +1061,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                   {(() => {
                     interface EthernetGroup {
                       count: number;
-                      chipsets: string[];
+                      chipset: string;
                       interface: string;
                       speed: string;
                     }
@@ -1069,14 +1069,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     const ethernetGroups: Record<string, EthernetGroup> = {};
                     
                     detailDevice?.networking?.ethernet?.forEach(eth => {
-                      const key = `${eth.speed}_${eth.interface}`;
+                      const key = `${eth.speed}_${eth.interface}_${eth.chipset}`;
                       if (!ethernetGroups[key]) {
-                        ethernetGroups[key] = { count: eth.ports, chipsets: [eth.chipset], interface: eth.interface, speed: eth.speed };
+                        ethernetGroups[key] = { count: eth.ports, chipset: eth.chipset, interface: eth.interface, speed: eth.speed };
                       } else {
                         ethernetGroups[key].count += eth.ports;
-                        if (!ethernetGroups[key].chipsets.includes(eth.chipset)) {
-                          ethernetGroups[key].chipsets.push(eth.chipset);
-                        }
                       }
                     });
                     
@@ -1101,7 +1098,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                               {info.speed}
                             </Box>
                             <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                              {info.interface} • {info.chipsets.join(', ')}
+                              {info.interface} • {info.chipset}
                             </Typography>
                           </Box>
                         ))}
