@@ -1,4 +1,4 @@
-import type { MiniPC } from '../types/minipc';
+import type { MiniPC, DeviceFamily, GroupedDeviceData } from '../types/minipc';
 import generatedData from '../generated/data.json';
 
 export interface FilterOptions {
@@ -34,6 +34,51 @@ function enhanceDataForCompat(devices: any[]): MiniPC[] {
   });
 }
 
+function groupDevicesByFamily(devices: MiniPC[]): GroupedDeviceData {
+  const familyMap = new Map<string, MiniPC[]>();
+  
+  // Group devices by brand THEN model
+  devices.forEach(device => {
+    const familyKey = `${device.brand.toLowerCase()}-${device.model.toLowerCase()}`;
+    if (!familyMap.has(familyKey)) {
+      familyMap.set(familyKey, []);
+    }
+    familyMap.get(familyKey)!.push(device);
+  });
+  
+  const families: DeviceFamily[] = [];
+  
+  familyMap.forEach((variants, familyKey) => {
+    if (variants.length === 0) return;
+    
+    const sortedVariants = [...variants].sort((a, b) => {
+      return a.cpu.model.localeCompare(b.cpu.model);
+    });
+    
+    const baseDevice = sortedVariants[0];
+    
+    families.push({
+      id: familyKey,
+      brand: baseDevice.brand,
+      model: baseDevice.model,
+      baseDevice,
+      variants: sortedVariants,
+      variantCount: variants.length,
+    });
+  });
+  
+  families.sort((a, b) => {
+    const brandCompare = a.brand.localeCompare(b.brand);
+    if (brandCompare !== 0) return brandCompare;
+    return a.model.localeCompare(b.model);
+  });
+  
+  return {
+    families,
+    allDevices: devices,
+  };
+}
+
 function convertToFilterOptions(metadata: typeof generatedData.metadata): FilterOptions {
   const memoryModuleTypes = new Set<string>();
   if (generatedData.devices) {
@@ -60,11 +105,16 @@ function convertToFilterOptions(metadata: typeof generatedData.metadata): Filter
   };
 }
 
-export async function loadMiniPCData(): Promise<{ devices: MiniPC[]; filterOptions: FilterOptions }> {
+export async function loadMiniPCData(): Promise<{ 
+  devices: MiniPC[]; 
+  groupedData: GroupedDeviceData;
+  filterOptions: FilterOptions 
+}> {
   try {
     console.log('Loading Mini PC data from generated file...');
     
     const enhancedDevices = enhanceDataForCompat(generatedData.devices);
+    const groupedData = groupDevicesByFamily(enhancedDevices);
     
     const metadata = { ...generatedData.metadata };
     if (metadata.coreRange.min === Infinity || metadata.coreRange.max === -Infinity) {
@@ -73,12 +123,14 @@ export async function loadMiniPCData(): Promise<{ devices: MiniPC[]; filterOptio
     
     return {
       devices: enhancedDevices,
+      groupedData,
       filterOptions: convertToFilterOptions(metadata),
     };
   } catch (error) {
     console.error('Error loading Mini PC data:', error);
     return {
       devices: [],
+      groupedData: { families: [], allDevices: [] },
       filterOptions: {
         brands: new Set(),
         cpuBrands: new Set(),
