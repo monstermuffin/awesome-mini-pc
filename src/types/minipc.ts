@@ -125,4 +125,18 @@ export interface NetworkingEthernet {
   speed: string;
   ports: number;
   interface: string;
+}
+
+export interface DeviceFamily {
+  id: string;
+  brand: string;
+  model: string;
+  baseDevice: MiniPC;
+  variants: MiniPC[];
+  variantCount: number;
+}
+
+export interface GroupedDeviceData {
+  families: DeviceFamily[];
+  allDevices: MiniPC[];
 } 
