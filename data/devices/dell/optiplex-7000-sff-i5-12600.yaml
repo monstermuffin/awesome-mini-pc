@@ -30,7 +30,7 @@ memory:
 
 storage:
   - type: "M.2"
-    form_factor: "2280"
+    form_factor: "2230/2280"
     interface: "PCIe 4.0 x4"
   - type: "M.2"
     form_factor: "2230"
@@ -39,7 +39,10 @@ storage:
     form_factor: "3.5"
     interface: "SATA3"
   - type: "SATA"
-    form_factor: "3.5"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
     interface: "SATA3"
 
 networking:
@@ -96,9 +99,12 @@ power:
   dc_input: "230/110V"
 
 notes: |-
-  - CPU is socketed (LGA 1700) and supports upgrades (12th/13th Gen Intel Core, Q670 chipset, BIOS updates may be required).
-  - SATA bays support 3.5" or 2.5" drives.
-  - WiFi is optional; a common configuration includes Intel AX211 (WiFi 6E, Bluetooth 5.3).
+  - CPU is socketed (LGA 1700) and supports upgrades (12th/13th Gen Intel Core, Q670 chipset, BIOS updates may be required). This CPU (i5-12600) is vPro capable.
+  - SATA: Three ports; supports one 3.5-inch and two 2.5-inch drives.
+  - WiFi is optional (via M.2 2230 slot); a common configuration includes Intel AX211 (WiFi 6E, Bluetooth 5.3).
   - Audio: Front Universal audio jack, rear Re-tasking Line-out/Line-in audio port.
-  - DisplayPort 1.4a can support up to 5120x3200@60Hz or 4096x2304@60Hz (HBR2/3 dependent).
-  - Power: Internal PSU (e.g., 260W Bronze, 300W Platinum options). Supports 230/110V.
+  - DisplayPort 1.4a (x3 onboard) can support up to 5120x3200@60Hz or 4096x2304@60Hz (HBR2/3 dependent).
+  - Power: Internal PSU (options: 240W, 260W, 300W). Supports 230/110V.
+  - Supports low-profile dedicated GPUs (e.g., AMD Radeon RX 6400). Verify PSU capacity for dGPU upgrades.
+  - Optional video ports can include: HDMI 2.0b, DisplayPort (additional port), VGA, USB-C (DisplayPort Alt-Mode).
+  - Other optional ports/features: Serial port, PS/2 legacy ports, SD-card reader.
