@@ -29,8 +29,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { loadMiniPCData } from './utils/dataLoader';
-import type { MiniPC } from './types/minipc';
+import type { MiniPC, GroupedDeviceData } from './types/minipc';
 import type { FilterOptions } from './utils/dataLoader';
 import { FilterPanel } from './components/FilterPanel';
 import { MiniPCTable } from './components/MiniPCTable';
@@ -93,6 +95,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [devices, setDevices] = useState<MiniPC[]>([]);
+  const [groupedData, setGroupedData] = useState<GroupedDeviceData>({ families: [], allDevices: [] });
   const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -101,6 +104,7 @@ function App() {
   const [selectedDevices, setSelectedDevices] = useState<Set<string>>(new Set());
   const [isCompareMode, setIsCompareMode] = useState(false);
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
+  const [showAllVariants, setShowAllVariants] = useState(false);
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
@@ -270,8 +274,9 @@ function App() {
   const [selectedFilters, setSelectedFilters] = useState<FilterState>(initialFilterState);
 
   useEffect(() => {
-    loadMiniPCData().then(({ devices, filterOptions }) => {
+    loadMiniPCData().then(({ devices, groupedData, filterOptions }) => {
       setDevices(devices);
+      setGroupedData(groupedData);
       setFilterOptions(filterOptions);
       setLoading(false);
     });
@@ -313,7 +318,10 @@ function App() {
     setSearchQuery(event.target.value);
   };
 
-  const filteredDevices = devices.filter((device) => {
+  // Get devices to display based on variant view setting
+  const devicesToFilter = showAllVariants ? devices : groupedData.families.map(family => family.baseDevice);
+
+  const filteredDevices = devicesToFilter.filter((device) => {
     if (searchQuery) {
       const searchLower = searchQuery.toLowerCase();
       const matchesSearch = 
@@ -508,6 +516,18 @@ function App() {
     setInfoDialogOpen(false);
   };
 
+  const handleToggleVariants = () => {
+    setShowAllVariants(!showAllVariants);
+    // Clear selections when switching views
+    setSelectedDevices(new Set());
+    setIsCompareMode(false);
+  };
+
+  const getDeviceFamilyInfo = (deviceId: string) => {
+    const family = groupedData.families.find(f => f.variants.some(v => v.id === deviceId));
+    return family;
+  };
+
   const filterDrawer = (
     <Drawer
       variant={isMobile ? "temporary" : "persistent"}
@@ -646,6 +666,26 @@ function App() {
                 </Typography>
 
                 <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 2, ml: 4 }}>
+                  {/* View Toggle Button */}
+                  <Tooltip title={showAllVariants ? "Show grouped view (families)" : "Show all variants"}>
+                    <Button
+                      variant="outlined"
+                      onClick={handleToggleVariants}
+                      startIcon={showAllVariants ? <ViewModuleIcon /> : <ViewListIcon />}
+                      size="small"
+                      sx={{
+                        borderColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
+                        color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                        '&:hover': {
+                          borderColor: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                          backgroundColor: theme => theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.08)' : 'rgba(25,118,210,0.08)',
+                        }
+                      }}
+                    >
+                      {showAllVariants ? 'Group Families' : `Show All (${devices.length})`}
+                    </Button>
+                  </Tooltip>
+
                   {(selectedDevices.size > 0 || hasActiveFilters(selectedFilters) || searchQuery) && (
                     <>
                       {selectedDevices.size > 0 && (
@@ -799,9 +839,12 @@ function App() {
               <Box sx={{ height: '100%' }}>
                 <MiniPCTable 
                   devices={filteredDevices} 
+                  groupedData={groupedData}
                   selectedDevices={selectedDevices}
                   onDeviceSelect={handleDeviceSelect}
                   isCompareMode={isCompareMode}
+                  showAllVariants={showAllVariants}
+                  getDeviceFamilyInfo={getDeviceFamilyInfo}
                 />
               </Box>
             )}
@@ -864,6 +907,7 @@ function App() {
             <li>Compare technical specifications across multiple PCs.</li>
             <li>Filter by CPU, memory, storage, and other specifications.</li>
             <li>Detailed information about expansion options, connectivity, and dimensions.</li>
+            <li>Group device families to see variants at a glance.</li>
           </Typography>
           <Typography variant="subtitle1" sx={{ 
             fontWeight: 600, 
