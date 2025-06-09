@@ -66,8 +66,8 @@ export function MiniPCTableRow({
          : 'rgba(33, 150, 243, 0.08)'
        : 'inherit',
      boxShadow: isVariant 
-       ? 'inset 4px 0 0 #9c27b0'
-       : 'none',
+       ? 'inset 3px 0 0 #9c27b0'
+       : 'inset 2px 0 0 rgba(33, 150, 243, 0.3)',
      transition: 'all 0.2s ease-in-out',
      '&:hover': {
        bgcolor: (theme: any) => {
@@ -89,8 +89,8 @@ export function MiniPCTableRow({
            : 'rgba(0, 0, 0, 0.04)';
        },
                 boxShadow: isVariant 
-           ? 'inset 4px 0 0 #e91eaa'
-           : undefined,
+           ? 'inset 3px 0 0 #e91eaa'
+           : 'inset 2px 0 0 #1565c0',
      },
    };
 
