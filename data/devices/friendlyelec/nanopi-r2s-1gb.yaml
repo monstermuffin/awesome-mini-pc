@@ -1,0 +1,63 @@
+id: nanopi-r2s-1gb
+brand: FriendlyElec
+model: NanoPi R2S 1GB
+release_date: "2020"
+
+cpu:
+  brand: "Rockchip"
+  model: "RK3328"
+  cores: 4
+  threads: 4
+  base_clock: 1.3
+  tdp: 8
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "Mali-450 MP2"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 1333
+  slots: 1
+  max_capacity: 1
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "1GbE"
+      chipset: "Realtek RTL8211E"
+      interface: "RJ45"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power Delivery"
+
+dimensions:
+  width: 55
+  depth: 66
+  height: 21
+  weight: 43
+
+power:
+  adapter_wattage: 8
+  dc_input: "USB-C PD"
+
+notes: |-
+  - Rockchip RK3328 quad-core Cortex-A53 SoC
+  - Dual Gigabit Ethernet for router applications
+  - Compact router SBC design
+  - Low power consumption
+  - Ideal for OpenWrt and pfSense 

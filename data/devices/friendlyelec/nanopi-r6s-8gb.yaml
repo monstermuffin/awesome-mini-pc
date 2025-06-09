@@ -1,0 +1,88 @@
+id: nanopi-r6s-8gb
+brand: FriendlyElec
+model: NanoPi R6S 8GB
+release_date: "2023"
+
+cpu:
+  brand: "Rockchip"
+  model: "RK3588S"
+  cores: 8
+  threads: 8
+  base_clock: 2.4
+  tdp: 25
+  architecture: "ARMv8.2-A"
+
+gpu:
+  - model: "Mali-G610 MP4"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR4X"
+  speed: 2133
+  slots: 1
+  max_capacity: 8
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+  - type: "eMMC"
+    form_factor: "32GB"
+    interface: "eMMC"
+  - type: "M.2"
+    form_factor: "M.2 M-Key"
+    interface: "PCIe 3.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8211F"
+      interface: "RJ45"
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125BG"
+      interface: "RJ45"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 3.0"
+      speed: "5Gbps"
+    - count: 1
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power Delivery and data"
+  hdmi:
+    count: 1
+    version: "2.1"
+    form_factor: "HDMI"
+    max_resolution: "8K@30Hz"
+
+expansion:
+  pcie_slots:
+    - version: "PCIe 3.0 x1"
+      form_factor: "M.2 M-Key"
+      note: "For NVMe SSD and WiFi modules"
+
+dimensions:
+  width: 62
+  depth: 90
+  height: 30
+  weight: 260
+
+power:
+  adapter_wattage: 25
+  dc_input: "USB-C PD"
+
+notes: |-
+  - Rockchip RK3588S SoC with 6 TOPS NPU
+  - High-performance router SBC with dual 2.5GbE networking
+  - 8K video output capability
+  - 30-pin GPIO header
+  - Extensive expansion options
+  - Ideal for networking and AI edge applications 

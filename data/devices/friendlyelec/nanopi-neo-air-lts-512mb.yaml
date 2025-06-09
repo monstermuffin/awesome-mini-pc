@@ -1,0 +1,67 @@
+id: nanopi-neo-air-lts-512mb
+brand: FriendlyElec
+model: NanoPi NEO Air-LTS 512MB
+release_date: "2017"
+
+cpu:
+  brand: "Allwinner"
+  model: "H3"
+  cores: 4
+  threads: 4
+  base_clock: 1.2
+  tdp: 3
+  architecture: "ARMv7-A"
+
+gpu:
+  - model: "Mali-400 MP2"
+    type: "Integrated"
+
+memory:
+  type: "DDR3"
+  speed: 1600
+  slots: 1
+  max_capacity: 0.5
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+  - type: "eMMC"
+    form_factor: "8GB"
+    interface: "eMMC"
+
+networking:
+  wifi:
+    standard: "WiFi 4"
+    chipset: "AP6212"
+    bluetooth: "4.0"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 2.0"
+      speed: "480Mbps"
+      note: "Via GPIO header"
+  usb_c:
+    - count: 1
+      type: "Micro USB"
+      features: "Power and OTG"
+
+dimensions:
+  width: 40
+  depth: 40
+  height: 12
+  weight: 12
+
+power:
+  adapter_wattage: 3
+  dc_input: "5V/1A"
+
+notes: |-
+  - Allwinner H3 quad-core Cortex-A7 SoC
+  - Built-in WiFi and Bluetooth connectivity
+  - 8GB eMMC storage included
+  - Ultra-compact wireless IoT board
+  - Long-term support model
+  - 40-pin GPIO header compatible with Raspberry Pi 

@@ -1,0 +1,65 @@
+id: nanopi-neo-lts-512mb
+brand: FriendlyElec
+model: NanoPi NEO-LTS 512MB
+release_date: "2016"
+
+cpu:
+  brand: "Allwinner"
+  model: "H3"
+  cores: 4
+  threads: 4
+  base_clock: 1.2
+  tdp: 3
+  architecture: "ARMv7-A"
+
+gpu:
+  - model: "Mali-400 MP2"
+    type: "Integrated"
+
+memory:
+  type: "DDR3"
+  speed: 1600
+  slots: 1
+  max_capacity: 0.5
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "100Mbps"
+      chipset: "Allwinner H3 Internal"
+      interface: "RJ45"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+      note: "Via GPIO header"
+  usb_c:
+    - count: 1
+      type: "Micro USB"
+      features: "Power and OTG"
+
+dimensions:
+  width: 40
+  depth: 40
+  height: 12
+  weight: 10
+
+power:
+  adapter_wattage: 3
+  dc_input: "5V/1A"
+
+notes: |-
+  - Allwinner H3 quad-core Cortex-A7 SoC
+  - Ultra-compact design ideal for IoT projects
+  - Low power consumption
+  - 40-pin GPIO header compatible with Raspberry Pi
+  - Long-term support model
+  - CVBS video output via GPIO 
