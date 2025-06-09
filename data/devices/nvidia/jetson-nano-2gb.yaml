@@ -1,0 +1,78 @@
+id: jetson-nano-2gb
+brand: NVIDIA
+model: Jetson Nano 2GB
+release_date: "2020"
+
+cpu:
+  brand: "ARM"
+  model: "Cortex-A57"
+  cores: 4
+  threads: 4
+  base_clock: 1.43
+  tdp: 7
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "Maxwell 128-core"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR4"
+  speed: 1600
+  slots: 1
+  max_capacity: 2
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8111H"
+      interface: "RJ45"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 3.0"
+      speed: "5Gbps"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power only"
+  hdmi:
+    count: 1
+    version: "2.0"
+    form_factor: "HDMI"
+    max_resolution: "4K@30Hz"
+
+expansion:
+  pcie_slots:
+    - version: "PCIe 2.0 x4"
+      form_factor: "M.2 Key-E"
+      note: "For WiFi modules"
+
+dimensions:
+  width: 100
+  depth: 80
+  height: 29
+  weight: 140
+
+power:
+  adapter_wattage: 7
+  dc_input: "5V/3A"
+
+notes: |-
+  - 128-core Maxwell GPU with 472 GFLOPS
+  - CUDA, cuDNN, TensorRT support
+  - Single camera connector (MIPI CSI-2)
+  - 40-pin GPIO header
+  - JetPack SDK compatibility
+  - 7W TDP power consumption 

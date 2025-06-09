@@ -1,0 +1,96 @@
+id: jetson-agx-orin-64gb
+brand: NVIDIA
+model: Jetson AGX Orin 64GB
+release_date: "2022"
+
+cpu:
+  brand: "ARM"
+  model: "Cortex-A78AE"
+  cores: 12
+  threads: 12
+  base_clock: 2.2
+  tdp: 60
+  architecture: "ARMv8.2-A"
+
+gpu:
+  - model: "Ampere 2048-core"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR5"
+  speed: 6400
+  slots: 1
+  max_capacity: 64
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+  - type: "eMMC"
+    form_factor: "64GB"
+    interface: "eMMC"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Marvell 88E1512"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX210"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+      speed: "10Gbps"
+  usb_c:
+    - count: 2
+      type: "USB-C"
+      features: "Power, data, and DisplayPort Alt Mode"
+      thunderbolt_version: "None"
+  hdmi:
+    count: 1
+    version: "2.1"
+    form_factor: "HDMI"
+    max_resolution: "8K@30Hz"
+  displayport:
+    count: 3
+    version: "1.4a"
+    form_factor: "DP"
+    max_resolution: "8K@60Hz"
+
+expansion:
+  pcie_slots:
+    - version: "PCIe 4.0 x8"
+      form_factor: "M.2 Key-M"
+      note: "For NVMe SSD"
+    - version: "PCIe 4.0 x4"
+      form_factor: "M.2 Key-E"
+      note: "For WiFi modules"
+    - version: "PCIe 4.0 x16"
+      form_factor: "Standard slot"
+      note: "For expansion cards"
+
+dimensions:
+  width: 110
+  depth: 110
+  height: 35
+  weight: 635
+
+power:
+  adapter_wattage: 90
+  dc_input: "19V/4.74A"
+
+notes: |-
+  - 2048-core Ampere GPU with 275 TOPS AI performance
+  - Dual DLA (Deep Learning Accelerator) engines
+  - TensorRT, CUDA, cuDNN, OpenCV support
+  - Multiple high-speed camera interfaces (12x MIPI CSI-2)
+  - 40-pin GPIO header with advanced I/O
+  - JetPack 5.x SDK with AI/ML frameworks
+  - Active cooling system required
+  - Hardware security engine and secure boot 

@@ -1,0 +1,92 @@
+id: jetson-orin-nx-8gb
+brand: NVIDIA
+model: Jetson Orin NX 8GB
+release_date: "2023"
+
+cpu:
+  brand: "ARM"
+  model: "Cortex-A78AE"
+  cores: 6
+  threads: 6
+  base_clock: 2.0
+  tdp: 25
+  architecture: "ARMv8.2-A"
+
+gpu:
+  - model: "Ampere 1024-core"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR5"
+  speed: 6400
+  slots: 1
+  max_capacity: 8
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+  - type: "eMMC"
+    form_factor: "16GB"
+    interface: "eMMC"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8111H"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX210"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "10Gbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power and DisplayPort Alt Mode"
+  hdmi:
+    count: 1
+    version: "2.1"
+    form_factor: "HDMI"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 2
+    version: "1.4a"
+    form_factor: "DP"
+    max_resolution: "8K@30Hz"
+
+expansion:
+  pcie_slots:
+    - version: "PCIe 4.0 x8"
+      form_factor: "M.2 Key-M"
+      note: "For NVMe SSD"
+    - version: "PCIe 4.0 x4"
+      form_factor: "M.2 Key-E"
+      note: "For WiFi modules"
+
+dimensions:
+  width: 103
+  depth: 90
+  height: 31
+  weight: 229
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V/3.42A"
+
+notes: |-
+  - 1024-core Ampere GPU with 100 TOPS AI performance
+  - DLA (Deep Learning Accelerator) engine
+  - TensorRT, CUDA, cuDNN support
+  - Multiple camera interfaces (4x MIPI CSI-2)
+  - 40-pin GPIO header
+  - JetPack 5.x SDK with AI/ML frameworks
+  - Active cooling recommended for sustained performance
+  - Compatible with Xavier NX carrier boards 
