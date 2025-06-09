@@ -382,7 +382,7 @@ export function MiniPCTableRow({
        </TableCell>
 
              {/* Cores */}
-       <TableCell align="right">
+       <TableCell align="center">
          <Box sx={{ 
            fontWeight: 'medium', 
            color: (theme: any) => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2' 

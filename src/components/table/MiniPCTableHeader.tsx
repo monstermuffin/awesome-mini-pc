@@ -21,7 +21,7 @@ export function MiniPCTableHeader({ sortConfig, onSort }: MiniPCTableHeaderProps
       sx={{
         display: 'flex',
         width: '100%', 
-        justifyContent: key === 'cpu.cores' || key === 'cpu.tdp' || key === 'memory.speed' ? 'flex-end' : 'flex-start',
+        justifyContent: key === 'cpu.tdp' || key === 'memory.speed' ? 'flex-end' : 'flex-start',
         '& .MuiTableSortLabel-icon': {
           marginTop: '2px'
         },
@@ -86,13 +86,12 @@ export function MiniPCTableHeader({ sortConfig, onSort }: MiniPCTableHeaderProps
             width: 120,
             minWidth: 100,
           }}
-        >GPU</TableCell>
+        >{renderSortLabel('GPU', 'gpu.model')}</TableCell>
         <TableCell 
-          align="right"
           sx={{ 
             ...headerCellStyle,
-            width: 80,
-            minWidth: 80,
+            width: 55,
+            minWidth: 55,
           }}
         >{renderSortLabel('Cores', 'cpu.cores')}</TableCell>
         <TableCell
