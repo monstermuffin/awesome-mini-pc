@@ -23,9 +23,6 @@ test_issue_body.txt
 test-workflow.py
 test*
 docs/SEO.md
-public/sitemap.xml
-public/stats.json
-public/robots.txt
 data/sitemap.xml
 data/stats.json
 data/robots.txt
