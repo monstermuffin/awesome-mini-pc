@@ -5,7 +5,7 @@ release_date: "2025"
 
 cpu:
   brand: "Broadcom"
-  model: "BCM2712 Cortex-A76"
+  model: "BCM2712"
   cores: 4
   threads: 4
   base_clock: 2.4

@@ -5,7 +5,7 @@ release_date: "2013"
 
 cpu:
   brand: "Broadcom"
-  model: "BCM2835 ARM1176JZF-S"
+  model: "BCM2835"
   cores: 1
   threads: 1
   base_clock: 0.7

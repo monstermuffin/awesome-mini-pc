@@ -5,7 +5,7 @@ release_date: "2018"
 
 cpu:
   brand: "Broadcom"
-  model: "BCM2837B0 Cortex-A53"
+  model: "BCM2837B0"
   cores: 4
   threads: 4
   base_clock: 1.4

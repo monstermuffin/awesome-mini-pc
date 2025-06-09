@@ -5,7 +5,7 @@ release_date: "2022"
 
 cpu:
   brand: "Raspberry Pi"
-  model: "RP2040 Cortex-M0+"
+  model: "RP2040"
   cores: 2
   threads: 2
   base_clock: 0.133

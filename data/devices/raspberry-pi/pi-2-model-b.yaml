@@ -5,7 +5,7 @@ release_date: "2015"
 
 cpu:
   brand: "Broadcom"
-  model: "BCM2836 Cortex-A7"
+  model: "BCM2836"
   cores: 4
   threads: 4
   base_clock: 0.9

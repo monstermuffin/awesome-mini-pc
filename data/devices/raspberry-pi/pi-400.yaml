@@ -5,7 +5,7 @@ release_date: "2020"
 
 cpu:
   brand: "Broadcom"
-  model: "BCM2711 Cortex-A72"
+  model: "BCM2711"
   cores: 4
   threads: 4
   base_clock: 1.8

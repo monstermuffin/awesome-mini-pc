@@ -5,7 +5,7 @@ release_date: "2024"
 
 cpu:
   brand: "Raspberry Pi"
-  model: "RP2350 Cortex-M33"
+  model: "RP2350"
   cores: 2
   threads: 2
   base_clock: 0.150
