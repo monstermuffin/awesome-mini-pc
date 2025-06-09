@@ -4,8 +4,8 @@ model: Rock 3C 4GB
 release_date: "2023"
 
 cpu:
-  brand: "ARM"
-  model: "Cortex-A55"
+  brand: "Rockchip"
+  model: "RK3566"
   cores: 4
   threads: 4
   base_clock: 1.8

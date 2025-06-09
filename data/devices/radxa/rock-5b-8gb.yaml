@@ -4,8 +4,8 @@ model: Rock 5B 8GB
 release_date: "2022"
 
 cpu:
-  brand: "ARM"
-  model: "Cortex-A76 + Cortex-A55"
+  brand: "Rockchip"
+  model: "RK3588"
   cores: 8
   threads: 8
   base_clock: 2.4

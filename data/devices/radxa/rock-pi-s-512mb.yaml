@@ -4,8 +4,8 @@ model: Rock Pi S 512MB
 release_date: "2019"
 
 cpu:
-  brand: "ARM"
-  model: "Cortex-A35"
+  brand: "Rockchip"
+  model: "RK3308"
   cores: 4
   threads: 4
   base_clock: 1.5

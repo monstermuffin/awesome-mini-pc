@@ -1,0 +1,62 @@
+id: rock-pi-s0-512mb
+brand: Radxa
+model: Rock Pi S0 512MB
+release_date: "2023"
+
+cpu:
+  brand: "Allwinner"
+  model: "H2+"
+  cores: 4
+  threads: 4
+  base_clock: 1.2
+  tdp: 2
+  architecture: "ARMv7-A"
+
+gpu:
+  - model: "Mali-400 MP2"
+    type: "Integrated"
+
+memory:
+  type: "DDR3"
+  speed: 1066
+  slots: 1
+  max_capacity: 0.5
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  wifi:
+    standard: "WiFi 4"
+    chipset: "RTL8723DS"
+    bluetooth: "4.0"
+
+ports:
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power and data (OTG)"
+
+dimensions:
+  width: 40
+  depth: 25
+  height: 6
+  weight: 8
+
+power:
+  adapter_wattage: 5
+  dc_input: "5V/1A"
+
+notes: |-
+  - Quad-core Cortex-A7 processor at 1.2GHz
+  - Ultra low-cost SBC design
+  - Mali-400 MP2 GPU with OpenGL ES 2.0
+  - Extremely compact form factor (40x25mm)
+  - Basic I/O connectivity
+  - USB-C for power and data
+  - Minimal power consumption (2W typical)
+  - Designed for basic IoT applications
+  - GPIO header available 

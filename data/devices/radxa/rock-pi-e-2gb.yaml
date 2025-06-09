@@ -4,8 +4,8 @@ model: Rock Pi E 2GB
 release_date: "2020"
 
 cpu:
-  brand: "ARM"
-  model: "Cortex-A35"
+  brand: "Rockchip"
+  model: "RK3328"
   cores: 4
   threads: 4
   base_clock: 1.5

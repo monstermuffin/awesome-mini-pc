@@ -4,8 +4,8 @@ model: Rock Pi 4B 2GB
 release_date: "2019"
 
 cpu:
-  brand: "ARM"
-  model: "Cortex-A72 + Cortex-A53"
+  brand: "Rockchip"
+  model: "RK3399"
   cores: 6
   threads: 6
   base_clock: 1.8

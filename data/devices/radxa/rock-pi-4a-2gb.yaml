@@ -1,7 +1,7 @@
-id: rock-pi-4c-4gb
+id: rock-pi-4a-4gb
 brand: Radxa
-model: Rock Pi 4C 4GB
-release_date: "2020"
+model: Rock Pi 4A 4GB
+release_date: "2019"
 
 cpu:
   brand: "Rockchip"
@@ -20,7 +20,7 @@ memory:
   type: "LPDDR4"
   speed: 3200
   slots: 1
-  max_capacity: 4
+  max_capacity: 2
   module_type: "Soldered"
 
 storage:
@@ -30,6 +30,9 @@ storage:
   - type: "eMMC"
     form_factor: "eMMC"
     interface: "eMMC"
+  - type: "M.2"
+    form_factor: "M.2 M-Key"
+    interface: "PCIe 2.0"
 
 networking:
   ethernet:
@@ -37,16 +40,15 @@ networking:
       speed: "1GbE"
       chipset: "Realtek RTL8211E"
       interface: "RJ45"
-  wifi:
-    standard: "WiFi 5"
-    chipset: "AP6256"
-    bluetooth: "5.0"
 
 ports:
   usb_a:
-    - count: 4
+    - count: 2
       type: "USB 2.0"
       speed: "480Mbps"
+    - count: 1
+      type: "USB 3.0"
+      speed: "5Gbps"
   usb_c:
     - count: 1
       type: "USB-C"
@@ -58,11 +60,17 @@ ports:
     max_resolution: "4K@60Hz"
   audio_jack: 1
 
+expansion:
+  pcie_slots:
+    - version: "PCIe 2.0 x4"
+      form_factor: "M.2 M-Key"
+      note: "For NVMe SSD"
+
 dimensions:
   width: 85
   depth: 54
   height: 16
-  weight: 45
+  weight: 43
 
 power:
   adapter_wattage: 18
@@ -74,7 +82,7 @@ notes: |-
   - H.265/VP9 4K@60fps hardware decode
   - H.264 1080p@60fps hardware encode/decode
   - 40-pin GPIO header compatible with Raspberry Pi
-  - Compact layout without M.2 slot
+  - Dual display support (HDMI + MIPI DSI)
   - 2-lane MIPI CSI camera interface
-  - MIPI DSI display interface
-  - USB PD and QC power support 
+  - USB PD and QC power support
+  - No WiFi/Bluetooth (requires USB dongle) 

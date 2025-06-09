@@ -1,11 +1,11 @@
-id: rock-pi-4c-4gb
+id: rock-4c-plus-4gb
 brand: Radxa
-model: Rock Pi 4C 4GB
-release_date: "2020"
+model: Rock 4C+ 4GB
+release_date: "2022"
 
 cpu:
   brand: "Rockchip"
-  model: "RK3399"
+  model: "RK3399-T"
   cores: 6
   threads: 6
   base_clock: 1.8
@@ -39,7 +39,7 @@ networking:
       interface: "RJ45"
   wifi:
     standard: "WiFi 5"
-    chipset: "AP6256"
+    chipset: "AW-CM256SM"
     bluetooth: "5.0"
 
 ports:
@@ -75,6 +75,7 @@ notes: |-
   - H.264 1080p@60fps hardware encode/decode
   - 40-pin GPIO header compatible with Raspberry Pi
   - Compact layout without M.2 slot
+  - External antenna connector for WiFi
   - 2-lane MIPI CSI camera interface
   - MIPI DSI display interface
   - USB PD and QC power support 

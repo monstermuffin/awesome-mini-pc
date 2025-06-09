@@ -1,7 +1,7 @@
-id: rock-5b-16gb
+id: rock-5b-plus-16gb
 brand: Radxa
-model: Rock 5B 16GB
-release_date: "2022"
+model: Rock 5B+ 16GB
+release_date: "2023"
 
 cpu:
   brand: "Rockchip"
@@ -37,8 +37,8 @@ storage:
 networking:
   ethernet:
     - ports: 1
-      speed: "1GbE"
-      chipset: "Realtek RTL8211F"
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125BG"
       interface: "RJ45"
   wifi:
     standard: "WiFi 6"
@@ -93,4 +93,5 @@ notes: |-
   - Triple display output (2x HDMI + 1x USB-C DP)
   - Quad 4-lane MIPI CSI camera support
   - 2x MIPI DSI display interfaces
+  - 2.5 Gigabit Ethernet upgrade
   - USB PD 3.0 power support 

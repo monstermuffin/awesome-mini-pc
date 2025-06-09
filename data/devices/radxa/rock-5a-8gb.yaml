@@ -4,8 +4,8 @@ model: Rock 5A 8GB
 release_date: "2023"
 
 cpu:
-  brand: "ARM"
-  model: "Cortex-A76 + Cortex-A55"
+  brand: "Rockchip"
+  model: "RK3588S"
   cores: 8
   threads: 8
   base_clock: 2.4

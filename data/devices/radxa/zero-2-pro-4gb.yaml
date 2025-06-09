@@ -1,0 +1,76 @@
+id: zero-2-pro-4gb
+brand: Radxa
+model: Zero 2 Pro 4GB
+release_date: "2023"
+
+cpu:
+  brand: "Rockchip"
+  model: "RK3566"
+  cores: 4
+  threads: 4
+  base_clock: 2.0
+  tdp: 8
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "Mali-G52 2EE"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR4"
+  speed: 3200
+  slots: 1
+  max_capacity: 4
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+  - type: "eMMC"
+    form_factor: "eMMC"
+    interface: "eMMC"
+
+networking:
+  wifi:
+    standard: "WiFi 6"
+    chipset: "AP6275S"
+    bluetooth: "5.4"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power and data (OTG)"
+  hdmi:
+    count: 1
+    version: "2.1"
+    form_factor: "Micro HDMI"
+    max_resolution: "4K@60Hz"
+
+dimensions:
+  width: 65
+  depth: 30
+  height: 8
+  weight: 15
+
+power:
+  adapter_wattage: 12
+  dc_input: "5V/3A"
+
+notes: |-
+  - Quad-core Cortex-A55 processor at 2.0GHz
+  - RK3566 SoC with enhanced performance
+  - Mali-G52 2EE GPU with OpenGL ES 3.2, Vulkan 1.1
+  - 0.8 TOPS NPU for AI acceleration
+  - H.265/H.264/VP9 4K@60fps hardware decode
+  - H.264 1080p@60fps hardware encode
+  - 40-pin GPIO header
+  - Ultra-compact form factor (65x30mm)
+  - MIPI CSI camera interface
+  - USB-C power and data
+  - Designed for IoT and embedded applications 

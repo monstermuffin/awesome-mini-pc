@@ -4,8 +4,8 @@ model: Rock 3B 2GB
 release_date: "2022"
 
 cpu:
-  brand: "ARM"
-  model: "Cortex-A55"
+  brand: "Rockchip"
+  model: "RK3568"
   cores: 4
   threads: 4
   base_clock: 2.0
