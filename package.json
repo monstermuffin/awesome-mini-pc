@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run validate-data && npm run build:data && tsc && vite build",
+    "build": "npm run validate-data && npm run build:data && npm run build:seo && tsc && vite build",
     "build:data": "node scripts/build-data.cjs",
+    "build:seo": "npm run build:sitemap && npm run build:stats",
+    "build:sitemap": "node scripts/generate-sitemap.cjs",
+    "build:stats": "node scripts/generate-stats.cjs",
     "validate-data": "node scripts/validate-data.cjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -22,7 +25,8 @@
     "@types/react-dom": "^19.1.6",
     "js-yaml": "^4.1.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-helmet-async": "^2.0.5"
   },
   "devDependencies": {
     "@rollup/plugin-yaml": "^4.1.2",

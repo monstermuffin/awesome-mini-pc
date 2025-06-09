@@ -34,6 +34,7 @@ import type { MiniPC } from './types/minipc';
 import type { FilterOptions } from './utils/dataLoader';
 import { FilterPanel } from './components/FilterPanel';
 import { MiniPCTable } from './components/MiniPCTable';
+import { SEO } from './components/SEO';
 
 type FilterState = {
   brands: Set<string>;
@@ -570,6 +571,27 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <SEO 
+        title={`Awesome Mini PC - ${devices.length} Mini PCs from ${filterOptions?.brands.size || 0} Manufacturers`}
+        description={`Browse and compare ${devices.length} mini PCs, single board computers, and homelab machines. Filter by CPU, memory, storage, networking, and more. Find the perfect mini PC for your needs.`}
+        keywords={[
+          'mini PC', 'single board computer', 'SBC', 'homelab', 'self-hosting',
+          'Intel NUC', 'Raspberry Pi', 'specifications', 'comparison',
+          ...Array.from(filterOptions?.brands || []).slice(0, 10)
+        ]}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Mini PC Database",
+          "description": "Comprehensive database of mini PCs and single board computers",
+          "numberOfItems": devices.length,
+          "url": "https://awesomeminipc.com",
+          "provider": {
+            "@type": "Organization",
+            "name": "Awesome Mini PC"
+          }
+        }}
+      />
       <Box sx={{ display: 'flex', height: '100vh' }}>
         <AppBar position="fixed" color="default" elevation={0}>
           <Toolbar>

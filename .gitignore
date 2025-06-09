@@ -22,3 +22,7 @@ test_issue_body.txt
 .venv/
 test-workflow.py
 test*
+docs/SEO.md
+public/sitemap.xml
+public/stats.json
+public/robots.txt
