@@ -1,6 +1,6 @@
 import type { MiniPC } from '../../types/minipc';
 
-export type SortKey = keyof MiniPC | 'cpu.cores' | 'cpu.tdp' | 'memory.speed' | 'cpu.model' | 'memory.type' | 'memory.module_type' | 'cpu.chipset' | 'release_date' | 'has_expansion' | 'dimensions.volume';
+export type SortKey = keyof MiniPC | 'cpu.cores' | 'cpu.tdp' | 'memory.speed' | 'cpu.model' | 'memory.type' | 'memory.module_type' | 'cpu.chipset' | 'gpu.model' | 'release_date' | 'has_expansion' | 'dimensions.volume';
 
 export type SortConfig = {
   key: SortKey;
@@ -23,6 +23,8 @@ export const getSortValue = (device: MiniPC, key: SortKey): string | number | bo
       return device.memory.module_type || '';
     case 'cpu.chipset':
       return device.cpu.chipset || '';
+    case 'gpu.model':
+      return device.gpu && device.gpu.length > 0 ? device.gpu[0].model : '';
     case 'release_date':
       return device.release_date || '';
     case 'has_expansion':
