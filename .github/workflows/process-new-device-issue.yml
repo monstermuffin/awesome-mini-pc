@@ -1,6 +1,7 @@
 name: Process New Device Issue
 
 on:
+  workflow_dispatch:
   issues:
     types:
       - labeled
