@@ -12,6 +12,7 @@ import { MiniPCTableHeader } from './table/MiniPCTableHeader';
 import { MiniPCTableRow } from './table/MiniPCTableRow';
 import { DeviceDetailDialog } from './table/DeviceDetailDialog';
 import { getSortValue, type SortKey, type SortConfig } from './table/tableUtils';
+import { groupDevicesByFamily, type DeviceFamily } from '../utils/deviceGrouping';
 
 interface MiniPCTableProps {
   devices: MiniPC[];
@@ -26,10 +27,15 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
     direction: 'asc',
   });
   const [detailDevice, setDetailDevice] = useState<MiniPC | null>(null);
+  const [expandedFamilies, setExpandedFamilies] = useState<Set<string>>(new Set());
 
-  const sortedDevices = [...devices].sort((a, b) => {
-    const aValue = getSortValue(a, sortConfig.key);
-    const bValue = getSortValue(b, sortConfig.key);
+  // Group devices into families
+  const deviceFamilies = groupDevicesByFamily(devices);
+
+  // Sort families/devices based on the sort config
+  const sortedFamilies = [...deviceFamilies].sort((a, b) => {
+    const aValue = getSortValue(a.representative, sortConfig.key);
+    const bValue = getSortValue(b.representative, sortConfig.key);
     
     if (aValue === bValue) return 0;
     
@@ -45,7 +51,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
   };
 
   const handleOpenDetails = (device: MiniPC, event: React.MouseEvent) => {
-    event.stopPropagation(); // Stop the event from bubbling up to the row
+    event.stopPropagation();
     setDetailDevice(device);
   };
 
@@ -53,9 +59,69 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
     setDetailDevice(null);
   };
 
-  const displayedDevices = isCompareMode 
-    ? sortedDevices.filter(device => selectedDevices.has(device.id))
-    : sortedDevices;
+  const handleToggleExpand = (familyId: string) => {
+    setExpandedFamilies(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(familyId)) {
+        newSet.delete(familyId);
+      } else {
+        newSet.add(familyId);
+      }
+      return newSet;
+    });
+  };
+
+  // Create flat list of rows to display (families + expanded variants)
+  const displayRows: Array<{ 
+    type: 'family' | 'device', 
+    family?: DeviceFamily, 
+    device?: MiniPC, 
+    isExpanded?: boolean,
+    isVariant?: boolean 
+  }> = [];
+
+  if (isCompareMode) {
+    // compare mode - show only selected devices as individual rows
+    devices
+      .filter(device => selectedDevices.has(device.id))
+      .sort((a, b) => {
+        const aValue = getSortValue(a, sortConfig.key);
+        const bValue = getSortValue(b, sortConfig.key);
+        if (aValue === bValue) return 0;
+        const modifier = sortConfig.direction === 'asc' ? 1 : -1;
+        return aValue > bValue ? modifier : -modifier;
+      })
+      .forEach(device => {
+        displayRows.push({ type: 'device', device });
+      });
+  } else {
+    // normal mode - show families with expandable variants
+    sortedFamilies.forEach(family => {
+      const isExpanded = expandedFamilies.has(family.id);
+      
+      if (family.variantCount === 1) {
+        displayRows.push({ type: 'device', device: family.representative });
+      } else {
+        // Multiple variants - show as family
+        displayRows.push({ 
+          type: 'family', 
+          family, 
+          isExpanded 
+        });
+        
+        // expanded, show all variants as sub-rows
+        if (isExpanded) {
+          family.variants.forEach(variant => {
+            displayRows.push({ 
+              type: 'device', 
+              device: variant, 
+              isVariant: true 
+            });
+          });
+        }
+      }
+    });
+  }
 
   return (
     <>
@@ -136,16 +202,25 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
               onSort={handleSort}
             />
             <TableBody>
-              {displayedDevices.map((device) => (
-                <MiniPCTableRow
-                  key={device.id}
-                  device={device}
-                  isSelected={selectedDevices.has(device.id)}
-                  isCompareMode={isCompareMode}
-                  onDeviceSelect={onDeviceSelect}
-                  onOpenDetails={handleOpenDetails}
-                />
-              ))}
+              {displayRows.map((row, index) => {
+                const key = row.family ? row.family.id : row.device!.id;
+                const device = row.device || row.family!.representative;
+                
+                return (
+                  <MiniPCTableRow
+                    key={`${key}-${index}`}
+                    device={row.type === 'device' ? row.device : undefined}
+                    family={row.type === 'family' ? row.family : undefined}
+                    isSelected={selectedDevices.has(device.id)}
+                    isCompareMode={isCompareMode}
+                    isExpanded={row.isExpanded}
+                    isVariant={row.isVariant}
+                    onDeviceSelect={onDeviceSelect}
+                    onOpenDetails={handleOpenDetails}
+                    onToggleExpand={handleToggleExpand}
+                  />
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
