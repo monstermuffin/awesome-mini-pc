@@ -17,6 +17,7 @@ on:
       - 'index.css'
       - 'tsconfig.json'
       - 'tsconfig.node.json'
+      - 'data/robots.txt'
 
 permissions:
   contents: read
