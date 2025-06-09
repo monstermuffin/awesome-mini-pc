@@ -10,7 +10,7 @@ This repository contains the data and code for [Awesome Mini PC](https://awesome
 ## Why?
 I am so fucking fed up of having to search the entire fucking internet just to find out what fucking network controller a manufacturer have used in their own fucking machine. 
 
-Most of the time I end up having to scour Reddit to find this information from people that already have the machine. So, there has to be a better way I keep telling myself, so here we are.
+Most of the time I end up having to scour Reddit to find this information from people that already have the machine. There has to be a better way, so here we are.
 
 ## How It Works
 The project consists of:
