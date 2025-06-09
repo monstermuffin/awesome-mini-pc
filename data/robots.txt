@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://awesomeminipc.com/sitemap.xml
+
+Crawl-delay: 1
+
+Allow: /data/
+Allow: /src/
+Allow: /*.json
+Allow: /*.xml
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+Allow: /
+Crawl-delay: 1
+
+Allow: /
+Crawl-delay: 1 
