@@ -15,21 +15,35 @@ export interface DeviceFamily {
 function extractBaseModel(deviceId: string): string {
   const parts = deviceId.split('-');
   
-  // CPU patterns
-  const cpuPatterns = [
-    /^i[3579]$/i,                  // Intel: i3, i5, i7, i9 (first part of compound)
-    /^\d{4,5}[a-z]*$/i,            // CPU model numbers: 12100, 1235u, 5557u, 9700t
-    /^[nr]\d+[a-z]*$/i,            // Intel N-series: n100, n150, etc.
-    /^\d{2,4}[a-z]+$/i,            // Various: 125h, 185h, etc.
-    /^ryzen.*$/i,                  // AMD Ryzen patterns
-    /^athlon.*$/i,                 // AMD Athlon patterns
-    /^core.*$/i,                   // Intel Core patterns
-    /^\d+ge$/i,                    // GE suffix patterns: 200ge, 2400ge
-    /^\d+[ht]$/i,                  // T/H suffix patterns: 6700t, 12900h
+  // 'Enhanced' patterns for different variant types
+  const variantPatterns = [
+    // Memory variants (created for pis)
+    /^\d+gb$/i,                    // gbs
+    /^\d+mb$/i,                    // mbs
+    
+    // Feature variants
+    /^w$/i,                        // wireless
+    /^plus$/i,                     // plus
+    
+    // CPU variants (Intel)
+    /^i[3579]$/i,                  // Intel: i3, i5, i7, i9
+    /^\d{4,5}[a-z]*$/i,            // CPU model numbers
+    /^[nr]\d+[a-z]*$/i,            // Intel N-series
+    
+    // CPU variants (AMD)
+    /^ryzen.*$/i,                  // AMD Ryzen
+    /^athlon.*$/i,                 // AMD Athlon
+    /^\d+[ghe]$/i,                 // AMD
+    
+    // CPU variants (general)
+    /^core.*$/i,                   // Intel Core
+    /^\d{2,4}[a-z]+$/i,            // Various
+    /^\d+[ht]$/i,                  // T/H suffix
   ];
   
   let splitIndex = parts.length;
   
+  // Special handling for Intel compound CPU names
   for (let i = 0; i < parts.length - 1; i++) {
     const currentPart = parts[i];
     const nextPart = parts[i + 1];
@@ -40,10 +54,11 @@ function extractBaseModel(deviceId: string): string {
     }
   }
   
+  // If no Intel compound pattern found, look for any variant patterns from the end (for pis but prolly other stuff eventually)
   if (splitIndex === parts.length) {
     for (let i = parts.length - 1; i >= 1; i--) {
       const part = parts[i];
-      const isVariant = cpuPatterns.some(pattern => pattern.test(part));
+      const isVariant = variantPatterns.some(pattern => pattern.test(part));
       if (isVariant) {
         splitIndex = i;
         break;

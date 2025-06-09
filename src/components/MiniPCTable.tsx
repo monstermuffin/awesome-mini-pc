@@ -64,7 +64,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
       const newSet = new Set(prev);
       if (newSet.has(familyId)) {
         newSet.delete(familyId);
-      } else {
+    } else {
         newSet.add(familyId);
       }
       return newSet;
@@ -205,8 +205,8 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
               {displayRows.map((row, index) => {
                 const key = row.family ? row.family.id : row.device!.id;
                 const device = row.device || row.family!.representative;
-                
-                return (
+                        
+                        return (
                   <MiniPCTableRow
                     key={`${key}-${index}`}
                     device={row.type === 'device' ? row.device : undefined}
