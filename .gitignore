@@ -26,3 +26,6 @@ docs/SEO.md
 public/sitemap.xml
 public/stats.json
 public/robots.txt
+data/sitemap.xml
+data/stats.json
+data/robots.txt

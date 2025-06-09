@@ -51,12 +51,8 @@ function generateSitemap() {
 
   sitemap += `</urlset>`;
 
-  const publicDir = path.join(__dirname, '..', 'public');
-  if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true });
-  }
-  
-  fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap);
+  const dataDir = path.join(__dirname, '..', 'data');
+  fs.writeFileSync(path.join(dataDir, 'sitemap.xml'), sitemap);
   console.log('✅ Sitemap generated successfully');
 }
 

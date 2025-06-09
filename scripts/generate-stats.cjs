@@ -26,13 +26,9 @@ function generateStats() {
     ]
   };
 
-  const publicDir = path.join(__dirname, '..', 'public');
-  if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true });
-  }
-  
+  const dataDir = path.join(__dirname, '..', 'data');
   fs.writeFileSync(
-    path.join(publicDir, 'stats.json'), 
+    path.join(dataDir, 'stats.json'), 
     JSON.stringify(stats, null, 2)
   );
   
