@@ -4,6 +4,7 @@ import {
   TableCell,
   TableSortLabel,
 } from '@mui/material';
+import React from 'react';
 import type { SortKey, SortConfig } from './tableUtils';
 
 interface MiniPCTableHeaderProps {
@@ -12,7 +13,7 @@ interface MiniPCTableHeaderProps {
 }
 
 export function MiniPCTableHeader({ sortConfig, onSort }: MiniPCTableHeaderProps) {
-  const renderSortLabel = (label: string, key: SortKey) => (
+  const renderSortLabel = React.useCallback((label: string, key: SortKey) => (
     <TableSortLabel
       active={sortConfig.key === key}
       direction={sortConfig.key === key ? sortConfig.direction : 'asc'}
@@ -23,21 +24,35 @@ export function MiniPCTableHeader({ sortConfig, onSort }: MiniPCTableHeaderProps
         justifyContent: key === 'cpu.cores' || key === 'cpu.tdp' || key === 'memory.speed' ? 'flex-end' : 'flex-start',
         '& .MuiTableSortLabel-icon': {
           marginTop: '2px'
+        },
+        '&:hover': {
+          color: (theme: any) => theme.palette.primary.main,
+        },
+        '&:focus-visible': {
+          outline: (theme: any) => `2px solid ${theme.palette.primary.main}`,
+          outlineOffset: 2,
+          borderRadius: 1,
         }
       }}
+      aria-label={`Sort by ${label} ${sortConfig.key === key && sortConfig.direction === 'asc' ? 'descending' : 'ascending'}`}
     >
       {label}
     </TableSortLabel>
-  );
+  ), [sortConfig, onSort]);
 
-  const headerCellStyle = {
+  const headerCellStyle = React.useMemo(() => ({
     background: (theme: any) => theme.palette.mode === 'dark' 
       ? 'linear-gradient(180deg, rgba(41,98,255,0.4) 0%, rgba(25,78,210,0.4) 100%)' 
       : 'linear-gradient(180deg, rgba(33,150,243,0.2) 0%, rgba(33,150,243,0.1) 100%)',
     fontWeight: 'bold',
-    color: (theme: any) => theme.palette.mode === 'dark' ? '#fff' : '#1565c0',
-    borderBottom: (theme: any) => `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-  };
+    color: (theme: any) => theme.palette.mode === 'dark' 
+      ? theme.palette.primary.contrastText 
+      : theme.palette.primary.dark,
+    borderBottom: (theme: any) => `1px solid ${theme.palette.divider}`,
+    position: 'sticky',
+    top: 0,
+    zIndex: (theme: any) => theme.zIndex.appBar - 1,
+  }), []);
 
   return (
     <TableHead>

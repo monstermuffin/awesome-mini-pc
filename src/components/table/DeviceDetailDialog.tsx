@@ -9,6 +9,7 @@ import {
   Grid,
   Chip,
 } from '@mui/material';
+import React from 'react';
 
 import type { MiniPC } from '../../types/minipc';
 import { StorageCell } from './StorageCell';
@@ -21,25 +22,31 @@ interface DeviceDetailDialogProps {
 }
 
 export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialogProps) {
-  if (!device) return null;
-
-  interface EthernetGroup {
-    count: number;
-    chipset: string;
-    interface: string;
-    speed: string;
-  }
-
-  const ethernetGroups: Record<string, EthernetGroup> = {};
-  
-  device?.networking?.ethernet?.forEach(eth => {
-    const key = `${eth.speed}_${eth.interface}_${eth.chipset}`;
-    if (!ethernetGroups[key]) {
-      ethernetGroups[key] = { count: eth.ports, chipset: eth.chipset, interface: eth.interface, speed: eth.speed };
-    } else {
-      ethernetGroups[key].count += eth.ports;
+  const ethernetGroups = React.useMemo(() => {
+    if (!device?.networking?.ethernet?.length) return {};
+    
+    interface EthernetGroup {
+      count: number;
+      chipset: string;
+      interface: string;
+      speed: string;
     }
-  });
+
+    const groups: Record<string, EthernetGroup> = {};
+    
+    device.networking.ethernet.forEach(eth => {
+      const key = `${eth.speed}_${eth.interface}_${eth.chipset}`;
+      if (!groups[key]) {
+        groups[key] = { count: eth.ports, chipset: eth.chipset, interface: eth.interface, speed: eth.speed };
+      } else {
+        groups[key].count += eth.ports;
+      }
+    });
+
+    return groups;
+  }, [device?.networking?.ethernet]);
+
+  if (!device) return null;
 
   return (
     <Dialog
@@ -47,29 +54,34 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
       onClose={onClose}
       maxWidth="md"
       fullWidth
+      aria-labelledby="device-detail-title"
+      aria-describedby="device-detail-content"
       PaperProps={{
         sx: {
           borderRadius: 2,
-          backgroundImage: theme => theme.palette.mode === 'dark'
+          backgroundImage: (theme: any) => theme.palette.mode === 'dark'
             ? 'linear-gradient(180deg, rgba(24,24,24,1) 0%, rgba(33,33,33,1) 100%)'
             : 'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(250,250,250,1) 100%)',
-          boxShadow: theme => theme.palette.mode === 'dark'
+          boxShadow: (theme: any) => theme.palette.mode === 'dark'
             ? '0 8px 32px rgba(0,0,0,0.4)'
             : '0 8px 32px rgba(0,0,0,0.1)',
         }
       }}
     >
-      <DialogTitle sx={{ 
-        borderBottom: theme => `1px solid ${theme.palette.divider}`,
-        background: theme => theme.palette.mode === 'dark'
-          ? 'linear-gradient(90deg, rgba(21,101,192,0.1) 0%, rgba(30,136,229,0.1) 100%)'
-          : 'linear-gradient(90deg, rgba(33,150,243,0.05) 0%, rgba(66,165,245,0.05) 100%)',
-        px: 3,
-        py: 2,
-      }}>
-        <Typography variant="h6" component="div" sx={{ 
+      <DialogTitle 
+        id="device-detail-title"
+        sx={{ 
+          borderBottom: (theme: any) => `1px solid ${theme.palette.divider}`,
+          background: (theme: any) => theme.palette.mode === 'dark'
+            ? 'linear-gradient(90deg, rgba(21,101,192,0.1) 0%, rgba(30,136,229,0.1) 100%)'
+            : 'linear-gradient(90deg, rgba(33,150,243,0.05) 0%, rgba(66,165,245,0.05) 100%)',
+          px: 3,
+          py: 2,
+        }}
+      >
+        <Typography variant="h6" component="h2" sx={{ 
           fontWeight: 600,
-          color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+          color: (theme: any) => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
         }}>
           {device.brand} {device.model}
         </Typography>
@@ -77,7 +89,7 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
           Released: {device.release_date}
         </Typography>
       </DialogTitle>
-      <DialogContent dividers sx={{ px: 3, py: 2 }}>
+      <DialogContent id="device-detail-content" dividers sx={{ px: 3, py: 2 }}>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
@@ -320,8 +332,8 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
             }}>Ethernet</Typography>
             
             <>
-              {Object.entries(ethernetGroups).map(([, info]: [string, EthernetGroup], index: number) => (
-                <Box key={index} sx={{ mb: 0.5 }}>
+              {Object.entries(ethernetGroups).map(([, info], index) => (
+                <Box key={index} sx={{ mb: 1 }}>
                   <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
                     {info.count > 1 && (
                       <Chip 
@@ -810,23 +822,28 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
           )}
         </Grid>
       </DialogContent>
-      <DialogActions sx={{ px: 3, py: 2 }}>
+      <DialogActions sx={{ 
+        px: 3, 
+        py: 2,
+        borderTop: (theme: any) => `1px solid ${theme.palette.divider}`,
+        background: (theme: any) => theme.palette.mode === 'dark'
+          ? 'rgba(41,98,255,0.05)'
+          : 'rgba(41,98,255,0.03)',
+      }}>
         <Button 
           onClick={onClose}
-          variant="contained"
-          disableElevation
+          variant="outlined"
           sx={{
             borderRadius: 2,
             textTransform: 'none',
-            boxShadow: theme => theme.palette.mode === 'dark'
-              ? '0 4px 6px rgba(0,0,0,0.1)'
-              : '0 2px 4px rgba(0,0,0,0.1)',
-            '&:hover': {
-              boxShadow: theme => theme.palette.mode === 'dark'
-                ? '0 6px 10px rgba(0,0,0,0.2)'
-                : '0 4px 8px rgba(0,0,0,0.1)',
+            fontWeight: 500,
+            minWidth: 80,
+            '&:focus-visible': {
+              outline: (theme: any) => `2px solid ${theme.palette.primary.main}`,
+              outlineOffset: 2,
             }
           }}
+          aria-label="Close device details dialog"
         >
           Close
         </Button>

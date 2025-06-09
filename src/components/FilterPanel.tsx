@@ -8,6 +8,7 @@ import {
   Slider,
   Divider,
 } from '@mui/material';
+import React from 'react';
 import { FilterOptions } from '../utils/dataLoader';
 import type { MiniPC } from '../types/minipc';
 
@@ -72,10 +73,15 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
           fontWeight: 500,
           color: 'text.secondary'
         }}
+        component="h3"
+        id={`filter-group-${title.replace(/\s+/g, '-').toLowerCase()}`}
       >
         {title}
       </Typography>
-      <FormGroup>
+      <FormGroup
+        aria-labelledby={`filter-group-${title.replace(/\s+/g, '-').toLowerCase()}`}
+        role="group"
+      >
         {Array.from(options).sort().map((option) => {
           return (
             <FormControlLabel
@@ -85,9 +91,23 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
                   checked={selected.has(option)}
                   onChange={(e) => onSelect(option, e.target.checked)}
                   size="small"
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: (theme: any) => theme.palette.action.hover,
+                    }
+                  }}
                 />
               }
               label={<Typography variant="body2">{option}</Typography>}
+              sx={{
+                '&:hover': {
+                  backgroundColor: (theme: any) => theme.palette.action.hover,
+                  borderRadius: 1,
+                },
+                transition: 'background-color 0.2s ease',
+                margin: 0,
+                padding: '2px 4px',
+              }}
             />
           );
         })}
@@ -104,6 +124,8 @@ const RangeFilter: React.FC<{
   step?: number;
   unit?: string;
 }> = ({ title, range, value, onChange, step = 1, unit = '' }) => {
+  const sliderId = `range-filter-${title.replace(/\s+/g, '-').toLowerCase()}`;
+  
   return (
     <Box sx={{ 
       mb: 2, 
@@ -118,6 +140,8 @@ const RangeFilter: React.FC<{
           fontWeight: 500,
           color: 'text.secondary'
         }}
+        component="h3"
+        id={`${sliderId}-label`}
       >
         {title}
       </Typography>
@@ -141,6 +165,19 @@ const RangeFilter: React.FC<{
             }
             return `${val}${unit}`;
           }}
+          aria-labelledby={`${sliderId}-label`}
+          aria-label={`${title} range`}
+          sx={{
+            color: (theme: any) => theme.palette.primary.main,
+            '& .MuiSlider-thumb': {
+              '&:hover, &.Mui-focusVisible': {
+                boxShadow: (theme: any) => `0px 0px 0px 8px ${theme.palette.primary.main}1F`,
+              },
+            },
+            '& .MuiSlider-track': {
+              border: 'none',
+            },
+          }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
           <Typography variant="caption" color="text.secondary">
@@ -161,87 +198,103 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   selectedFilters,
   onFilterChange,
 }) => {
-  // Extract all available CPU architectures from devices
-  const cpuArchitectures = new Set<string>();
-  devices.forEach(device => {
-    if (device.cpu.architecture) cpuArchitectures.add(device.cpu.architecture);
-  });
+  const cpuArchitectures = React.useMemo(() => {
+    const architectures = new Set<string>();
+    devices.forEach(device => {
+      if (device.cpu.architecture) architectures.add(device.cpu.architecture);
+    });
+    return architectures;
+  }, [devices]);
 
-  // Extract all available CPU chipsets from devices
-  const cpuChipsets = new Set<string>();
-  devices.forEach(device => {
-    if (device.cpu.chipset) cpuChipsets.add(device.cpu.chipset);
-  });
+  const cpuChipsets = React.useMemo(() => {
+    const chipsets = new Set<string>();
+    devices.forEach(device => {
+      if (device.cpu.chipset) chipsets.add(device.cpu.chipset);
+    });
+    return chipsets;
+  }, [devices]);
 
-  // Extract all available memory slot counts from devices
-  const memorySlotsCount = new Set<string>();
-  devices.forEach(device => {
-    memorySlotsCount.add(device.memory.slots.toString());
-  });
+  const memorySlotsCount = React.useMemo(() => {
+    const slotsCount = new Set<string>();
+    devices.forEach(device => {
+      slotsCount.add(device.memory.slots.toString());
+    });
+    return slotsCount;
+  }, [devices]);
 
-  // Extract all available WiFi chipsets from devices
-  const wifiChipsets = new Set<string>();
-  devices.forEach(device => {
-    if (device.networking?.wifi?.chipset) {
-      wifiChipsets.add(device.networking.wifi.chipset);
-    }
-  });
+  const wifiChipsets = React.useMemo(() => {
+    const chipsets = new Set<string>();
+    devices.forEach(device => {
+      if (device.networking?.wifi?.chipset) {
+        chipsets.add(device.networking.wifi.chipset);
+      }
+    });
+    return chipsets;
+  }, [devices]);
 
-  // Extract all available Ethernet chipsets from devices
-  const ethernetChipsets = new Set<string>();
-  devices.forEach(device => {
-    if (device.networking?.ethernet) {
-      device.networking.ethernet.forEach(eth => {
-        if (eth.chipset) {
-          ethernetChipsets.add(eth.chipset);
-        }
-      });
-    }
-  });
+  const ethernetChipsets = React.useMemo(() => {
+    const chipsets = new Set<string>();
+    devices.forEach(device => {
+      if (device.networking?.ethernet) {
+        device.networking.ethernet.forEach(eth => {
+          if (eth.chipset) {
+            chipsets.add(eth.chipset);
+          }
+        });
+      }
+    });
+    return chipsets;
+  }, [devices]);
 
-  // Extract all available release years from devices
-  const releaseYears = new Set<string>();
-  devices.forEach(device => {
-    if (device.release_date) releaseYears.add(device.release_date);
-  });
+  const releaseYears = React.useMemo(() => {
+    const years = new Set<string>();
+    devices.forEach(device => {
+      if (device.release_date) years.add(device.release_date);
+    });
+    return years;
+  }, [devices]);
 
-  // Calculate the memory capacity range
-  const memoryCapacityRange = {
+  const memoryCapacityRange = React.useMemo(() => ({
     min: 0,
-    max: Math.max(...devices.map(d => d.memory.max_capacity), 64) // Default to 64 (probably should change this)
-  };
+    max: Math.max(...devices.map(d => d.memory.max_capacity), 64)
+  }), [devices]);
 
-  // Calculate the age range
-  const currentYear = new Date().getFullYear();
-  const oldestDeviceYear = Math.min(...Array.from(releaseYears)
-    .map(year => parseInt(year, 10))
-    .filter(year => !isNaN(year)));
-  
-  const ageRange = {
-    min: 0,
-    max: currentYear - oldestDeviceYear
-  };
+  const ageRange = React.useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const oldestDeviceYear = Math.min(...Array.from(releaseYears)
+      .map(year => parseInt(year, 10))
+      .filter(year => !isNaN(year)));
+    
+    return {
+      min: 0,
+      max: currentYear - oldestDeviceYear
+    };
+  }, [releaseYears]);
 
-  // Extract all available PCIe slot types from devices
-  const pcieSlotTypes = new Set<string>();
-  const hasExpansionDevices = devices.some(device => 
-    device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0
-  );
-  
-  devices.forEach(device => {
-    if (device.expansion?.pcie_slots) {
-      device.expansion.pcie_slots.forEach(slot => {
-        if (slot.type) pcieSlotTypes.add(slot.type);
-      });
-    }
-  });
+  const pcieSlotTypes = React.useMemo(() => {
+    const slotTypes = new Set<string>();
+    devices.forEach(device => {
+      if (device.expansion?.pcie_slots) {
+        device.expansion.pcie_slots.forEach(slot => {
+          if (slot.type) slotTypes.add(slot.type);
+        });
+      }
+    });
+    return slotTypes;
+  }, [devices]);
 
-  // Extract all available CPU sockets from devices
-  const cpuSockets = new Set<string>();
-  
-  devices.forEach(device => {
-    if (device.cpu.socket?.type) cpuSockets.add(device.cpu.socket.type);
-  });
+  const cpuSockets = React.useMemo(() => {
+    const sockets = new Set<string>();
+    devices.forEach(device => {
+      if (device.cpu.socket?.type) sockets.add(device.cpu.socket.type);
+    });
+    return sockets;
+  }, [devices]);
+
+  const hasExpansionDevices = React.useMemo(() => 
+    devices.some(device => 
+      device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0
+    ), [devices]);
 
   return (
     <Paper

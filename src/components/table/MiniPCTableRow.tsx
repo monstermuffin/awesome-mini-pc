@@ -8,6 +8,7 @@ import {
   IconButton,
   Badge,
 } from '@mui/material';
+import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -42,9 +43,12 @@ export function MiniPCTableRow({
   const displayDevice = device || family?.representative;
   if (!displayDevice) return null;
 
-
-
   const isFamily = !!family && family.variantCount > 1;
+
+  // Check if this row should be highlighted:
+  const shouldHighlight = React.useMemo(() => {
+    return isSelected;
+  }, [isSelected]);
 
   const handleRowClick = () => {
     if (isCompareMode) return;
@@ -58,50 +62,119 @@ export function MiniPCTableRow({
     }
   };
 
-     const rowSx = {
-     cursor: isCompareMode ? 'default' : 'pointer',
-     bgcolor: isSelected 
-       ? (theme: any) => theme.palette.mode === 'dark'
-         ? 'rgba(33, 150, 243, 0.15)'
-         : 'rgba(33, 150, 243, 0.08)'
-       : 'inherit',
-     boxShadow: isVariant 
-       ? 'inset 3px 0 0 #9c27b0'
-       : 'inset 2px 0 0 rgba(33, 150, 243, 0.3)',
-     transition: 'all 0.2s ease-in-out',
-     '&:hover': {
-       bgcolor: (theme: any) => {
-         if (isSelected) {
-           return theme.palette.mode === 'dark'
-             ? 'rgba(33, 150, 243, 0.2)'
-             : 'rgba(33, 150, 243, 0.12)';
-         }
-         if (isCompareMode) {
-           return 'inherit';
-         }
-         if (isVariant) {
-           return theme.palette.mode === 'dark'
-             ? 'rgba(156, 39, 176, 0.1)'
-             : 'rgba(156, 39, 176, 0.08)';
-         }
-         return theme.palette.mode === 'dark'
-           ? 'rgba(255, 255, 255, 0.03)'
-           : 'rgba(0, 0, 0, 0.04)';
-       },
-                boxShadow: isVariant 
-           ? 'inset 3px 0 0 #e91eaa'
-           : 'inset 2px 0 0 #1565c0',
-     },
-   };
+  const ethernetGroups = React.useMemo(() => {
+    if (!displayDevice.networking?.ethernet?.length) return {};
+    
+    interface EthernetGroup {
+      count: number;
+      chipsets: string[];
+      interface: string;
+      speed: string;
+    }
+    
+    const groups: Record<string, EthernetGroup> = {};
+    
+    displayDevice.networking.ethernet.forEach(eth => {
+      const key = `${eth.speed}_${eth.interface}`;
+      if (!groups[key]) {
+        groups[key] = { count: eth.ports, chipsets: [eth.chipset], interface: eth.interface, speed: eth.speed };
+      } else {
+        groups[key].count += eth.ports;
+        if (!groups[key].chipsets.includes(eth.chipset)) {
+          groups[key].chipsets.push(eth.chipset);
+        }
+      }
+    });
+    
+    return groups;
+  }, [displayDevice.networking?.ethernet]);
 
+  const rowStyles = {
+    cursor: isCompareMode ? 'default' : 'pointer',
+    bgcolor: shouldHighlight 
+      ? (theme: any) => theme.palette.mode === 'dark'
+        ? 'rgba(33, 150, 243, 0.15)'
+        : 'rgba(33, 150, 243, 0.08)'
+      : 'inherit',
+    boxShadow: isVariant 
+      ? 'inset 3px 0 0 #9c27b0'
+      : shouldHighlight
+        ? (theme: any) => `inset 2px 0 0 ${theme.palette.primary.main}`
+        : 'none',
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+      bgcolor: (theme: any) => {
+        if (shouldHighlight) {
+          return theme.palette.mode === 'dark'
+            ? 'rgba(33, 150, 243, 0.2)'
+            : 'rgba(33, 150, 243, 0.12)';
+        }
+        if (isCompareMode) {
+          return 'inherit';
+        }
+        if (isVariant) {
+          return theme.palette.mode === 'dark'
+            ? 'rgba(156, 39, 176, 0.1)'
+            : 'rgba(156, 39, 176, 0.08)';
+        }
+        return theme.palette.action.hover;
+      },
+      boxShadow: isVariant 
+        ? 'inset 3px 0 0 #e91eaa'
+        : shouldHighlight
+          ? (theme: any) => `inset 2px 0 0 ${theme.palette.primary.dark}`
+          : (theme: any) => `inset 2px 0 0 ${theme.palette.primary.main}`,
+    },
+  };
 
+  const chipStyles = {
+    height: 16, 
+    fontSize: '0.65rem',
+    fontWeight: 600,
+    minWidth: 16,
+  };
+
+  const variantCountChipStyles = {
+    ...chipStyles,
+    bgcolor: (theme: any) => theme.palette.mode === 'dark' 
+      ? 'rgba(156, 39, 176, 0.15)' 
+      : 'rgba(156, 39, 176, 0.1)',
+    color: (theme: any) => theme.palette.mode === 'dark' 
+      ? '#ce93d8' 
+      : '#7b1fa2',
+  };
+
+  const infoChipStyles = {
+    ...chipStyles,
+    bgcolor: (theme: any) => theme.palette.mode === 'dark' 
+      ? 'rgba(33,150,243,0.15)' 
+      : 'rgba(33,150,243,0.1)',
+    color: (theme: any) => theme.palette.mode === 'dark' 
+      ? '#90caf9' 
+      : '#1976d2',
+  };
 
   return (
     <TableRow
       key={displayDevice.id}
       hover={!isVariant}
       onClick={handleRowClick}
-      sx={rowSx}
+      sx={rowStyles}
+      role={isFamily && !isVariant ? "button" : "row"}
+      tabIndex={isCompareMode ? -1 : 0}
+      aria-selected={shouldHighlight}
+      aria-expanded={isFamily && !isVariant ? isExpanded : undefined}
+      aria-label={
+        isFamily && !isVariant 
+          ? `${displayDevice.brand} ${displayDevice.model} family with ${family.variantCount} variants. ${isExpanded ? 'Expanded' : 'Collapsed'}.`
+          : `${displayDevice.brand} ${displayDevice.model} ${isVariant ? 'variant' : 'device'}`
+      }
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          handleRowClick();
+        }
+      }}
     >
              <TableCell sx={{ pl: isVariant ? 6 : 2 }}>
          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -113,18 +186,7 @@ export function MiniPCTableRow({
              <Chip 
                label={`${family.variantCount}`}
                size="small" 
-               sx={{ 
-                 height: 16, 
-                 fontSize: '0.65rem',
-                 bgcolor: (theme: any) => theme.palette.mode === 'dark' 
-                   ? 'rgba(156, 39, 176, 0.15)' 
-                   : 'rgba(156, 39, 176, 0.1)',
-                 color: (theme: any) => theme.palette.mode === 'dark' 
-                   ? '#ce93d8' 
-                   : '#7b1fa2',
-                 fontWeight: 600,
-                 minWidth: 16,
-               }} 
+               sx={variantCountChipStyles} 
              />
            )}
            
@@ -158,6 +220,8 @@ export function MiniPCTableRow({
                  p: 0.5,
                  color: 'text.secondary'
                }}
+               aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${displayDevice.model} variants`}
+               aria-expanded={isExpanded}
              >
                {isExpanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
              </IconButton>
@@ -374,43 +438,16 @@ export function MiniPCTableRow({
        <TableCell>
          {displayDevice.networking?.ethernet && displayDevice.networking.ethernet.length > 0 ? (
            (() => {
-             interface EthernetGroup {
-               count: number;
-               chipsets: string[];
-               interface: string;
-               speed: string;
-             }
-             
-             const ethernetGroups: Record<string, EthernetGroup> = {};
-             
-             displayDevice.networking.ethernet.forEach(eth => {
-               const key = `${eth.speed}_${eth.interface}`;
-               if (!ethernetGroups[key]) {
-                 ethernetGroups[key] = { count: eth.ports, chipsets: [eth.chipset], interface: eth.interface, speed: eth.speed };
-               } else {
-                 ethernetGroups[key].count += eth.ports;
-                 if (!ethernetGroups[key].chipsets.includes(eth.chipset)) {
-                   ethernetGroups[key].chipsets.push(eth.chipset);
-                 }
-               }
-             });
-             
              return (
                <>
-                 {Object.entries(ethernetGroups).map(([, info]: [string, EthernetGroup], index: number) => (
+                 {Object.entries(ethernetGroups).map(([, info], index: number) => (
                    <Box key={index} sx={{ mb: 0.5 }}>
                      <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
                        {info.count > 1 && (
                          <Chip 
                            label={`${info.count}×`} 
                            size="small" 
-                           sx={{ 
-                             height: 20, 
-                             fontSize: '0.7rem',
-                             bgcolor: (theme: any) => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
-                             color: (theme: any) => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                             fontWeight: 600,
-                           }} 
+                           sx={infoChipStyles} 
                          />
                        )}
                        {info.speed}
@@ -517,22 +554,23 @@ export function MiniPCTableRow({
                  onClick={(event) => onOpenDetails(displayDevice, event)}
                  sx={{
                    padding: 0.75,
-                   transition: 'all 0.2s ease',
-                   backgroundColor: (theme: any) => theme.palette.mode === 'dark' 
-                     ? 'rgba(33,150,243,0.2)'
-                     : 'rgba(33,150,243,0.1)',
-                   color: (theme: any) => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                   boxShadow: (theme: any) => theme.palette.mode === 'dark'
-                     ? '0 2px 8px rgba(0,0,0,0.2)'
-                     : '0 2px 4px rgba(0,0,0,0.1)',
+                   transition: theme => theme.transitions.create(['background-color', 'box-shadow', 'transform'], {
+                     duration: theme.transitions.duration.short,
+                   }),
+                   backgroundColor: 'transparent',
+                   color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                   borderRadius: '50%',
+                   border: 'none',
                    '&:hover': {
-                     backgroundColor: (theme: any) => theme.palette.mode === 'dark'
-                       ? 'rgba(33,150,243,0.3)'
-                       : 'rgba(33,150,243,0.2)',
+                     backgroundColor: theme => theme.palette.mode === 'dark' 
+                       ? 'rgba(33,150,243,0.2)' 
+                       : 'rgba(33,150,243,0.1)',
                      transform: 'scale(1.1)',
-                     boxShadow: (theme: any) => theme.palette.mode === 'dark'
-                       ? '0 4px 12px rgba(0,0,0,0.3)'
-                       : '0 4px 8px rgba(0,0,0,0.15)',
+                     boxShadow: 'none',
+                   },
+                   '&:focus-visible': {
+                     outline: theme => `2px solid ${theme.palette.primary.main}`,
+                     outlineOffset: 2,
                    }
                  }}
                >

@@ -1,4 +1,5 @@
 import { Box, Typography, Chip } from '@mui/material';
+import React from 'react';
 import type { MiniPC } from '../../types/minipc';
 
 interface StorageCellProps {
@@ -7,47 +8,77 @@ interface StorageCellProps {
 }
 
 export function StorageCell({ device, showDetails = false }: StorageCellProps) {
-  const storageGroups: Record<string, Array<{ interface: string; form_factor?: string; alt_interface?: string }>> = {};
+  const storageGroups = React.useMemo(() => {
+    const groups: Record<string, Array<{ interface: string; form_factor?: string; alt_interface?: string }>> = {};
 
-  device.storage.forEach(storage => {
-    const type = storage.type;
-    if (!storageGroups[type]) {
-      storageGroups[type] = [];
-    }
-    storageGroups[type].push({
-      interface: storage.interface,
-      form_factor: storage.form_factor,
-      alt_interface: storage.alt_interface
+    device.storage.forEach(storage => {
+      const type = storage.type;
+      if (!groups[type]) {
+        groups[type] = [];
+      }
+      groups[type].push({
+        interface: storage.interface,
+        form_factor: storage.form_factor,
+        alt_interface: storage.alt_interface
+      });
     });
-  });
+
+    return groups;
+  }, [device.storage]);
+
+  const chipStyle = React.useMemo(() => ({
+    height: 20, 
+    fontSize: '0.7rem',
+    fontWeight: 600,
+    bgcolor: (theme: any) => theme.palette.mode === 'dark' 
+      ? 'rgba(33,150,243,0.15)' 
+      : 'rgba(33,150,243,0.1)',
+    color: (theme: any) => theme.palette.mode === 'dark' 
+      ? '#90caf9' 
+      : '#1976d2',
+  }), []);
 
   return (
     <>
       {Object.entries(storageGroups).map(([type, details], index) => (
         <Box key={index} sx={{ mb: 0.5 }}>
-          <Box sx={{ fontWeight: 'medium', display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ 
+            fontWeight: 'medium', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1,
+            minHeight: 20,
+          }}>
             {details.length > 1 && (
               <Chip 
                 label={`${details.length}×`} 
                 size="small" 
-                sx={{ 
-                  height: 20, 
-                  fontSize: '0.7rem',
-                  bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(33,150,243,0.15)' : 'rgba(33,150,243,0.1)',
-                  color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-                  fontWeight: 600,
-                }} 
+                sx={chipStyle}
+                aria-label={`${details.length} ${type} storage slots`}
               />
             )}
-            {type}
+            <Typography variant="body2" component="span" sx={{ fontWeight: 'medium' }}>
+              {type}
+            </Typography>
           </Box>
           {details.map((detail, detailIndex) => (
-            <Typography key={detailIndex} variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+            <Typography 
+              key={detailIndex} 
+              variant="caption" 
+              color="text.secondary" 
+              sx={{ 
+                display: 'block',
+                lineHeight: 1.2,
+                mt: 0.25
+              }}
+            >
               {detail.interface}
               {showDetails && detail.alt_interface && (
-                detail.alt_interface === 'U.2' ? ' (supports U.2 via adapter)' :
-                detail.alt_interface === 'SATA' ? ' (supports SATA)' :
-                ` (supports ${detail.alt_interface})`
+                <Box component="span" sx={{ opacity: 0.8 }}>
+                  {detail.alt_interface === 'U.2' ? ' (supports U.2 via adapter)' :
+                  detail.alt_interface === 'SATA' ? ' (supports SATA)' :
+                  ` (supports ${detail.alt_interface})`}
+                </Box>
               )}
             </Typography>
           ))}

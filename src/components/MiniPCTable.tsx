@@ -6,7 +6,7 @@ import {
   Typography,
   Box,
 } from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { MiniPC } from '../types/minipc';
 import { MiniPCTableHeader } from './table/MiniPCTableHeader';
 import { MiniPCTableRow } from './table/MiniPCTableRow';
@@ -29,60 +29,25 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
   const [detailDevice, setDetailDevice] = useState<MiniPC | null>(null);
   const [expandedFamilies, setExpandedFamilies] = useState<Set<string>>(new Set());
 
-  // Group devices into families
-  const deviceFamilies = groupDevicesByFamily(devices);
+  const deviceFamilies = React.useMemo(() => groupDevicesByFamily(devices), [devices]);
 
-  // Sort families/devices based on the sort config
-  const sortedFamilies = [...deviceFamilies].sort((a, b) => {
-    const aValue = getSortValue(a.representative, sortConfig.key);
-    const bValue = getSortValue(b.representative, sortConfig.key);
-    
-    if (aValue === bValue) return 0;
-    
-    const modifier = sortConfig.direction === 'asc' ? 1 : -1;
-    return aValue > bValue ? modifier : -modifier;
-  });
-
-  const handleSort = (key: SortKey) => {
-    setSortConfig((prev) => ({
-      key,
-      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
-    }));
-  };
-
-  const handleOpenDetails = (device: MiniPC, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setDetailDevice(device);
-  };
-
-  const handleCloseDetails = () => {
-    setDetailDevice(null);
-  };
-
-  const handleToggleExpand = (familyId: string) => {
-    setExpandedFamilies(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(familyId)) {
-        newSet.delete(familyId);
-    } else {
-        newSet.add(familyId);
-      }
-      return newSet;
+  const sortedFamilies = React.useMemo(() => {
+    return [...deviceFamilies].sort((a, b) => {
+      const aValue = getSortValue(a.representative, sortConfig.key);
+      const bValue = getSortValue(b.representative, sortConfig.key);
+      
+      if (aValue === bValue) return 0;
+      
+      const modifier = sortConfig.direction === 'asc' ? 1 : -1;
+      return aValue > bValue ? modifier : -modifier;
     });
-  };
+  }, [deviceFamilies, sortConfig]);
 
-  // Create flat list of rows to display (families + expanded variants)
-  const displayRows: Array<{ 
-    type: 'family' | 'device', 
-    family?: DeviceFamily, 
-    device?: MiniPC, 
-    isExpanded?: boolean,
-    isVariant?: boolean 
-  }> = [];
-
-  if (isCompareMode) {
-    // compare mode - show only selected devices as individual rows
-    devices
+  // Memoize sorted devices for compare mode
+  const sortedSelectedDevices = React.useMemo(() => {
+    if (!isCompareMode) return [];
+    
+    return devices
       .filter(device => selectedDevices.has(device.id))
       .sort((a, b) => {
         const aValue = getSortValue(a, sortConfig.key);
@@ -90,68 +55,143 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
         if (aValue === bValue) return 0;
         const modifier = sortConfig.direction === 'asc' ? 1 : -1;
         return aValue > bValue ? modifier : -modifier;
-      })
-      .forEach(device => {
-        displayRows.push({ type: 'device', device });
       });
-  } else {
-    // normal mode - show families with expandable variants
-    sortedFamilies.forEach(family => {
-      const isExpanded = expandedFamilies.has(family.id);
-      
-      if (family.variantCount === 1) {
-        displayRows.push({ type: 'device', device: family.representative });
+  }, [devices, selectedDevices, sortConfig, isCompareMode]);
+
+  const handleSort = React.useCallback((key: SortKey) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  }, []);
+
+  const handleOpenDetails = React.useCallback((device: MiniPC, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setDetailDevice(device);
+  }, []);
+
+  const handleCloseDetails = React.useCallback(() => {
+    setDetailDevice(null);
+  }, []);
+
+  const handleToggleExpand = React.useCallback((familyId: string) => {
+    setExpandedFamilies(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(familyId)) {
+        newSet.delete(familyId);
       } else {
-        // Multiple variants - show as family
-        displayRows.push({ 
-          type: 'family', 
-          family, 
-          isExpanded 
-        });
-        
-        // expanded, show all variants as sub-rows
-        if (isExpanded) {
-          family.variants.forEach(variant => {
-            displayRows.push({ 
-              type: 'device', 
-              device: variant, 
-              isVariant: true 
-            });
-          });
-        }
+        newSet.add(familyId);
       }
+      return newSet;
     });
-  }
+  }, []);
+
+  const displayRows = React.useMemo(() => {
+    const rows: Array<{ 
+      type: 'family' | 'device', 
+      family?: DeviceFamily, 
+      device?: MiniPC, 
+      isExpanded?: boolean,
+      isVariant?: boolean 
+    }> = [];
+
+    if (isCompareMode) {
+      // Compare mode - show only selected devices as individual rows
+      sortedSelectedDevices.forEach(device => {
+        rows.push({ type: 'device', device });
+      });
+    } else {
+      // Normal mode - show families with expandable variants
+      sortedFamilies.forEach(family => {
+        const isExpanded = expandedFamilies.has(family.id);
+        
+        if (family.variantCount === 1) {
+          rows.push({ type: 'device', device: family.representative });
+        } else {
+          // Multiple variants - show as family
+          rows.push({ 
+            type: 'family', 
+            family, 
+            isExpanded 
+          });
+          
+          // If expanded, show all variants as sub-rows
+          if (isExpanded) {
+            family.variants.forEach(variant => {
+              rows.push({ 
+                type: 'device', 
+                device: variant, 
+                isVariant: true 
+              });
+            });
+          }
+        }
+      });
+    }
+
+    return rows;
+  }, [isCompareMode, sortedSelectedDevices, sortedFamilies, expandedFamilies]);
+
+  const paperStyles = React.useMemo(() => ({
+    borderRadius: 2,
+    overflow: 'hidden',
+    background: 'transparent',
+    transition: 'all 0.3s ease',
+    height: 'calc(100vh - 100px)',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: (theme: any) => theme.palette.mode === 'dark' 
+      ? '0 4px 20px rgba(0,0,0,0.3)'
+      : '0 4px 20px rgba(0,0,0,0.1)',
+    position: 'relative',
+  }), []);
+
+  const headerStyles = React.useMemo(() => ({
+    p: 2, 
+    display: 'flex', 
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    background: (theme: any) => theme.palette.mode === 'dark' 
+      ? 'linear-gradient(to right, rgba(41,98,255,0.15), rgba(0,176,255,0.15))'
+      : 'linear-gradient(to right, rgba(41,98,255,0.1), rgba(0,176,255,0.1))',
+  }), []);
+
+  const tableContainerStyles = React.useMemo(() => ({
+    flexGrow: 1,
+    overflow: 'auto',
+    scrollbarWidth: 'thin',
+    '&::-webkit-scrollbar': {
+      width: '8px',
+      height: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: (theme: any) => theme.palette.mode === 'dark' ? '#2c2c2c' : '#f5f5f5',
+      borderRadius: '4px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: (theme: any) => theme.palette.mode === 'dark' ? '#555' : '#bbb',
+      borderRadius: '4px',
+      border: (theme: any) => theme.palette.mode === 'dark' ? '2px solid #2c2c2c' : '2px solid #f5f5f5',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      background: (theme: any) => theme.palette.mode === 'dark' ? '#777' : '#999',
+    },
+    position: 'absolute',
+    top: 55,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  }), []);
 
   return (
     <>
       <Paper 
         elevation={3} 
-        sx={{
-          borderRadius: 2,
-          overflow: 'hidden',
-          background: 'transparent',
-          transition: 'all 0.3s ease',
-          height: 'calc(100vh - 100px)',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: theme => theme.palette.mode === 'dark' 
-            ? '0 4px 20px rgba(0,0,0,0.3)'
-            : '0 4px 20px rgba(0,0,0,0.1)',
-          position: 'relative',
-        }}
+        sx={paperStyles}
       >
-        <Box sx={{ 
-          p: 2, 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          borderTopLeftRadius: 8,
-          borderTopRightRadius: 8,
-          background: theme => theme.palette.mode === 'dark' 
-            ? 'linear-gradient(to right, rgba(41,98,255,0.15), rgba(0,176,255,0.15))'
-            : 'linear-gradient(to right, rgba(41,98,255,0.1), rgba(0,176,255,0.1))',
-        }}>
+        <Box sx={headerStyles}>
           <Typography variant="h6" sx={{ 
             fontWeight: 600,
             color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
@@ -162,32 +202,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
         </Box>
         
         <TableContainer 
-          sx={{
-            flexGrow: 1,
-            overflow: 'auto',
-            scrollbarWidth: 'thin',
-            '&::-webkit-scrollbar': {
-              width: '8px',
-              height: '8px',
-            },
-            '&::-webkit-scrollbar-track': {
-              background: theme => theme.palette.mode === 'dark' ? '#2c2c2c' : '#f5f5f5',
-              borderRadius: '4px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              background: theme => theme.palette.mode === 'dark' ? '#555' : '#bbb',
-              borderRadius: '4px',
-              border: theme => theme.palette.mode === 'dark' ? '2px solid #2c2c2c' : '2px solid #f5f5f5',
-            },
-            '&::-webkit-scrollbar-thumb:hover': {
-              background: theme => theme.palette.mode === 'dark' ? '#777' : '#999',
-            },
-            position: 'absolute',
-            top: 55,
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
+          sx={tableContainerStyles}
         >
           <Table stickyHeader size="small" sx={{ 
             tableLayout: 'fixed',
@@ -202,25 +217,26 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
               onSort={handleSort}
             />
             <TableBody>
-              {displayRows.map((row, index) => {
-                const key = row.family ? row.family.id : row.device!.id;
-                const device = row.device || row.family!.representative;
-                        
-                        return (
-                  <MiniPCTableRow
-                    key={`${key}-${index}`}
-                    device={row.type === 'device' ? row.device : undefined}
-                    family={row.type === 'family' ? row.family : undefined}
-                    isSelected={selectedDevices.has(device.id)}
-                    isCompareMode={isCompareMode}
-                    isExpanded={row.isExpanded}
-                    isVariant={row.isVariant}
-                    onDeviceSelect={onDeviceSelect}
-                    onOpenDetails={handleOpenDetails}
-                    onToggleExpand={handleToggleExpand}
-                  />
-                );
-              })}
+              {displayRows.map((row, index) => (
+                <MiniPCTableRow
+                  key={row.device?.id || row.family?.id || index}
+                  device={row.device}
+                  family={row.family}
+                  isSelected={
+                    row.device 
+                      ? selectedDevices.has(row.device.id)
+                      : row.family 
+                        ? selectedDevices.has(row.family.representative.id)
+                        : false
+                  }
+                  isCompareMode={isCompareMode}
+                  isExpanded={row.isExpanded}
+                  isVariant={row.isVariant}
+                  onDeviceSelect={onDeviceSelect}
+                  onOpenDetails={handleOpenDetails}
+                  onToggleExpand={handleToggleExpand}
+                />
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
