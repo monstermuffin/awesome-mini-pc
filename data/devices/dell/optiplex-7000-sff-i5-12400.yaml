@@ -12,7 +12,7 @@ cpu:
   boost_clock: 4.4
   tdp: 65
   architecture: "Alder Lake"
-  chipset: "Intel Q670"
+  
   socket:
     type: "LGA 1700"
     supports_cpu_swap: true
