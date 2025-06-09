@@ -1,0 +1,70 @@
+id: rock-pi-s-512mb
+brand: Radxa
+model: Rock Pi S 512MB
+release_date: "2019"
+
+cpu:
+  brand: "ARM"
+  model: "Cortex-A35"
+  cores: 4
+  threads: 4
+  base_clock: 1.5
+  tdp: 3
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "Mali-G31 MP2"
+    type: "Integrated"
+
+memory:
+  type: "DDR3"
+  speed: 1866
+  slots: 1
+  max_capacity: 0.5
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "100Mbps"
+      chipset: "Realtek RTL8201F"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 4"
+    chipset: "AP6236"
+    bluetooth: "4.2"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power and data (OTG)"
+
+dimensions:
+  width: 52
+  depth: 40
+  height: 8
+  weight: 15
+
+power:
+  adapter_wattage: 5
+  dc_input: "5V/1A"
+
+notes: |-
+  - Quad-core Cortex-A35 processor at 1.5GHz
+  - Mali-G31 MP2 GPU with OpenGL ES 3.2
+  - Ultra-compact form factor (52x40mm)
+  - 26-pin GPIO header
+  - MIPI CSI camera interface
+  - Low power consumption (3W typical)
+  - USB-C power and data
+  - Designed for IoT applications 

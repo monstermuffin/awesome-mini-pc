@@ -1,0 +1,75 @@
+id: rock-pi-e-2gb
+brand: Radxa
+model: Rock Pi E 2GB
+release_date: "2020"
+
+cpu:
+  brand: "ARM"
+  model: "Cortex-A35"
+  cores: 4
+  threads: 4
+  base_clock: 1.5
+  tdp: 5
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "Mali-G31 MP2"
+    type: "Integrated"
+
+memory:
+  type: "DDR3"
+  speed: 1866
+  slots: 1
+  max_capacity: 2
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+  - type: "eMMC"
+    form_factor: "eMMC"
+    interface: "eMMC"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "1GbE"
+      chipset: "Realtek RTL8211F"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 5"
+    chipset: "AP6256"
+    bluetooth: "5.0"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power and data (OTG)"
+
+dimensions:
+  width: 65
+  depth: 30
+  height: 8
+  weight: 28
+
+power:
+  adapter_wattage: 12
+  dc_input: "5V-12V"
+
+notes: |-
+  - Quad-core Cortex-A35 processor at 1.5GHz
+  - Mali-G31 MP2 GPU with OpenGL ES 3.2
+  - Compact embedded form factor (65x30mm)
+  - Dual Gigabit Ethernet ports
+  - 26-pin GPIO header
+  - Operating temperature: -40°C to +85°C
+  - PoE support available
+  - CAN bus interface
+  - RS485 interface
+  - Designed for industrial applications 

@@ -1,0 +1,93 @@
+id: rock-3c-4gb
+brand: Radxa
+model: Rock 3C 4GB
+release_date: "2023"
+
+cpu:
+  brand: "ARM"
+  model: "Cortex-A55"
+  cores: 4
+  threads: 4
+  base_clock: 1.8
+  tdp: 8
+  architecture: "ARMv8-A"
+
+gpu:
+  - model: "Mali-G52 1EE"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR4"
+  speed: 3200
+  slots: 1
+  max_capacity: 4
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+  - type: "eMMC"
+    form_factor: "eMMC"
+    interface: "eMMC"
+  - type: "M.2"
+    form_factor: "M.2 M-Key"
+    interface: "PCIe 3.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8211F"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 5"
+    chipset: "AP6256"
+    bluetooth: "5.0"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+    - count: 1
+      type: "USB 3.0"
+      speed: "5Gbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power and data (OTG)"
+  hdmi:
+    count: 1
+    version: "2.0"
+    form_factor: "HDMI"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+expansion:
+  pcie_slots:
+    - version: "PCIe 3.0 x2"
+      form_factor: "M.2 M-Key"
+      note: "For NVMe SSD"
+
+dimensions:
+  width: 85
+  depth: 56
+  height: 16
+  weight: 42
+
+power:
+  adapter_wattage: 12
+  dc_input: "5V"
+
+notes: |-
+  - Quad-core Cortex-A55 processor at 1.8GHz
+  - Mali-G52 1EE GPU with OpenGL ES 3.2
+  - 0.8 TOPS NPU for AI acceleration
+  - H.265/H.264/VP9 4K@60fps hardware decode
+  - H.264 1080p@60fps hardware encode
+  - 40-pin GPIO header compatible with Raspberry Pi
+  - Dual display support (HDMI + MIPI DSI)
+  - MIPI CSI camera interface
+  - Compact form factor design
+  - USB-C power delivery 

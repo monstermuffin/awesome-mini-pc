@@ -1,0 +1,96 @@
+id: rock-5b-16gb
+brand: Radxa
+model: Rock 5B 16GB
+release_date: "2022"
+
+cpu:
+  brand: "ARM"
+  model: "Cortex-A76 + Cortex-A55"
+  cores: 8
+  threads: 8
+  base_clock: 2.4
+  tdp: 25
+  architecture: "ARMv8.2-A"
+
+gpu:
+  - model: "Mali-G610 MP4"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR4X"
+  speed: 4266
+  slots: 1
+  max_capacity: 16
+  module_type: "Soldered"
+
+storage:
+  - type: "MicroSD Card"
+    form_factor: "MicroSD"
+    interface: "SD"
+  - type: "eMMC"
+    form_factor: "eMMC"
+    interface: "eMMC"
+  - type: "M.2"
+    form_factor: "M.2 M-Key"
+    interface: "PCIe 3.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8211F"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "AP6275P"
+    bluetooth: "5.0"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+    - count: 2
+      type: "USB 3.0"
+      speed: "5Gbps"
+  usb_c:
+    - count: 1
+      type: "USB-C"
+      features: "Power, data, and DisplayPort Alt Mode"
+  hdmi:
+    count: 2
+    version: "2.1"
+    form_factor: "HDMI"
+    max_resolution: "8K@60Hz"
+  audio_jack: 1
+
+expansion:
+  pcie_slots:
+    - version: "PCIe 3.0 x4"
+      form_factor: "M.2 M-Key"
+      note: "For NVMe SSD"
+    - version: "PCIe 2.0 x1"
+      form_factor: "M.2 E-Key"
+      note: "For WiFi modules"
+
+dimensions:
+  width: 100
+  depth: 72
+  height: 16
+  weight: 78
+
+power:
+  adapter_wattage: 30
+  dc_input: "5V/6A"
+
+notes: |-
+  - Quad-core Cortex-A76 (2.4GHz) + Quad-core Cortex-A55 (1.8GHz)
+  - Mali-G610 MP4 GPU with OpenGL ES 3.2, Vulkan 1.2
+  - 6 TOPS NPU for AI acceleration
+  - H.265/VP9/AV1 8K@60fps hardware decode
+  - H.265 4K@60fps hardware encode
+  - 40-pin GPIO header
+  - Triple display output (2x HDMI + 1x USB-C DP)
+  - Quad 4-lane MIPI CSI camera support
+  - 2x MIPI DSI display interfaces
+  - USB PD 3.0 power support 
