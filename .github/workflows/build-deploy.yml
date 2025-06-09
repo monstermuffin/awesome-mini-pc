@@ -8,6 +8,8 @@ on:
       - 'data/devices/**'
       - 'public/**'
       - 'scripts/build-data.cjs'
+      - 'scripts/generate-sitemap.cjs'
+      - 'scripts/generate-stats.cjs'
       - 'package.json'
       - 'package-lock.json'
       - 'vite.config.ts'
@@ -60,13 +62,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Create Stats JSON
-        if: startsWith(github.ref, 'refs/heads/main')
-        run: |
-          mkdir -p ./dist
-          echo '{ "deviceCount": ${{ steps.count_devices.outputs.count }} }' > ./dist/stats.json
-          echo 'Created ./dist/stats.json'
-          cat ./dist/stats.json
+
 
       - name: Setup Pages
         if: startsWith(github.ref, 'refs/heads/main')
