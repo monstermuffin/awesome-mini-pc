@@ -778,7 +778,7 @@ function App() {
           <Toolbar />
           <Box sx={{ 
             flex: 1,
-            p: { xs: 1, sm: 2 },
+            p: 0,
             overflow: 'auto',
             height: 'calc(100vh - 64px)',
           }}>

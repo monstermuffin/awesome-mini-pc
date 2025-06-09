@@ -1,5 +1,4 @@
 import {
-  Paper,
   Table,
   TableBody,
   TableContainer,
@@ -133,17 +132,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
   }, [isCompareMode, sortedSelectedDevices, sortedFamilies, expandedFamilies]);
 
   const paperStyles = React.useMemo(() => ({
-    borderRadius: 2,
-    overflow: 'hidden',
-    background: 'transparent',
-    transition: 'all 0.3s ease',
-    height: 'calc(100vh - 100px)',
+    height: '100%',
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    boxShadow: (theme: any) => theme.palette.mode === 'dark' 
-      ? '0 4px 20px rgba(0,0,0,0.3)'
-      : '0 4px 20px rgba(0,0,0,0.1)',
-    position: 'relative',
+    backgroundColor: 'background.default',
   }), []);
 
   const headerStyles = React.useMemo(() => ({
@@ -151,11 +144,8 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
     display: 'flex', 
     justifyContent: 'space-between', 
     alignItems: 'center',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    background: (theme: any) => theme.palette.mode === 'dark' 
-      ? 'linear-gradient(to right, rgba(41,98,255,0.15), rgba(0,176,255,0.15))'
-      : 'linear-gradient(to right, rgba(41,98,255,0.1), rgba(0,176,255,0.1))',
+    backgroundColor: 'background.paper',
+    borderBottom: (theme: any) => `1px solid ${theme.palette.divider}`,
   }), []);
 
   const tableContainerStyles = React.useMemo(() => ({
@@ -178,24 +168,15 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
     '&::-webkit-scrollbar-thumb:hover': {
       background: (theme: any) => theme.palette.mode === 'dark' ? '#777' : '#999',
     },
-    position: 'absolute',
-    top: 55,
-    bottom: 0,
-    left: 0,
-    right: 0,
   }), []);
 
   return (
     <>
-      <Paper 
-        elevation={3} 
-        sx={paperStyles}
-      >
+      <Box sx={paperStyles}>
         <Box sx={headerStyles}>
           <Typography variant="h6" sx={{ 
             fontWeight: 600,
             color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
-            textShadow: theme => theme.palette.mode === 'dark' ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
           }}>
             {devices.length} {devices.length === 1 ? 'result' : 'results'}
           </Typography>
@@ -240,7 +221,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
             </TableBody>
           </Table>
         </TableContainer>
-      </Paper>
+      </Box>
       
       <DeviceDetailDialog
         device={detailDevice}
