@@ -42,6 +42,8 @@ export function MiniPCTableRow({
   const displayDevice = device || family?.representative;
   if (!displayDevice) return null;
 
+
+
   const isFamily = !!family && family.variantCount > 1;
 
   const handleRowClick = () => {
@@ -63,6 +65,10 @@ export function MiniPCTableRow({
          ? 'rgba(33, 150, 243, 0.15)'
          : 'rgba(33, 150, 243, 0.08)'
        : 'inherit',
+     boxShadow: isVariant 
+       ? 'inset 4px 0 0 #9c27b0'
+       : 'none',
+     transition: 'all 0.2s ease-in-out',
      '&:hover': {
        bgcolor: (theme: any) => {
          if (isSelected) {
@@ -73,30 +79,34 @@ export function MiniPCTableRow({
          if (isCompareMode) {
            return 'inherit';
          }
+         if (isVariant) {
+           return theme.palette.mode === 'dark'
+             ? 'rgba(156, 39, 176, 0.1)'
+             : 'rgba(156, 39, 176, 0.08)';
+         }
          return theme.palette.mode === 'dark'
            ? 'rgba(255, 255, 255, 0.03)'
            : 'rgba(0, 0, 0, 0.04)';
-       }
+       },
+                boxShadow: isVariant 
+           ? 'inset 4px 0 0 #e91eaa'
+           : undefined,
      },
-     // Add indentation for variant rows
-     ...(isVariant && {
-       bgcolor: (theme: any) => theme.palette.mode === 'dark' 
-         ? 'rgba(255, 255, 255, 0.03)'
-         : 'rgba(0, 0, 0, 0.03)',
-       borderLeft: (theme: any) => `3px solid ${theme.palette.mode === 'dark' ? 'rgba(156, 39, 176, 0.3)' : 'rgba(156, 39, 176, 0.2)'}`,
-     })
    };
+
+
 
   return (
     <TableRow
       key={displayDevice.id}
-      hover
+      hover={!isVariant}
       onClick={handleRowClick}
       sx={rowSx}
     >
              <TableCell sx={{ pl: isVariant ? 6 : 2 }}>
          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-           {displayDevice.brand}
+           {/* Hide brand for variant rows since they're the same brand */}
+           {!isVariant && displayDevice.brand}
            
            {/* Variant count badge for family rows - moved here */}
            {isFamily && !isVariant && (
@@ -116,6 +126,20 @@ export function MiniPCTableRow({
                  minWidth: 16,
                }} 
              />
+           )}
+           
+           {/* Add a subtle variant indicator for variant rows */}
+           {isVariant && (
+             <Box sx={{ 
+               display: 'flex', 
+               alignItems: 'center',
+               color: (theme: any) => theme.palette.mode === 'dark' ? '#ce93d8' : '#7b1fa2',
+               fontSize: '0.75rem',
+               fontWeight: 500,
+               opacity: 0.8
+             }}>
+               ↳ variant
+             </Box>
            )}
          </Box>
        </TableCell>

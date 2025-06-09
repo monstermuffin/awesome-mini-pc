@@ -208,11 +208,7 @@ function App() {
       MuiTableRow: {
         styleOverrides: {
           root: {
-            '&:hover': {
-              backgroundColor: darkMode 
-                ? 'rgba(255, 255, 255, 0.03)' 
-                : 'rgba(0, 0, 0, 0.04)',
-            },
+            // Removed global hover override for variant styling
           },
         },
       },
