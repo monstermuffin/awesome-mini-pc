@@ -1,0 +1,85 @@
+id: a7-r9-7940hs
+brand: GEEKOM
+model: A7
+release_date: "2023"
+
+cpu:
+  brand: "AMD"
+  model: "Ryzen 9 7940HS"
+  cores: 8
+  threads: 16
+  base_clock: 4.0
+  boost_clock: 5.2
+  tdp: 54
+  architecture: "Zen 4"
+
+gpu:
+  - model: "AMD Radeon 780M"
+    type: "Integrated"
+    frequency: 2800
+
+memory:
+  type: "DDR5"
+  speed: 5600
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125BG"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "MediaTek MT7922"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 1
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb4:
+    - count: 1
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Power Delivery", "DisplayPort Alt Mode"]
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+      features: ["DisplayPort Alt Mode"]
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+  sd_card_reader: 1
+
+dimensions:
+  width: 112
+  depth: 112
+  height: 37
+  weight: 450
+
+expansion:
+  egpu_support: true
+
+power:
+  adapter_wattage: 120
+  dc_input: "19V"
+  usb_pd_input: true
+
+notes: |-
+  - eGPU support via USB4 port with Thunderbolt 4 compatibility
+  - SD card reader supports UHS-I speeds
