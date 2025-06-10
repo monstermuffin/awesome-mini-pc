@@ -1,0 +1,92 @@
+id: pn64-i7-13700h
+brand: ASUS
+model: ExpertCenter PN64
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i7-13700H"
+  cores: 14
+  threads: 20
+  base_clock: 2.4
+  boost_clock: 5.0
+  tdp: 45
+  architecture: "Raptor Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 6
+        boost_clock: 5.0
+      - type: "E-core"
+        count: 8
+        boost_clock: 3.7
+
+gpu:
+  - model: "Intel Iris Xe Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125BG"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX211"
+    bluetooth: "5.3"
+
+ports:
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 2"
+      features: ["DisplayPort Alt Mode"]
+  hdmi:
+    count: 2
+    version: "2.1"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 130
+  depth: 130
+  height: 60
+  weight: 700
+
+power:
+  adapter_wattage: 90
+  dc_input: "19V/4.74A"
+  usb_pd_input: false
+
+notes: |-
+  - Dual M.2 slots plus 2.5" SATA bay for triple storage
