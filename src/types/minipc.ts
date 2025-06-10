@@ -114,6 +114,7 @@ export interface MiniPC {
   power?: {
     adapter_wattage: number; // in watts
     dc_input: string; // voltage specification
+    usb_pd_input?: boolean; // Whether the device supports USB Power Delivery input
   };
   _sourcePath?: string; // Optional field for debugging
   _vendor?: string;

@@ -781,6 +781,11 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
                   <Typography variant="body2" sx={{ mb: 0.5 }}>
                     Input: {device.power.dc_input}
                   </Typography>
+                  {device.power.usb_pd_input !== undefined && (
+                    <Typography variant="body2" sx={{ mb: 0.5 }}>
+                      USB-C PD Input: {device.power.usb_pd_input ? 'Yes' : 'No'}
+                    </Typography>
+                  )}
                 </Grid>
               )}
             </Grid>

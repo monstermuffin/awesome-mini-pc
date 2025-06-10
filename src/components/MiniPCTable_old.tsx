@@ -1630,6 +1630,11 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                         <Typography variant="body2" sx={{ mb: 0.5 }}>
                           Input: {detailDevice.power.dc_input}
                         </Typography>
+                        {detailDevice.power.usb_pd_input !== undefined && (
+                          <Typography variant="body2" sx={{ mb: 0.5 }}>
+                            USB-C PD Input: {detailDevice.power.usb_pd_input ? 'Yes' : 'No'}
+                          </Typography>
+                        )}
                       </Grid>
                     )}
                   </Grid>
