@@ -1,0 +1,82 @@
+id: elitedesk-805-g9-r7-6850u
+brand: HP
+model: EliteDesk 805 G9 Mini
+release_date: "2023"
+
+cpu:
+  brand: "AMD"
+  model: "Ryzen 7 PRO 6850U"
+  cores: 8
+  threads: 16
+  base_clock: 2.7
+  boost_clock: 4.7
+  tdp: 28
+  architecture: "Zen 3+"
+
+gpu:
+  - model: "AMD Radeon 680M"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2230"
+    interface: "PCIe 3.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8168/8111"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX211"
+    bluetooth: "5.3"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 2"
+      features: ["DisplayPort Alt Mode"]
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 177
+  depth: 175
+  height: 34
+  weight: 1130
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V"
+  usb_pd_input: false
+
+notes: |-
+  - Dual M.2 slots: one 2280 (PCIe 4.0) and one 2230 (PCIe 3.0)
+  - Tool-free access to memory and storage compartments
