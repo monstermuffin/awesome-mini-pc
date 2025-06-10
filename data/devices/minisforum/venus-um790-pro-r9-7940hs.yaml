@@ -1,0 +1,80 @@
+id: venus-um790-pro-r9-7940hs
+brand: MINISFORUM
+model: Venus UM790 Pro
+release_date: "2023"
+
+cpu:
+  brand: "AMD"
+  model: "Ryzen 9 7940HS"
+  cores: 8
+  threads: 16
+  base_clock: 3.2
+  boost_clock: 5.2
+  tdp: 60
+  architecture: "Zen 4"
+
+gpu:
+  - model: "AMD Radeon 780M"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 5600
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125BG"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX1675"
+    bluetooth: "5.3"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 2"
+  usb4:
+    - count: 2
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Power Delivery", "DisplayPort Alt Mode"]
+  hdmi:
+    count: 2
+    version: "2.1"
+    max_resolution: "4K@144Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 130
+  depth: 126
+  height: 52
+  weight: 800
+
+power:
+  adapter_wattage: 120
+  dc_input: "19V"
+  usb_pd_input: true
+
+expansion:
+  egpu_support: true
+
+notes: |-
+  - TDP adjustable between 60W (default) and 65W in BIOS
+  - USB4 ports support power delivery and can power the system
+  - Dual M.2 PCIe 4.0 slots with active cooling
+  - Cold Wave 2.0 thermal system with liquid metal cooling 
