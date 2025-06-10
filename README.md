@@ -1,6 +1,6 @@
 # Awesome Mini PC
 [![Build Status](https://github.com/monstermuffin/awesome-mini-pcs/actions/workflows/build-deploy.yml/badge.svg)](https://github.com/monstermuffin/awesome-mini-pcs/actions/workflows/build-deploy.yml)
-[![Device Count](https://img.shields.io/badge/dynamic/json?url=https://awesomeminipc.com/stats.json&query=$.deviceCount&label=devices&color=blue)](https://github.com/monstermuffin/awesome-mini-pcs/tree/main/data/devices)
+[![Device Count](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fawesomeminipc.com%2Fstats.json&query=%24.deviceCount&label=devices&color=blue)](https://github.com/monstermuffin/awesome-mini-pcs/tree/main/data/devices)
 
 > [!IMPORTANT]  
 > This project is actively under development.
