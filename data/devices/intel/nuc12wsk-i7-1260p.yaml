@@ -1,0 +1,84 @@
+id: nuc12wsk-i7-1260p
+brand: Intel
+model: NUC 12 Pro Kit
+release_date: "2022"
+
+cpu:
+  brand: "Intel"
+  model: "Core i7-1260P"
+  cores: 12
+  threads: 16
+  base_clock: 2.1
+  boost_clock: 4.7
+  tdp: 28
+  architecture: "Alder Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 4
+        boost_clock: 4.7
+      - type: "E-core"
+        count: 8
+        boost_clock: 3.4
+
+gpu:
+  - model: "Intel Iris Xe Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Intel I225-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX211"
+    bluetooth: "5.3"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb4:
+    - count: 2
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Power Delivery", "DisplayPort Alt Mode"]
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 117
+  depth: 112
+  height: 37
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V"
+  usb_pd_input: true
+
+notes: |-
+  - Dual M.2 2280 slots support PCIe 4.0 x4
