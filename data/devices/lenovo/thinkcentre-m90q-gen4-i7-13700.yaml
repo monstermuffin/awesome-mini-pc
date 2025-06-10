@@ -1,0 +1,92 @@
+id: thinkcentre-m90q-gen4-i7-13700
+brand: Lenovo
+model: ThinkCentre M90q Gen 4
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i7-13700"
+  cores: 16
+  threads: 24
+  base_clock: 2.1
+  boost_clock: 5.2
+  tdp: 65
+  architecture: "Raptor Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 8
+        boost_clock: 5.2
+      - type: "E-core"
+        count: 8
+        boost_clock: 4.2
+
+gpu:
+  - model: "Intel UHD Graphics 770"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 5600
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Intel I219-LM"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX211"
+    bluetooth: "5.1"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 2"
+      features: ["DisplayPort Alt Mode"]
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 179
+  depth: 183
+  height: 36
+  weight: 1200
+
+power:
+  adapter_wattage: 90
+  dc_input: "19V"
+  usb_pd_input: false
+
+notes: |-
+  - Dual M.2 slots plus 2.5" SATA bay for triple storage
