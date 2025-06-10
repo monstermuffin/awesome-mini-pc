@@ -236,7 +236,7 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
                 <StorageCell device={device} showDetails={true} />
               </Grid>
 
-              {((device?.expansion?.pcie_slots?.length ?? 0) > 0 || (device?.expansion?.oculink_ports?.length ?? 0) > 0) && (
+              {((device?.expansion?.pcie_slots?.length ?? 0) > 0 || (device?.expansion?.oculink_ports?.length ?? 0) > 0 || device?.expansion?.egpu_support) && (
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                     color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
@@ -303,6 +303,28 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
                         </Typography>
                       </Box>
                     ))}
+
+                    {/* eGPU Support */}
+                    {device?.expansion?.egpu_support && (
+                      <Box sx={{
+                        p: 1.5,
+                        borderRadius: 1,
+                        backgroundColor: theme => theme.palette.mode === 'dark' 
+                          ? 'rgba(255,152,0,0.1)' 
+                          : 'rgba(255,152,0,0.05)',
+                        border: theme => `1px solid ${theme.palette.mode === 'dark' 
+                          ? 'rgba(255,152,0,0.2)' 
+                          : 'rgba(255,152,0,0.15)'}`,
+                        minWidth: 180,
+                      }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                          eGPU Support
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          External GPU compatible
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
                   {device?.expansion?.additional_info && (
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>

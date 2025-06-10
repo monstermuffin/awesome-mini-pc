@@ -794,8 +794,8 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                         }}
                       >
                         <Tooltip title={
-                          ((device?.expansion?.pcie_slots?.length ?? 0) + (device?.expansion?.oculink_ports?.length ?? 0)) > 0
-                            ? `${device?.expansion?.pcie_slots?.length ?? 0} PCIe slot(s)${device?.expansion?.oculink_ports?.length ? `, ${device.expansion.oculink_ports.length} OCuLink port(s)` : ''} available`
+                          ((device?.expansion?.pcie_slots?.length ?? 0) + (device?.expansion?.oculink_ports?.length ?? 0)) > 0 || device?.expansion?.egpu_support
+                            ? `${device?.expansion?.pcie_slots?.length ?? 0} PCIe slot(s)${device?.expansion?.oculink_ports?.length ? `, ${device.expansion.oculink_ports.length} OCuLink port(s)` : ''}${device?.expansion?.egpu_support ? ', eGPU support' : ''} available`
                             : "View details"
                         }>
                           <IconButton 
@@ -1031,7 +1031,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       <StorageCell device={detailDevice} showDetails={true} />
                     </Grid>
 
-                    {((detailDevice?.expansion?.pcie_slots?.length ?? 0) > 0 || (detailDevice?.expansion?.oculink_ports?.length ?? 0) > 0) && (
+                    {((detailDevice?.expansion?.pcie_slots?.length ?? 0) > 0 || (detailDevice?.expansion?.oculink_ports?.length ?? 0) > 0 || detailDevice?.expansion?.egpu_support) && (
                       <Grid
                         size={{
                           xs: 12,
@@ -1102,6 +1102,28 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                               </Typography>
                             </Box>
                           ))}
+
+                          {/* eGPU Support */}
+                          {detailDevice?.expansion?.egpu_support && (
+                            <Box sx={{
+                              p: 1.5,
+                              borderRadius: 1,
+                              backgroundColor: theme => theme.palette.mode === 'dark' 
+                                ? 'rgba(255,152,0,0.1)' 
+                                : 'rgba(255,152,0,0.05)',
+                              border: theme => `1px solid ${theme.palette.mode === 'dark' 
+                                ? 'rgba(255,152,0,0.2)' 
+                                : 'rgba(255,152,0,0.15)'}`,
+                              minWidth: 180,
+                            }}>
+                              <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                                eGPU Support
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                External GPU compatible
+                              </Typography>
+                            </Box>
+                          )}
                         </Box>
                         {detailDevice?.expansion?.additional_info && (
                           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>

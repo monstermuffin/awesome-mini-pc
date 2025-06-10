@@ -68,6 +68,7 @@ export interface MiniPC {
     oculink_ports?: Array<{
       version: string; // e.g., "OCuLink 1.0", "OCuLink 2.0"
     }>;
+    egpu_support?: boolean; // Whether the device supports external GPU
     additional_info?: string;
   };
   ports?: {

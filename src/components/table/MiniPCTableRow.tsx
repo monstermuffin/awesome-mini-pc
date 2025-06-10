@@ -545,8 +545,8 @@ export function MiniPCTableRow({
              }}
            >
              <Tooltip title={
-               ((displayDevice?.expansion?.pcie_slots?.length ?? 0) + (displayDevice?.expansion?.oculink_ports?.length ?? 0)) > 0
-                 ? `${displayDevice?.expansion?.pcie_slots?.length ?? 0} PCIe slot(s)${displayDevice?.expansion?.oculink_ports?.length ? `, ${displayDevice.expansion.oculink_ports.length} OCuLink port(s)` : ''} available`
+               ((displayDevice?.expansion?.pcie_slots?.length ?? 0) + (displayDevice?.expansion?.oculink_ports?.length ?? 0)) > 0 || displayDevice?.expansion?.egpu_support
+                 ? `${displayDevice?.expansion?.pcie_slots?.length ?? 0} PCIe slot(s)${displayDevice?.expansion?.oculink_ports?.length ? `, ${displayDevice.expansion.oculink_ports.length} OCuLink port(s)` : ''}${displayDevice?.expansion?.egpu_support ? ', eGPU support' : ''} available`
                  : "View details"
              }>
                <IconButton 
