@@ -30,6 +30,7 @@ type FilterState = {
   releaseYears: Set<string>;
   pcieSlotTypes: Set<string>;
   hasExpansionSlots: boolean;
+  hasEgpuSupport: boolean;
   deviceAge: { min: number; max: number } | null;
   tdp: { min: number; max: number } | null;
   cores: { min: number; max: number } | null;
@@ -296,6 +297,9 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
       device.expansion?.pcie_slots && device.expansion.pcie_slots.length > 0
     ), [devices]);
 
+  const hasEgpuDevices = React.useMemo(() => 
+    devices.some(device => device.expansion?.egpu_support), [devices]);
+
   return (
     <Paper
       elevation={0}
@@ -494,8 +498,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         onSelect={(value, checked) => onFilterChange('ethernetChipsets', value, checked)}
       />
 
-      {/* PCIe Expansion Filters - only show if any device has expansion slots */}
-      {hasExpansionDevices && (
+      {/* PCIe Expansion Filters - only show if any device has expansion slots or eGPU support */}
+      {(hasExpansionDevices || hasEgpuDevices) && (
         <>
           <Divider sx={{ mx: 2, my: 2 }} />
           <Typography variant="subtitle1" sx={{ px: 2, pt: 1, pb: 1, fontWeight: 600 }}>
@@ -513,6 +517,20 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             label={<Typography variant="body2">Has PCIe expansion slots</Typography>}
             sx={{ px: 2, py: 1 }}
           />
+          
+          {hasEgpuDevices && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectedFilters.hasEgpuSupport}
+                  onChange={(e) => onFilterChange('hasEgpuSupport', null, e.target.checked)}
+                  size="small"
+                />
+              }
+              label={<Typography variant="body2">Has eGPU support</Typography>}
+              sx={{ px: 2, py: 1 }}
+            />
+          )}
           
           {pcieSlotTypes.size > 0 && (
             <FilterGroup

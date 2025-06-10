@@ -54,6 +54,7 @@ type FilterState = {
   releaseYears: Set<string>;
   pcieSlotTypes: Set<string>;
   hasExpansionSlots: boolean;
+  hasEgpuSupport: boolean;
   deviceAge: { min: number; max: number } | null;
   tdp: { min: number; max: number } | null;
   cores: { min: number; max: number } | null;
@@ -81,6 +82,7 @@ const hasActiveFilters = (filters: FilterState): boolean => {
     filters.releaseYears.size > 0 ||
     filters.pcieSlotTypes.size > 0 ||
     filters.hasExpansionSlots ||
+    filters.hasEgpuSupport ||
     filters.deviceAge !== null ||
     filters.tdp !== null ||
     filters.cores !== null ||
@@ -256,6 +258,7 @@ function App() {
     releaseYears: new Set<string>(),
     pcieSlotTypes: new Set<string>(),
     hasExpansionSlots: false,
+    hasEgpuSupport: false,
     deviceAge: null,
     tdp: null,
     cores: null,
@@ -290,7 +293,7 @@ function App() {
       if (category === 'tdp' || category === 'cores' || category === 'memorySpeed' || 
           category === 'memoryCapacity' || category === 'deviceAge' || category === 'volume') {
         newFilters[category] = value as { min: number; max: number } | null;
-      } else if (category === 'hasExpansionSlots') {
+      } else if (category === 'hasExpansionSlots' || category === 'hasEgpuSupport') {
         newFilters[category] = checked as boolean;
       } else {
         const filterSet = new Set(prev[category] as Set<string>);
@@ -386,6 +389,11 @@ function App() {
             selectedFilters.pcieSlotTypes.has(slot.type))) {
         return false;
       }
+    }
+
+    // eGPU support filter
+    if (selectedFilters.hasEgpuSupport && !device.expansion?.egpu_support) {
+      return false;
     }
 
     if (selectedFilters.deviceAge) {

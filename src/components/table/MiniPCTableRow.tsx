@@ -529,12 +529,13 @@ export function MiniPCTableRow({
            <Badge 
              badgeContent={
                (displayDevice?.expansion?.pcie_slots?.length ?? 0) + 
-               (displayDevice?.expansion?.oculink_ports?.length ?? 0)
+               (displayDevice?.expansion?.oculink_ports?.length ?? 0) +
+               (displayDevice?.expansion?.egpu_support ? 1 : 0)
              }
              color="primary"
              sx={{ 
                '& .MuiBadge-badge': { 
-                 display: (!displayDevice?.expansion?.pcie_slots?.length && !displayDevice?.expansion?.oculink_ports?.length) ? 'none' : 'flex',
+                 display: (!displayDevice?.expansion?.pcie_slots?.length && !displayDevice?.expansion?.oculink_ports?.length && !displayDevice?.expansion?.egpu_support) ? 'none' : 'flex',
                  fontSize: '0.6rem',
                  fontWeight: 'bold',
                  backgroundColor: (theme: any) => theme.palette.mode === 'dark' ? '#2196f3' : '#1976d2',

@@ -778,12 +778,13 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                       <Badge 
                         badgeContent={
                           (device?.expansion?.pcie_slots?.length ?? 0) + 
-                          (device?.expansion?.oculink_ports?.length ?? 0)
+                          (device?.expansion?.oculink_ports?.length ?? 0) +
+                          (device?.expansion?.egpu_support ? 1 : 0)
                         }
                         color="primary"
                         sx={{ 
                           '& .MuiBadge-badge': { 
-                            display: (!device?.expansion?.pcie_slots?.length && !device?.expansion?.oculink_ports?.length) ? 'none' : 'flex',
+                            display: (!device?.expansion?.pcie_slots?.length && !device?.expansion?.oculink_ports?.length && !device?.expansion?.egpu_support) ? 'none' : 'flex',
                             fontSize: '0.6rem',
                             fontWeight: 'bold',
                             backgroundColor: theme => theme.palette.mode === 'dark' ? '#2196f3' : '#1976d2',
