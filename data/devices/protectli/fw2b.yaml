@@ -23,6 +23,7 @@ memory:
 storage:
 - type: mSATA
   form_factor: Full Size
+  interface: SATA
 networking:
   ethernet:
   - ports: 1

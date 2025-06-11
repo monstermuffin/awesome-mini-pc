@@ -11,6 +11,7 @@ cpu:
   base_clock: 3.3
   boost_clock: 4.5
   tdp: 45
+  architecture: "Zen 3+"
 
 gpu:
   - model: "AMD Radeon 660M"

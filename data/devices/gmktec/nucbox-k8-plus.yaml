@@ -11,6 +11,7 @@ cpu:
   base_clock: 3.0
   boost_clock: 5.1
   tdp: 65
+  architecture: "Zen 4"
 
 gpu:
   - model: "AMD Radeon 780M"
