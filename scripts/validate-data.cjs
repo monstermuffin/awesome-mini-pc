@@ -7,7 +7,7 @@ const VALID_MEMORY_TYPES = ['DDR', 'DDR2', 'DDR3', 'DDR3L', 'DDR4', 'DDR5', 'LPD
 const VALID_MEMORY_MODULE_TYPES = ['SODIMM', 'DIMM', 'Soldered', 'SO-DIMM', 'Embedded', 'MicroDIMM', 'RDIMM', 'UDIMM', 'LRDIMM'];
 const VALID_STORAGE_TYPES = ['M.2', 'SATA', 'NVMe', '2.5"', 'mSATA', 'eMMC', 'microSD', 'MicroSD Card', 'SD Card', 'U.2', 'Flash', 'CFast', 'CFexpress', 'NVDIMM', 'Optane'];
 const VALID_STORAGE_FORM_FACTORS = {
-  'M.2': ['2280', '2260', '2242', '2230', '22110', '2260', '22110'],
+  'M.2': ['2280', '2260', '2242', '2230', '22110', '2260', '22110', '2280/U.2'],
   'SATA': ['2.5"', '2.5', '3.5"', '3.5'],
   'mSATA': ['Full Size', 'Half Size'],
   'eMMC': [],
