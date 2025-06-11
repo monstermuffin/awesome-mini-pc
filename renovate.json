@@ -73,6 +73,13 @@
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["dependencies", "nodejs", "major-update"]
+    },
+    {
+      "description": "Pin glob to v10.x for CommonJS !tofix",
+      "matchPackageNames": ["glob"],
+      "allowedVersions": "< 11.0.0",
+      "enabled": true,
+      "labels": ["dependencies", "compatibility", "pinned"]
     }
   ],
   "vulnerabilityAlerts": {

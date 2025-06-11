@@ -1,0 +1,67 @@
+id: gmktec-g2-plus
+brand: GMKTec
+model: G2 Plus
+release_date: "2025"
+
+cpu:
+  brand: "Intel"
+  model: "N150"
+  cores: 4
+  threads: 4
+  base_clock: 1.8
+  boost_clock: 3.6
+  tdp: 6
+  architecture: "Twin Lake"
+
+gpu:
+  - model: "Intel UHD Graphics Xe"
+    type: "Integrated"
+
+memory:
+  type: "LPDDR5"
+  speed: 4800
+  slots: 0
+  max_capacity: 12
+  module_type: "Soldered"
+
+storage:
+  - type: "M.2"
+    form_factor: "2242"
+    interface: "SATA"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "1GbE"
+      chipset: "PLACEHOLDER"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "PLACEHOLDER"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 1"
+  usb_c:
+    - count: 1
+      type: "USB"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 86.87
+  depth: 86.87
+  height: 39.37
+
+power:
+  dc_input: "12V" 
