@@ -29,10 +29,10 @@ storage:
     form_factor: "2280/U.2"
     interface: "PCIe 4.0 x4"
   - type: M.2
-    form_factor: "2280/22110"
+    form_factor: "22110"
     interface: "PCIe 4.0 x4"
   - type: M.2
-    form_factor: "2280/22110"
+    form_factor: "22110"
     interface: "PCIe 4.0 x4"
 
 networking:
