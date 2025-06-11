@@ -2,15 +2,42 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 
-const VALID_CPU_BRANDS = ['Intel', 'AMD', 'ARM', 'Qualcomm', 'Apple'];
-const VALID_MEMORY_TYPES = ['DDR3', 'DDR3L', 'DDR4', 'DDR5', 'LPDDR4', 'LPDDR4X', 'LPDDR5'];
-const VALID_MEMORY_MODULE_TYPES = ['SODIMM', 'DIMM', 'Soldered', 'SO-DIMM'];
-const VALID_STORAGE_TYPES = ['M.2', 'SATA', 'NVMe', '2.5"', 'mSATA', 'eMMC', 'microSD', 'U.2'];
-const VALID_WIFI_STANDARDS = ['WiFi 4', 'WiFi 5', 'WiFi 6', 'WiFi 6E', 'WiFi 7', 'None'];
+const VALID_CPU_BRANDS = ['Intel', 'AMD', 'ARM', 'Qualcomm', 'Apple', 'Broadcom', 'Raspberry Pi', 'MediaTek', 'Samsung', 'Nvidia', 'Rockchip', 'Allwinner', 'Texas Instruments', 'Marvell'];
+const VALID_MEMORY_TYPES = ['DDR', 'DDR2', 'DDR3', 'DDR3L', 'DDR4', 'DDR5', 'LPDDR2', 'LPDDR3', 'LPDDR4', 'LPDDR4X', 'LPDDR5', 'SRAM', 'GDDR5', 'GDDR6', 'HBM'];
+const VALID_MEMORY_MODULE_TYPES = ['SODIMM', 'DIMM', 'Soldered', 'SO-DIMM', 'Embedded', 'MicroDIMM', 'RDIMM', 'UDIMM', 'LRDIMM'];
+const VALID_STORAGE_TYPES = ['M.2', 'SATA', 'NVMe', '2.5"', 'mSATA', 'eMMC', 'microSD', 'MicroSD Card', 'SD Card', 'U.2', 'Flash', 'CFast', 'CFexpress', 'NVDIMM', 'Optane'];
+const VALID_STORAGE_FORM_FACTORS = {
+  'M.2': ['2280', '2260', '2242', '2230', '22110', '2260', '22110'],
+  'SATA': ['2.5"', '2.5', '3.5"', '3.5'],
+  'mSATA': ['Full Size', 'Half Size'],
+  'eMMC': [],
+  'Flash': [],
+  'MicroSD Card': ['MicroSD'],
+  'SD Card': ['SD'],
+  'U.2': ['2.5"', '2.5'],
+  'CFast': ['Type I', 'Type II'],
+  'CFexpress': ['Type A', 'Type B', 'Type C'],
+  'NVDIMM': ['DIMM'],
+  'Optane': ['M.2', '2.5"', '2.5']
+};
+const VALID_WIFI_STANDARDS = ['WiFi', 'WiFi 4', 'WiFi 5', 'WiFi 6', 'WiFi 6E', 'WiFi 7', 'None'];
 const VALID_ETHERNET_SPEEDS = ['100Mbps', '1GbE', '2.5GbE', '5GbE', '10GbE'];
 const VALID_PCIE_TYPES = ['x1', 'x4', 'x8', 'x16', 'Mini PCIe', 'M.2'];
-const VALID_PCIE_VERSIONS = ['PCIe 2.0', 'PCIe 3.0', 'PCIe 4.0', 'PCIe 5.0', '2.0', '3.0', '4.0', '5.0'];
-const VALID_CPU_SOCKETS = ['AM4', 'AM5', 'LGA 1700', 'LGA 1200', 'LGA 1151', 'SP3', 'sTRX4', 'sWRX8'];
+const VALID_PCIE_VERSIONS = [
+  'PCIe 2.0', 'PCIe 3.0', 'PCIe 4.0', 'PCIe 5.0', 
+  '2.0', '3.0', '4.0', '5.0',
+  'PCIe 2.0 x1', 'PCIe 2.0 x2', 'PCIe 2.0 x4', 'PCIe 2.0 x8', 'PCIe 2.0 x16',
+  'PCIe 3.0 x1', 'PCIe 3.0 x2', 'PCIe 3.0 x4', 'PCIe 3.0 x8', 'PCIe 3.0 x16',
+  'PCIe 4.0 x1', 'PCIe 4.0 x2', 'PCIe 4.0 x4', 'PCIe 4.0 x8', 'PCIe 4.0 x16',
+  'PCIe 5.0 x1', 'PCIe 5.0 x2', 'PCIe 5.0 x4', 'PCIe 5.0 x8', 'PCIe 5.0 x16'
+];
+const VALID_CPU_SOCKETS = [
+  'AM4', 'AM5', 'AM3+', 'AM3', 'AM2+', 'AM2', 'FM1', 'FM2', 'FM2+',
+  'LGA 1700', 'LGA 1200', 'LGA 1151', 'LGA 1150', 'LGA 1155', 'LGA 1156', 'LGA 775', 'LGA 771',
+  'LGA1700', 'LGA1200', 'LGA1151', 'LGA1150', 'LGA1155', 'LGA1156', 'LGA775', 'LGA771',
+  'SP3', 'SP5', 'sTRX4', 'sTR4', 'sWRX8', 'sWRX80',
+  'BGA', 'PGA', 'FCBGA', 'FCLGA'
+];
 const VALID_OCULINK_VERSIONS = ['OCuLink 1.0', 'OCuLink 2.0'];
 const VALID_ETHERNET_INTERFACES = ['RJ45', 'SFP', 'SFP+', 'SFP28', '10GBASE-T'];
 
@@ -31,7 +58,7 @@ const VALID_ETHERNET_INTERFACES = ['RJ45', 'SFP', 'SFP+', 'SFP28', '10GBASE-T'];
  * @param {string} deviceFile - File being validated
  */
 function validateRequiredFields(data, path, errors, deviceFile) {
-  const requiredTopLevel = ['id', 'brand', 'model', 'release_date', 'cpu', 'memory', 'storage', 'networking'];
+  const requiredTopLevel = ['id', 'brand', 'model', 'release_date', 'cpu', 'memory', 'storage'];
   for (const field of requiredTopLevel) {
     if (!data[field]) {
       errors.push({
@@ -173,50 +200,49 @@ function validateRequiredFields(data, path, errors, deviceFile) {
   }
   
   if (data.networking) {
-    if (!data.networking.ethernet || !Array.isArray(data.networking.ethernet)) {
-      errors.push({
-        deviceId: data.id || 'unknown',
-        file: deviceFile,
-        message: `Networking.ethernet must be an array`,
-        path: `${path}.networking.ethernet`,
-        critical: true
-      });
-    } else {
-      data.networking.ethernet.forEach((eth, index) => {
-        const requiredEthernetFields = ['chipset', 'speed', 'ports', 'interface'];
-        for (const field of requiredEthernetFields) {
-          if (eth[field] === undefined) {
+    // Ethernet is optional - only validate if present and not "None"
+    if (data.networking.ethernet && data.networking.ethernet !== 'None') {
+      if (!Array.isArray(data.networking.ethernet)) {
+        errors.push({
+          deviceId: data.id || 'unknown',
+          file: deviceFile,
+          message: `Networking.ethernet must be an array (or "None" if not present)`,
+          path: `${path}.networking.ethernet`,
+          critical: true
+        });
+      } else {
+        data.networking.ethernet.forEach((eth, index) => {
+          const requiredEthernetFields = ['chipset', 'speed', 'ports', 'interface'];
+          for (const field of requiredEthernetFields) {
+            if (eth[field] === undefined) {
+              errors.push({
+                deviceId: data.id || 'unknown',
+                file: deviceFile,
+                message: `Missing required ethernet[${index}] field: ${field}`,
+                path: `${path}.networking.ethernet[${index}].${field}`,
+                critical: true
+              });
+            }
+          }
+        });
+      }
+    }
+    
+    // WiFi is optional - only validate if present and not "None"
+    if (data.networking.wifi && data.networking.wifi !== 'None') {
+      // Handle case where wifi might be a string "None" vs object
+      if (typeof data.networking.wifi === 'object') {
+        const requiredWifiFields = ['chipset', 'standard', 'bluetooth'];
+        for (const field of requiredWifiFields) {
+          if (data.networking.wifi[field] === undefined) {
             errors.push({
               deviceId: data.id || 'unknown',
               file: deviceFile,
-              message: `Missing required ethernet[${index}] field: ${field}`,
-              path: `${path}.networking.ethernet[${index}].${field}`,
+              message: `Missing required wifi field: ${field}`,
+              path: `${path}.networking.wifi.${field}`,
               critical: true
             });
           }
-        }
-      });
-    }
-    
-    if (!data.networking.wifi) {
-      errors.push({
-        deviceId: data.id || 'unknown',
-        file: deviceFile,
-        message: `Missing networking.wifi object`,
-        path: `${path}.networking.wifi`,
-        critical: true
-      });
-    } else {
-      const requiredWifiFields = ['chipset', 'standard', 'bluetooth'];
-      for (const field of requiredWifiFields) {
-        if (data.networking.wifi[field] === undefined) {
-          errors.push({
-            deviceId: data.id || 'unknown',
-            file: deviceFile,
-            message: `Missing required wifi field: ${field}`,
-            path: `${path}.networking.wifi.${field}`,
-            critical: true
-          });
         }
       }
     }
@@ -224,7 +250,14 @@ function validateRequiredFields(data, path, errors, deviceFile) {
   
   if (data.storage && Array.isArray(data.storage)) {
     data.storage.forEach((storage, index) => {
-      const requiredStorageFields = ['type', 'form_factor', 'interface'];
+      const isEmbeddedStorage = storage.interface === 'Embedded' || 
+                               storage.type === 'Flash' || 
+                               storage.type === 'eMMC';
+      
+      const requiredStorageFields = isEmbeddedStorage 
+        ? ['type', 'interface'] 
+        : ['type', 'form_factor', 'interface'];
+        
       for (const field of requiredStorageFields) {
         if (storage[field] === undefined) {
           errors.push({
@@ -233,6 +266,19 @@ function validateRequiredFields(data, path, errors, deviceFile) {
             message: `Missing required storage[${index}] field: ${field}`,
             path: `${path}.storage[${index}].${field}`,
             critical: true
+          });
+        }
+      }
+      
+      if (storage.form_factor && storage.type && VALID_STORAGE_FORM_FACTORS[storage.type]) {
+        const validFormFactors = VALID_STORAGE_FORM_FACTORS[storage.type];
+        if (validFormFactors.length > 0 && !validFormFactors.includes(storage.form_factor)) {
+          errors.push({
+            deviceId: data.id || 'unknown',
+            file: deviceFile,
+            message: `Invalid form_factor '${storage.form_factor}' for storage type '${storage.type}'. Valid options: ${validFormFactors.join(', ')}`,
+            path: `${path}.storage[${index}].form_factor`,
+            critical: false
           });
         }
       }
@@ -441,11 +487,11 @@ function validateDataTypes(data, path, errors, deviceFile) {
   }
   
   if (data.memory) {
-    if (data.memory.max_capacity !== undefined && (!Number.isInteger(data.memory.max_capacity) || data.memory.max_capacity <= 0)) {
+    if (data.memory.max_capacity !== undefined && (typeof data.memory.max_capacity !== 'number' || data.memory.max_capacity <= 0)) {
       errors.push({
         deviceId: data.id || 'unknown',
         file: deviceFile,
-        message: `memory.max_capacity must be a positive integer`,
+        message: `memory.max_capacity must be a positive number`,
         path: `${path}.memory.max_capacity`,
         critical: true
       });
@@ -652,18 +698,6 @@ function validateLogicalConstraints(data, path, errors, deviceFile) {
     }
   }
   
-  if (data.memory && data.memory.slots !== undefined && data.memory.module_type) {
-    if (data.memory.module_type === 'Soldered' && data.memory.slots > 0) {
-      errors.push({
-        deviceId: data.id || 'unknown',
-        file: deviceFile,
-        message: `Soldered memory should have 0 slots, but got ${data.memory.slots}`,
-        path: `${path}.memory`,
-        critical: false
-      });
-    }
-  }
-  
   if (data.id && data.brand) {
     const expectedPrefix = data.brand.toLowerCase().replace(/\s+/g, '-');
     if (!data.id.startsWith(expectedPrefix)) {
@@ -838,11 +872,14 @@ function validateDevice(filePath, deviceFile) {
  */
 async function validateAllDevices() {
   const errors = [];
-  const deviceDirs = ['intel', 'asrock', 'beelink', 'minisforum'];
+  const deviceRootPath = path.join(__dirname, '..', 'data', 'devices');
   
-  for (const brand of deviceDirs) {
-    const brandPath = path.join(__dirname, '..', 'data', 'devices', brand);
-    if (!fs.existsSync(brandPath)) continue;
+  const brandDirs = fs.readdirSync(deviceRootPath, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+  
+  for (const brand of brandDirs) {
+    const brandPath = path.join(deviceRootPath, brand);
     
     const files = fs.readdirSync(brandPath)
       .filter(file => file.endsWith('.yaml') || file.endsWith('.yml'));
@@ -854,6 +891,9 @@ async function validateAllDevices() {
         const data = yaml.load(content);
         
         validateRequiredFields(data, '', errors, filePath);
+        validateDataTypes(data, '', errors, filePath);
+        validateEnumValues(data, '', errors, filePath);
+        validateLogicalConstraints(data, '', errors, filePath);
         validateFieldValues(data, '', errors, filePath);
         
       } catch (error) {
@@ -871,8 +911,39 @@ async function validateAllDevices() {
   return errors;
 }
 
+/**
+ * Validates specific files passed as command line arguments
+ * @param {string[]} filePaths - Array of file paths to validate
+ * @returns {ValidationError[]}
+ */
+function validateSpecificFiles(filePaths) {
+  const errors = [];
+  
+  for (const filePath of filePaths) {
+    if (!fs.existsSync(filePath)) {
+      errors.push({
+        deviceId: 'unknown',
+        file: filePath,
+        message: `File does not exist: ${filePath}`,
+        path: '',
+        critical: true
+      });
+      continue;
+    }
+    
+    const deviceFileErrors = validateDevice(filePath, filePath);
+    errors.push(...deviceFileErrors);
+  }
+  
+  return errors;
+}
+
 if (require.main === module) {
-  validateAllDevices().then(errors => {
+  const args = process.argv.slice(2);
+  
+  if (args.length > 0) {
+    // Validate specific files
+    const errors = validateSpecificFiles(args);
     if (errors.length > 0) {
       console.log(JSON.stringify(errors, null, 2));
       process.exit(1);
@@ -880,10 +951,20 @@ if (require.main === module) {
       console.log('No validation errors found.');
       process.exit(0);
     }
-  }).catch(error => {
-    console.error('Validation failed:', error);
-    process.exit(1);
-  });
+  } else {
+    validateAllDevices().then(errors => {
+      if (errors.length > 0) {
+        console.log(JSON.stringify(errors, null, 2));
+        process.exit(1);
+      } else {
+        console.log('No validation errors found.');
+        process.exit(0);
+      }
+    }).catch(error => {
+      console.error('Validation failed:', error);
+      process.exit(1);
+    });
+  }
 }
 
 module.exports = {

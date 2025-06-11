@@ -58,6 +58,15 @@ body:
         - ARM
         - Qualcomm
         - Apple
+        - Broadcom
+        - Raspberry Pi
+        - MediaTek
+        - Samsung
+        - Nvidia
+        - Rockchip
+        - Allwinner
+        - Texas Instruments
+        - Marvell
     validations:
       required: true
 
@@ -132,12 +141,41 @@ body:
       options:
         - AM4
         - AM5
+        - AM3+
+        - AM3
+        - AM2+
+        - AM2
+        - FM1
+        - FM2
+        - FM2+
         - LGA 1700
         - LGA 1200
         - LGA 1151
+        - LGA 1150
+        - LGA 1155
+        - LGA 1156
+        - LGA 775
+        - LGA 771
+        - LGA1700
+        - LGA1200
+        - LGA1151
+        - LGA1150
+        - LGA1155
+        - LGA1156
+        - LGA775
+        - LGA771
         - SP3
+        - SP5
         - sTRX4
+        - sTR4
         - sWRX8
+        - sWRX80
+        - BGA
+        - PGA
+        - FCBGA
+        - FCLGA
+    validations:
+      required: true
 
   - type: markdown
     attributes:
@@ -192,9 +230,15 @@ body:
         - DDR3L
         - DDR4
         - DDR5
+        - LPDDR2
+        - LPDDR3
         - LPDDR4
         - LPDDR4X
         - LPDDR5
+        - SRAM
+        - GDDR5
+        - GDDR6
+        - HBM
     validations:
       required: true
 
@@ -249,7 +293,16 @@ body:
         Please provide details for each storage option in the following format:
         - Type: M.2, Form Factor: 2280, Interface: PCIe 4.0 x4
         - Type: M.2, Form Factor: 2280, Interface: PCIe 3.0 x4, Alt Interface: SATA
-        - Type: SATA, Form Factor: 2.5"
+        - Type: SATA, Form Factor: 2.5", Interface: SATA3
+        - Type: mSATA, Form Factor: Full Size, Interface: SATA
+        - Type: mSATA, Form Factor: Half Size, Interface: SATA
+        - Type: eMMC, Interface: eMMC (Form Factor optional for embedded storage)
+        - Type: Flash, Interface: Embedded (Form Factor optional for embedded storage)
+        - Type: MicroSD Card, Interface: SD
+        - Type: CFast, Form Factor: Type II, Interface: SATA
+        - Type: NVDIMM, Form Factor: DIMM, Interface: DDR4
+        
+        **Note:** The Interface field is mandatory for all storage types. Form Factor is optional for embedded storage types (eMMC, Flash with Embedded interface).
       placeholder: |
         - Type: M.2, Form Factor: 2280, Interface: PCIe 4.0 x4
     validations:
@@ -263,7 +316,9 @@ body:
     id: wifi_standard
     attributes:
       label: Wi-Fi Standard
+      description: Select Wi-Fi standard if the device has Wi-Fi capability. Leave blank if no Wi-Fi is supported.
       options:
+        - WiFi
         - Wi-Fi 4
         - Wi-Fi 5
         - Wi-Fi 6
@@ -304,14 +359,14 @@ body:
     attributes:
       label: Ethernet Ports
       description: |
-        List all ethernet ports with their specifications:
+        List all ethernet ports with their specifications. Leave this field blank if the device has no ethernet ports:
         - Type: 1GbE, Chipset: Realtek RTL8111H, Interface: RJ45
         - Type: 2.5GbE, Chipset: Intel I225-V, Interface: RJ45
         - Type: 10GbE, Chipset: Intel X550-AT2, Interface: SFP+
       placeholder: |
         - Type: 1GbE, Chipset: Realtek RTL8111H, Interface: RJ45
     validations:
-      required: true
+      required: false
 
   - type: markdown
     attributes:

@@ -245,6 +245,9 @@ function extractMetadata(devices) {
 
     pc.storage.forEach(storage => {
       metadata.storageTypes.add(storage.type);
+      if (!storage.interface) {
+        throw new Error(`Storage entry missing required interface field in ${pc.id}: ${JSON.stringify(storage)}`);
+      }
       metadata.storageInterfaces.add(storage.interface);
     });
 
