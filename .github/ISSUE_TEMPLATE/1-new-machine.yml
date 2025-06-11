@@ -340,6 +340,32 @@ body:
     validations:
       required: false
 
+  - type: textarea
+    id: sim_slots
+    attributes:
+      label: SIM Card Slots
+      description: |
+        List SIM card slots if present:
+        - Type: 4G/3G SIM slot, Count: 1
+        - Type: 5G SIM slot, Count: 2
+      placeholder: |
+        - Type: 4G/3G SIM slot, Count: 1
+    validations:
+      required: false
+
+  - type: textarea
+    id: mpcie_slots
+    attributes:
+      label: mPCIe Slots
+      description: |
+        List mPCIe (Mini PCIe) slots if present:
+        - Count: 1, Type: mPCIe wireless slot, Note: For WiFi/4G/3G modules
+        - Count: 2, Type: mPCIe expansion slot
+      placeholder: |
+        - Count: 1, Type: mPCIe wireless slot, Note: For WiFi/4G/3G modules
+    validations:
+      required: false
+
   - type: markdown
     attributes:
       value: "## Ports & Interfaces"
@@ -435,6 +461,20 @@ body:
       options:
         - "Yes"
         - "No"
+    validations:
+      required: false
+
+  - type: textarea
+    id: serial_ports
+    attributes:
+      label: Serial Ports
+      description: |
+        List serial ports if present:
+        - Count: 1, Type: RJ45 COM Console
+        - Count: 2, Type: RS232
+        - Count: 1, Type: RS485
+      placeholder: |
+        - Count: 1, Type: RJ45 COM Console
     validations:
       required: false
 
