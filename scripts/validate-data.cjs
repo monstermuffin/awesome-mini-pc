@@ -26,7 +26,8 @@ const VALID_PCIE_TYPES = ['x1', 'x4', 'x8', 'x16', 'Mini PCIe', 'M.2'];
 const VALID_PCIE_VERSIONS = [
   'PCIe 2.0', 'PCIe 3.0', 'PCIe 4.0', 'PCIe 5.0', 
   '2.0', '3.0', '4.0', '5.0',
-  'PCIe 2.0 x1', 'PCIe 2.0 x2', 'PCIe 2.0 x4', 'PCIe 2.0 x8', 'PCIe 2.0 x16',
+  'PCIe 2.0 x1', 'PCIe 2.0 x2', 'PCIe 2.0 x4', 'PCIe 2.0 x8', 'PCIe 2.0 x16', 
+  'PCIe 2.1 x1', 'PCIe 2.1 x2', 'PCIe 2.1 x4', 'PCIe 2.1 x8', 'PCIe 2.1 x16',
   'PCIe 3.0 x1', 'PCIe 3.0 x2', 'PCIe 3.0 x4', 'PCIe 3.0 x8', 'PCIe 3.0 x16',
   'PCIe 4.0 x1', 'PCIe 4.0 x2', 'PCIe 4.0 x4', 'PCIe 4.0 x8', 'PCIe 4.0 x16',
   'PCIe 5.0 x1', 'PCIe 5.0 x2', 'PCIe 5.0 x4', 'PCIe 5.0 x8', 'PCIe 5.0 x16'
