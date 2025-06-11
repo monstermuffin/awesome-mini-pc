@@ -53,7 +53,7 @@ function generateSitemap() {
 
   const dataDir = path.join(__dirname, '..', 'data');
   fs.writeFileSync(path.join(dataDir, 'sitemap.xml'), sitemap);
-  console.log('✅ Sitemap generated successfully');
+  console.log('Sitemap generated successfully');
 }
 
 if (require.main === module) {
