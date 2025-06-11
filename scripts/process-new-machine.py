@@ -90,11 +90,14 @@ def parse_issue_form(issue_body):
         'Ethernet Ports': 'ethernet_ports',
         'PCIe Slots': 'pcie_slots',
         'OCuLink Ports': 'oculink_ports',
+        'SIM Card Slots': 'sim_slots',
+        'mPCIe Slots': 'mpcie_slots',
         'USB Ports': 'usb_ports',
         'Display Ports': 'display_ports',
         'Audio Jacks': 'audio_jacks',
         'SD Card Reader': 'sd_card_reader',
         'Micro SD Card Reader': 'micro_sd_card_reader',
+        'Serial Ports': 'serial_ports',
         'IR Receiver': 'ir_receiver',
         'Dimensions (mm)': 'dimensions',
         'Power Adapter': 'power_adapter',
@@ -341,7 +344,113 @@ def create_device_yaml(extracted_data):
     if 'ir_receiver' in extracted_data and extracted_data['ir_receiver'] != 'None':
         ports['ir_receiver'] = extracted_data['ir_receiver'] == 'Yes'
     
+    # Process serial ports
+    if 'serial_ports' in extracted_data and extracted_data['serial_ports'] and extracted_data['serial_ports'] != 'No response':
+        for line in extracted_data['serial_ports'].split('\n'):
+            if line.strip().startswith('Count:') or line.strip().startswith('- Count:'):
+                serial_info = {}
+                parts = [p.strip() for p in line.replace('- ', '').split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'count':
+                        serial_info['count'] = int(value)
+                    elif key_lower == 'type':
+                        serial_info['type'] = value
+                
+                if 'count' in serial_info and 'type' in serial_info:
+                    ports['serial'] = serial_info
+                    break
+    
     structured_data['ports'] = ports
+    
+    # Process expansion features
+    expansion = {}
+    
+    # Process SIM slots
+    if 'sim_slots' in extracted_data and extracted_data['sim_slots'] and extracted_data['sim_slots'] != 'No response':
+        sim_slots = []
+        for line in extracted_data['sim_slots'].split('\n'):
+            if line.strip().startswith('Type:') or line.strip().startswith('- Type:'):
+                sim_slot = {}
+                parts = [p.strip() for p in line.replace('- ', '').split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'type':
+                        sim_slot['type'] = value
+                    elif key_lower == 'count':
+                        sim_slot['count'] = int(value)
+                
+                if 'type' in sim_slot and 'count' in sim_slot:
+                    sim_slots.append(sim_slot)
+        
+        if sim_slots:
+            expansion['sim_slots'] = sim_slots
+    
+    # Process mPCIe slots
+    if 'mpcie_slots' in extracted_data and extracted_data['mpcie_slots'] and extracted_data['mpcie_slots'] != 'No response':
+        mpcie_slots = []
+        for line in extracted_data['mpcie_slots'].split('\n'):
+            if line.strip().startswith('Count:') or line.strip().startswith('- Count:'):
+                mpcie_slot = {}
+                parts = [p.strip() for p in line.replace('- ', '').split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'count':
+                        mpcie_slot['count'] = int(value)
+                    elif key_lower == 'type':
+                        mpcie_slot['type'] = value
+                    elif key_lower == 'note':
+                        mpcie_slot['note'] = value
+                
+                if 'count' in mpcie_slot and 'type' in mpcie_slot:
+                    mpcie_slots.append(mpcie_slot)
+        
+        if mpcie_slots:
+            expansion['mpcie_slots'] = mpcie_slots
+    
+    # Process existing expansion features (PCIe slots, OCuLink ports)
+    if 'pcie_slots' in extracted_data and extracted_data['pcie_slots'] and extracted_data['pcie_slots'] != 'No response':
+        pcie_slots = []
+        for line in extracted_data['pcie_slots'].split('\n'):
+            if line.strip().startswith('Type:') or line.strip().startswith('- Type:'):
+                pcie_slot = {}
+                parts = [p.strip() for p in line.replace('- ', '').split(',')]
+                for part in parts:
+                    if not part.strip():
+                        continue
+                    key, value = [x.strip() for x in part.split(':', 1)]
+                    key_lower = key.lower()
+                    if key_lower == 'type':
+                        pcie_slot['type'] = value
+                        pcie_slot['version'] = value.split()[-1] if 'PCIe' in value else '3.0'
+                    elif key_lower == 'form factor':
+                        pcie_slot['form_factor'] = value
+                
+                if 'type' in pcie_slot:
+                    pcie_slots.append(pcie_slot)
+        
+        if pcie_slots:
+            expansion['pcie_slots'] = pcie_slots
+    
+    if 'oculink_ports' in extracted_data and extracted_data['oculink_ports'] and extracted_data['oculink_ports'] != 'No response':
+        # Parse OCuLink format like "1x OCuLink 2.0"
+        match = re.search(r'(\d+)x?\s*(OCuLink\s*\d+\.\d+)', extracted_data['oculink_ports'])
+        if match:
+            count = int(match.group(1))
+            version = match.group(2)
+            expansion['oculink_ports'] = [{'version': version} for _ in range(count)]
+    
+    if expansion:
+        structured_data['expansion'] = expansion
     
     if 'dimensions' in extracted_data:
         try:
