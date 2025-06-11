@@ -1,0 +1,57 @@
+id: protectli-fw2b
+brand: Protectli
+model: FW2B
+release_date: '2023'
+cpu:
+  brand: Intel
+  model: Celeron J3060
+  tdp: 6.0
+  cores: 2
+  threads: 2
+  base_clock: 1.6
+  architecture: Braswell
+  boost_clock: 2.48
+gpu:
+- type: Integrated
+  model: Intel HD Graphics 400
+memory:
+  slots: 1
+  type: DDR3L
+  speed: 1600.0
+  module_type: SODIMM
+  max_capacity: 8
+storage:
+- type: mSATA
+  form_factor: Full Size
+networking:
+  ethernet:
+  - ports: 1
+    speed: 1GbE
+    chipset: 'Intel: i211-AT'
+    interface: RJ45
+  - ports: 1
+    speed: 1GbE
+    chipset: 'Intel: i211-AT'
+    interface: RJ45
+  wifi:
+    standard: None
+    chipset: None
+    bluetooth: None
+ports:
+  usb_a:
+  - type: USB 3.1 Gen1
+    speed: 5Gbps
+    count: 2
+  - type: USB 2.0
+    speed: 480Mbps
+    count: 4
+  hdmi:
+    type: HDMI
+    count: 2
+    version: '2.0'
+    form_factor: Full-size
+    max_resolution: 4K@60Hz
+dimensions:
+  width: 115.0
+  depth: 107.5
+  height: 39.0
