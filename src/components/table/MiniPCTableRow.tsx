@@ -530,12 +530,13 @@ export function MiniPCTableRow({
              badgeContent={
                (displayDevice?.expansion?.pcie_slots?.length ?? 0) + 
                (displayDevice?.expansion?.oculink_ports?.length ?? 0) +
+               (displayDevice?.expansion?.mpcie_slots?.length ?? 0) +
                (displayDevice?.expansion?.egpu_support ? 1 : 0)
              }
              color="primary"
-             sx={{ 
-               '& .MuiBadge-badge': { 
-                 display: (!displayDevice?.expansion?.pcie_slots?.length && !displayDevice?.expansion?.oculink_ports?.length && !displayDevice?.expansion?.egpu_support) ? 'none' : 'flex',
+                            sx={{ 
+                 '& .MuiBadge-badge': { 
+                   display: (!displayDevice?.expansion?.pcie_slots?.length && !displayDevice?.expansion?.oculink_ports?.length && !displayDevice?.expansion?.mpcie_slots?.length && !displayDevice?.expansion?.egpu_support) ? 'none' : 'flex',
                  fontSize: '0.6rem',
                  fontWeight: 'bold',
                  backgroundColor: (theme: any) => theme.palette.mode === 'dark' ? '#2196f3' : '#1976d2',
@@ -546,8 +547,8 @@ export function MiniPCTableRow({
              }}
            >
              <Tooltip title={
-               ((displayDevice?.expansion?.pcie_slots?.length ?? 0) + (displayDevice?.expansion?.oculink_ports?.length ?? 0)) > 0 || displayDevice?.expansion?.egpu_support
-                 ? `${displayDevice?.expansion?.pcie_slots?.length ?? 0} PCIe slot(s)${displayDevice?.expansion?.oculink_ports?.length ? `, ${displayDevice.expansion.oculink_ports.length} OCuLink port(s)` : ''}${displayDevice?.expansion?.egpu_support ? ', eGPU support' : ''} available`
+               ((displayDevice?.expansion?.pcie_slots?.length ?? 0) + (displayDevice?.expansion?.oculink_ports?.length ?? 0) + (displayDevice?.expansion?.mpcie_slots?.length ?? 0)) > 0 || displayDevice?.expansion?.egpu_support
+                 ? `${displayDevice?.expansion?.pcie_slots?.length ?? 0} PCIe slot(s)${displayDevice?.expansion?.oculink_ports?.length ? `, ${displayDevice.expansion.oculink_ports.length} OCuLink port(s)` : ''}${displayDevice?.expansion?.mpcie_slots?.length ? `, ${displayDevice.expansion.mpcie_slots.length} mPCIe slot(s)` : ''}${displayDevice?.expansion?.egpu_support ? ', eGPU support' : ''} available`
                  : "View details"
              }>
                <IconButton 

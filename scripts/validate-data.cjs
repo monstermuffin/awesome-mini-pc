@@ -303,6 +303,34 @@ function validateRequiredFields(data, path, errors, deviceFile) {
         }
       });
     }
+
+    if (data.expansion.sim_slots && Array.isArray(data.expansion.sim_slots)) {
+      data.expansion.sim_slots.forEach((slot, index) => {
+        if (!slot.type || !slot.count) {
+          errors.push({
+            deviceId: data.id || 'unknown',
+            file: deviceFile,
+            message: `Missing required SIM slot[${index}] fields: type and count are required`,
+            path: `${path}.expansion.sim_slots[${index}]`,
+            critical: true
+          });
+        }
+      });
+    }
+
+    if (data.expansion.mpcie_slots && Array.isArray(data.expansion.mpcie_slots)) {
+      data.expansion.mpcie_slots.forEach((slot, index) => {
+        if (!slot.type || !slot.count) {
+          errors.push({
+            deviceId: data.id || 'unknown',
+            file: deviceFile,
+            message: `Missing required mPCIe slot[${index}] fields: type and count are required`,
+            path: `${path}.expansion.mpcie_slots[${index}]`,
+            critical: true
+          });
+        }
+      });
+    }
   }
 }
 

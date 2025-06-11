@@ -68,6 +68,15 @@ export interface MiniPC {
     oculink_ports?: Array<{
       version: string; // e.g., "OCuLink 1.0", "OCuLink 2.0"
     }>;
+    sim_slots?: Array<{
+      type: string; // e.g., "4G/3G SIM slot", "5G SIM slot"
+      count: number;
+    }>;
+    mpcie_slots?: Array<{
+      count: number;
+      type: string; // e.g., "mPCIe wireless slot"
+      note?: string; // Optional description
+    }>;
     egpu_support?: boolean; // Whether the device supports external GPU
     additional_info?: string;
   };
@@ -101,7 +110,10 @@ export interface MiniPC {
     audio_jack?: number;
     sd_card_reader?: boolean;
     micro_sd_card_reader?: boolean;
-    serial?: number;
+    serial?: {
+      count: number;
+      type: string; // e.g., "RJ45 COM Console", "RS232", "RS485"
+    } | number;
     oculink?: string;
     ir_receiver?: boolean;
     other?: string[];

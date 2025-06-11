@@ -236,7 +236,7 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
                 <StorageCell device={device} showDetails={true} />
               </Grid>
 
-              {((device?.expansion?.pcie_slots?.length ?? 0) > 0 || (device?.expansion?.oculink_ports?.length ?? 0) > 0 || device?.expansion?.egpu_support) && (
+              {((device?.expansion?.pcie_slots?.length ?? 0) > 0 || (device?.expansion?.oculink_ports?.length ?? 0) > 0 || (device?.expansion?.sim_slots?.length ?? 0) > 0 || (device?.expansion?.mpcie_slots?.length ?? 0) > 0 || device?.expansion?.egpu_support) && (
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{
                     color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
@@ -301,6 +301,52 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
                         <Typography variant="body2" color="text.secondary">
                           PCIe x4 interface
                         </Typography>
+                      </Box>
+                    ))}
+
+                    {/* SIM Slots */}
+                    {device?.expansion?.sim_slots?.map((slot, index) => (
+                      <Box key={`sim-${index}`} sx={{
+                        p: 1.5,
+                        borderRadius: 1,
+                        backgroundColor: theme => theme.palette.mode === 'dark' 
+                          ? 'rgba(156,39,176,0.1)' 
+                          : 'rgba(156,39,176,0.05)',
+                        border: theme => `1px solid ${theme.palette.mode === 'dark' 
+                          ? 'rgba(156,39,176,0.2)' 
+                          : 'rgba(156,39,176,0.15)'}`,
+                        minWidth: 180,
+                      }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                          {slot.count}x {slot.type}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Cellular connectivity
+                        </Typography>
+                      </Box>
+                    ))}
+
+                    {/* mPCIe Slots */}
+                    {device?.expansion?.mpcie_slots?.map((slot, index) => (
+                      <Box key={`mpcie-${index}`} sx={{
+                        p: 1.5,
+                        borderRadius: 1,
+                        backgroundColor: theme => theme.palette.mode === 'dark' 
+                          ? 'rgba(103,58,183,0.1)' 
+                          : 'rgba(103,58,183,0.05)',
+                        border: theme => `1px solid ${theme.palette.mode === 'dark' 
+                          ? 'rgba(103,58,183,0.2)' 
+                          : 'rgba(103,58,183,0.15)'}`,
+                        minWidth: 180,
+                      }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, mb: 0.5 }}>
+                          {slot.count}x {slot.type}
+                        </Typography>
+                        {slot.note && (
+                          <Typography variant="body2" color="text.secondary">
+                            {slot.note}
+                          </Typography>
+                        )}
                       </Box>
                     ))}
 
@@ -713,6 +759,23 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
                       }}>
                         <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>Micro SD Card Reader:</Typography>
                         <Typography variant="body2">{device?.ports?.micro_sd_card_reader ? 'Yes' : 'No'}</Typography>
+                      </Box>
+                    )}
+
+                    {/* Serial Ports */}
+                    {device?.ports?.serial !== undefined && (
+                      <Box sx={{ 
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        mb: 0.5
+                      }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'text.secondary' }}>Serial:</Typography>
+                        <Typography variant="body2">
+                          {typeof device?.ports?.serial === 'object' 
+                            ? `${device.ports.serial.count}x ${device.ports.serial.type}` 
+                            : `${device?.ports?.serial}x`}
+                        </Typography>
                       </Box>
                     )}
 
