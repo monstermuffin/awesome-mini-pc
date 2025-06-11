@@ -79,6 +79,7 @@ dimensions:
 power:
   adapter_wattage: 12
   dc_input: "5V"
+  usb_pd_input: true
 
 notes: |-
   - Quad-core Cortex-A55 processor at 1.8GHz
@@ -89,5 +90,4 @@ notes: |-
   - 40-pin GPIO header compatible with Raspberry Pi
   - Dual display support (HDMI + MIPI DSI)
   - MIPI CSI camera interface
-  - Compact form factor design
-  - USB-C power delivery 
+  - Compact form factor design 

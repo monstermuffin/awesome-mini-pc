@@ -79,6 +79,7 @@ dimensions:
 power:
   adapter_wattage: 18
   dc_input: "5V-20V"
+  usb_pd_input: true
 
 notes: |-
   - Dual-core Cortex-A72 (1.8GHz) + Quad-core Cortex-A53 (1.4GHz)
@@ -88,5 +89,4 @@ notes: |-
   - 40-pin GPIO header compatible with Raspberry Pi
   - Dual display support (HDMI + MIPI DSI)
   - 2-lane MIPI CSI camera interface
-  - USB PD and QC power support
   - PoE HAT support available 

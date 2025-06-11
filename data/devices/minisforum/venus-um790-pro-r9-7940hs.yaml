@@ -75,6 +75,5 @@ expansion:
 
 notes: |-
   - TDP adjustable between 60W (default) and 65W in BIOS
-  - USB4 ports support power delivery and can power the system
   - Dual M.2 PCIe 4.0 slots with active cooling
   - Cold Wave 2.0 thermal system with liquid metal cooling 

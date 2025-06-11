@@ -78,6 +78,7 @@ dimensions:
 power:
   adapter_wattage: 15
   dc_input: "USB-C PD"
+  usb_pd_input: true
 
 notes: |-
   - Rockchip RK3399 SoC with big.LITTLE architecture

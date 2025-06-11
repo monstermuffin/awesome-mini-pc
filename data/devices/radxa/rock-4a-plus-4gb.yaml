@@ -66,6 +66,7 @@ dimensions:
 power:
   adapter_wattage: 18
   dc_input: "5V-20V"
+  usb_pd_input: true
 
 notes: |-
   - Dual-core Cortex-A72 (2.0GHz) + Quad-core Cortex-A53 (1.4GHz)
@@ -77,5 +78,4 @@ notes: |-
   - Dual micro HDMI outputs (4K@60fps + 2K@60fps)
   - 4-lane MIPI DSI display interface
   - Onboard eMMC (non-removable)
-  - USB PD and QC power support
   - No WiFi/Bluetooth 

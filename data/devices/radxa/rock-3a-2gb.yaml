@@ -82,6 +82,7 @@ dimensions:
 power:
   adapter_wattage: 18
   dc_input: "5V-24V"
+  usb_pd_input: true
 
 notes: |-
   - Quad-core Cortex-A55 processor at 2.0GHz
@@ -92,5 +93,4 @@ notes: |-
   - 40-pin GPIO header
   - Dual display support (HDMI + MIPI DSI)
   - 2-lane MIPI CSI camera interface
-  - USB PD and QC power support
   - PoE HAT support 

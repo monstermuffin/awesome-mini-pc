@@ -67,6 +67,7 @@ dimensions:
 power:
   adapter_wattage: 18
   dc_input: "5V-20V"
+  usb_pd_input: true
 
 notes: |-
   - Dual-core Cortex-A72 (1.8GHz) + Quad-core Cortex-A53 (1.4GHz)
@@ -77,5 +78,4 @@ notes: |-
   - Compact layout without M.2 slot
   - External antenna connector for WiFi
   - 2-lane MIPI CSI camera interface
-  - MIPI DSI display interface
-  - USB PD and QC power support 
+  - MIPI DSI display interface 

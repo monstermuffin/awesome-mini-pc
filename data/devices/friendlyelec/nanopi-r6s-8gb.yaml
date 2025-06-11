@@ -78,6 +78,7 @@ dimensions:
 power:
   adapter_wattage: 25
   dc_input: "USB-C PD"
+  usb_pd_input: true
 
 notes: |-
   - Rockchip RK3588S SoC with 6 TOPS NPU

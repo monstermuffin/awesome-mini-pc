@@ -70,6 +70,7 @@ dimensions:
 power:
   adapter_wattage: 12
   dc_input: "USB-C PD"
+  usb_pd_input: true
 
 notes: |-
   - Rockchip RK3568B2 quad-core Cortex-A55 SoC

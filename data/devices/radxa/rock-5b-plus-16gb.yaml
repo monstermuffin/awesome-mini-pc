@@ -82,6 +82,7 @@ dimensions:
 power:
   adapter_wattage: 30
   dc_input: "5V/6A"
+  usb_pd_input: true
 
 notes: |-
   - Quad-core Cortex-A76 (2.4GHz) + Quad-core Cortex-A55 (1.8GHz)
@@ -93,5 +94,4 @@ notes: |-
   - Triple display output (2x HDMI + 1x USB-C DP)
   - Quad 4-lane MIPI CSI camera support
   - 2x MIPI DSI display interfaces
-  - 2.5 Gigabit Ethernet upgrade
-  - USB PD 3.0 power support 
+  - 2.5 Gigabit Ethernet upgrade 

@@ -79,6 +79,7 @@ dimensions:
 power:
   adapter_wattage: 25
   dc_input: "5V/5A"
+  usb_pd_input: true
 
 notes: |-
   - Quad-core Cortex-A76 (2.4GHz) + Quad-core Cortex-A55 (1.8GHz)
@@ -91,5 +92,4 @@ notes: |-
   - Dual display output (HDMI + USB-C DP)
   - 2-lane MIPI CSI camera support
   - MIPI DSI display interface
-  - Compact form factor design
-  - USB PD 3.0 power support 
+  - Compact form factor design 
