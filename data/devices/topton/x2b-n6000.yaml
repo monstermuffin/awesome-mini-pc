@@ -1,0 +1,83 @@
+id: x2b-n6000
+brand: Topton
+model: X2B Firewall Mini PC
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Pentium Silver N6000"
+  cores: 4
+  threads: 4
+  base_clock: 1.1
+  boost_clock: 3.0
+  tdp: 6
+  architecture: "Jasper Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 2666
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x2"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+
+networking:
+  ethernet:
+    - ports: 4
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.0"
+      speed: "5Gbps"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  serial:
+    count: 1
+    type: "RJ45 COM Console"
+
+expansion:
+  sim_slots:
+    - type: "4G/3G SIM slot"
+      count: 1
+  mpcie_slots:
+    - count: 1
+      type: "mPCIe wireless slot"
+      note: "For WiFi/4G/3G modules"
+
+dimensions:
+  width: 146
+  depth: 133
+  height: 57
+
+power:
+  dc_input: "12V/3-5A"
+
+notes: |-
+  - 5.5*2.5mm DC power connector
+  - Supports AES-NI hardware acceleration
+  - Watchdog, Auto power on, RTC, PXE boot, Wake-on-LAN support
+  - Dual 4K display output (HDMI + DisplayPort) 
