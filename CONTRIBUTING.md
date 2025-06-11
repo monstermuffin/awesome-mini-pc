@@ -120,14 +120,20 @@ When submitting a new device, you'll need to fill out the following information:
 > [!NOTE]
 > For DIY/barebones systems where the CPU is user-provided, mark CPU-specific fields like TDP, Cores/Threads, and Clock speeds as "DIY" or specify the supported range if known. The `CPU Socket Type` becomes required for these systems.
 
-- **CPU Brand**: Manufacturer of the CPU (Intel, AMD, ARM, etc.).
+- **CPU Brand**: Manufacturer of the CPU. Supported brands include:
+  - Intel, AMD, ARM, Qualcomm, Apple
+  - Broadcom, Raspberry Pi, MediaTek, Samsung
+  - Nvidia, Rockchip, Allwinner, Texas Instruments, Marvell
 - **CPU Model**: The specific model of the CPU.
   - For DIY/configurable systems, you can enter "DIY" or specify the range of supported processors
 - **CPU TDP**: Thermal Design Power in watts (not required for DIY systems).
 - **CPU Cores/Threads**: Number of physical cores and threads (not required for DIY systems).
 - **Base/Boost Clock**: CPU frequencies in GHz (not required for DIY systems).
 - **CPU Architecture**: Architecture name (Alder Lake, Zen 4, etc.).
-- **CPU Socket Type**: For upgradeable systems, what socket is used (LGA1700, AM5, etc.).
+- **CPU Socket Type**: For upgradeable systems, what socket is used. Supported sockets include:
+  - AMD: AM4, AM5, AM3+, AM3, AM2+, AM2, FM1, FM2, FM2+, SP3, SP5, sTRX4, sTR4, sWRX8, sWRX80
+  - Intel: LGA 1700, LGA 1200, LGA 1151, LGA 1150, LGA 1155, LGA 1156, LGA 775, LGA 771 (with or without spaces)
+  - Generic: BGA, PGA, FCBGA, FCLGA
   - This is required only for DIY/configurable systems.
 - **CPU Core Configuration** (Optional): For heterogeneous CPU architectures (like Intel's hybrid P-core/E-core designs). You can get this information from [Intel Ark.](https://www.intel.com/content/www/us/en/ark.html)
   - List each core type using the format "Type: [Core Type], Count: [Number], Boost Clock: [GHz]"
@@ -144,26 +150,40 @@ When submitting a new device, you'll need to fill out the following information:
   - Example: `Type: Discrete, Model: NVIDIA RTX 3060, VRAM: 6GB`
 
 ### Memory Information
-- **Memory Type**: DDR4, DDR5, LPDDR4X, etc.
+- **Memory Type**: Supported memory types include:
+  - Standard: DDR3, DDR3L, DDR4, DDR5
+  - Low Power: LPDDR2, LPDDR3, LPDDR4, LPDDR4X, LPDDR5
+  - Specialized: SRAM, GDDR5, GDDR6, HBM
 - **Memory Module Type**: SODIMM, DIMM, or Soldered.
 - **Memory Slots**: Number of accessible memory slots (0 if soldered only).
-- **Maximum Memory Capacity**: Maximum supported RAM in GB.
+- **Maximum Memory Capacity**: Maximum supported RAM in GB. Can be decimal values for devices with less than 1GB (e.g., 0.5 for 512MB).
 - **Memory Speed**: Maximum supported memory speed in MT/s.
 
 ### Storage Information
 - **Storage Details**: List each storage option using the following format (one per line).
   - `Type: M.2, Form Factor: 2280, Interface: PCIe 4.0 x4`
   - `Type: M.2, Form Factor: 2280, Interface: PCIe 3.0 x4, Alt Interface: SATA`
-  - `Type: SATA, Form Factor: 2.5"`
+  - `Type: SATA, Form Factor: 2.5", Interface: SATA3`
+  - `Type: mSATA, Form Factor: Full Size, Interface: SATA`
+  - `Type: mSATA, Form Factor: Half Size, Interface: SATA`
+  - `Type: eMMC, Interface: eMMC` (Form Factor optional for embedded storage)
+  - `Type: Flash, Interface: Embedded` (Form Factor optional for embedded storage)
+  - `Type: MicroSD Card, Interface: SD`
+  - `Type: CFast, Form Factor: Type II, Interface: SATA`
+  - `Type: CFexpress, Form Factor: Type B, Interface: PCIe 3.0 x2`
+  - `Type: NVDIMM, Form Factor: DIMM, Interface: DDR4`
+  - `Type: Optane, Form Factor: M.2, Interface: PCIe 3.0 x2`
   - Use the `Alt Interface` field when a storage slot supports multiple interfaces (e.g., many M.2 slots can operate in either PCIe mode or SATA mode). This helps users understand the full flexibility of the storage options.
+  - **Note**: Form Factor is optional for embedded storage types (eMMC, Flash with Embedded interface, etc.)
 
 ### Networking Information
 > [!NOTE]
-> Be specific with WiFi standards (e.g., `WiFi 6E` not just `WiFi 6`) and include the chipset model for both WiFi and Ethernet controllers if known.
+> Networking is optional. For devices without Wi-Fi or Ethernet capabilities, simply omit those sections from your submission rather than setting them to "None". Be specific with WiFi standards (e.g., `WiFi 6E` not just `WiFi 6`) and include the chipset model for both WiFi and Ethernet controllers if known.
 
-- **WiFi Standard**: WiFi 6, WiFi 6E, etc. (or "None"). Leave blank if not supported.
+- **WiFi Standard**: Supported standards include WiFi, Wi-Fi 4, Wi-Fi 5, Wi-Fi 6, Wi-Fi 6E, Wi-Fi 7. Leave blank if not supported.
   - Example: `WiFi 6E` for 6GHz support
   - Example: `WiFi 5` for 802.11ac
+  - Example: `WiFi` for devices with unversioned WiFi support
 - **WiFi Chipset**: Model of the WiFi controller.
   - Example: `Intel AX211`
   - Example: `MediaTek MT7921K`
@@ -172,7 +192,7 @@ When submitting a new device, you'll need to fill out the following information:
   - Example: `5.2` for Bluetooth 5.2
   - Example: `4.2` for Bluetooth 4.2
   - You can add additional details in parentheses like `5.3 (LE Audio)` if the device supports specific Bluetooth features
-- **Ethernet Ports**: List each port with format (one per line):
+- **Ethernet Ports**: List each port with format (one per line), or leave blank if no ethernet:
   - `Type: 2.5GbE, Chipset: Intel I225-V, Interface: RJ45`
   - `Type: 10GbE, Chipset: Intel X550-AT2, Interface: SFP+`
 
@@ -182,6 +202,12 @@ When submitting a new device, you'll need to fill out the following information:
   - `Type: PCIe 3.0 x4, Form Factor: M.2 2280`
   - `Type: Mini PCIe, Form Factor: Half Height`
 - **OCuLink Ports**: Number and version of OCuLink ports if present (e.g., `1x OCuLink 2.0`).
+- **SIM Card Slots**: List SIM card slots if present (one per line):
+  - `Type: 4G/3G SIM slot, Count: 1`
+  - `Type: 5G SIM slot, Count: 2`
+- **mPCIe Slots**: List mPCIe (Mini PCIe) slots if present (one per line):
+  - `Count: 1, Type: mPCIe wireless slot, Note: For WiFi/4G/3G modules`
+  - `Count: 2, Type: mPCIe expansion slot`
 
 ### Ports Information
 > [!NOTE]
