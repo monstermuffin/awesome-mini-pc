@@ -73,13 +73,10 @@ power:
   usb_pd_input: true
 
 notes: |-
-  - Dual-core Cortex-A72 (2.0GHz) + Quad-core Cortex-A53 (1.4GHz)
-  - OP1 SoC (enhanced RK3399 variant)
-  - Mali-T860MP4 GPU with OpenGL ES 3.2, Vulkan 1.0
-  - H.265/VP9 4K@60fps hardware decode
-  - H.264 1080p@60fps hardware encode/decode
-  - 40-pin GPIO header compatible with Raspberry Pi
-  - Dual micro HDMI outputs (4K@60fps + 2K@60fps)
-  - 4-lane MIPI DSI display interface
-  - Onboard eMMC (non-removable)
-  - PoE HAT support 
+  - No M.2 slot, use USB storage or onboard eMMC
+  - 32GB eMMC included and soldered onboard
+  - 40-pin GPIO header compatible with Raspberry Pi HATs
+  - WiFi 5 and Bluetooth 5.0 built-in
+  - Dual micro HDMI outputs support 4K@60fps + 2K@60fps simultaneously
+  - PoE HAT support available for power over ethernet
+  - OP1 SoC is enhanced RK3399 variant with higher clocks 

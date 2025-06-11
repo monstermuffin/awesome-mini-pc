@@ -31,7 +31,7 @@ storage:
     form_factor: "eMMC"
     interface: "eMMC"
   - type: "M.2"
-    form_factor: "M.2 M-Key"
+    form_factor: "2280"
     interface: "PCIe 3.0"
 
 networking:
@@ -68,10 +68,8 @@ expansion:
   pcie_slots:
     - version: "PCIe 3.0 x4"
       form_factor: "M.2 M-Key"
-      note: "For NVMe SSD"
-    - version: "PCIe 2.0 x1"
+    - version: "PCIe 2.1 x1"
       form_factor: "M.2 E-Key"
-      note: "For WiFi modules"
 
 dimensions:
   width: 100
@@ -85,12 +83,8 @@ power:
   usb_pd_input: true
 
 notes: |-
-  - Quad-core Cortex-A76 (2.4GHz) + Quad-core Cortex-A55 (1.8GHz)
-  - Mali-G610 MP4 GPU with OpenGL ES 3.2, Vulkan 1.2
-  - 6 TOPS NPU for AI acceleration
-  - H.265/VP9/AV1 8K@60fps hardware decode
-  - H.265 4K@60fps hardware encode
-  - 40-pin GPIO header
-  - Triple display output (2x HDMI + 1x USB-C DP)
-  - Quad 4-lane MIPI CSI camera support
-  - 2x MIPI DSI display interfaces 
+  - M.2 M-Key slot supports NVMe only, SATA SSDs not supported
+  - M.2 E-Key slot is 2230 form factor for WiFi modules
+  - 40-pin GPIO header compatible with Raspberry Pi HATs
+  - Supports up to 4x MIPI CSI cameras simultaneously
+  - 6 TOPS NPU requires compatible AI frameworks 

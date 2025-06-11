@@ -70,12 +70,9 @@ power:
   usb_pd_input: true
 
 notes: |-
-  - Dual-core Cortex-A72 (1.8GHz) + Quad-core Cortex-A53 (1.4GHz)
-  - Mali-T860MP4 GPU with OpenGL ES 3.2, Vulkan 1.0
-  - H.265/VP9 4K@60fps hardware decode
-  - H.264 1080p@60fps hardware encode/decode
-  - 40-pin GPIO header compatible with Raspberry Pi
-  - Compact layout without M.2 slot
-  - External antenna connector for WiFi
-  - 2-lane MIPI CSI camera interface
-  - MIPI DSI display interface 
+  - No M.2 slot, use USB storage or eMMC for expanded storage
+  - 40-pin GPIO header compatible with Raspberry Pi HATs
+  - WiFi 5 and Bluetooth 5.0 with external antenna connector
+  - 4x USB 2.0 ports only, no USB 3.0 ports
+  - 2-lane MIPI CSI camera interface for camera modules
+  - MIPI DSI display interface for custom displays 

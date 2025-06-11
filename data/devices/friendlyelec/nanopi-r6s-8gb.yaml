@@ -31,7 +31,7 @@ storage:
     form_factor: "32GB"
     interface: "eMMC"
   - type: "M.2"
-    form_factor: "M.2 M-Key"
+    form_factor: "2280"
     interface: "PCIe 3.0"
 
 networking:
@@ -66,7 +66,7 @@ ports:
 expansion:
   pcie_slots:
     - version: "PCIe 3.0 x1"
-      form_factor: "M.2 M-Key"
+      form_factor: "2280"
       note: "For NVMe SSD and WiFi modules"
 
 dimensions:

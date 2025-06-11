@@ -63,14 +63,9 @@ power:
   dc_input: "5V/3A"
 
 notes: |-
-  - Quad-core Cortex-A55 processor at 2.0GHz
-  - RK3566 SoC with enhanced performance
-  - Mali-G52 2EE GPU with OpenGL ES 3.2, Vulkan 1.1
-  - 0.8 TOPS NPU for AI acceleration
-  - H.265/H.264/VP9 4K@60fps hardware decode
-  - H.264 1080p@60fps hardware encode
-  - 40-pin GPIO header
-  - Ultra-compact form factor (65x30mm)
-  - MIPI CSI camera interface
-  - USB-C power and data
-  - Designed for IoT and embedded applications 
+  - Ultra-compact form factor (65x30mm) for space-constrained projects
+  - No M.2 slot or Ethernet, WiFi 6 only for networking
+  - 40-pin GPIO header compatible with Raspberry Pi Zero layouts
+  - Single USB-C port serves both power and data functions
+  - MIPI CSI camera interface for camera modules
+  - 0.8 TOPS NPU requires compatible AI frameworks 

@@ -60,11 +60,9 @@ power:
   dc_input: "5V/1A"
 
 notes: |-
-  - Quad-core Cortex-A35 processor at 1.5GHz
-  - Mali-G31 MP2 GPU with OpenGL ES 3.2
-  - Ultra-compact form factor (52x40mm)
-  - 26-pin GPIO header
-  - MIPI CSI camera interface
-  - Low power consumption (3W typical)
-  - USB-C power and data
-  - Designed for IoT applications 
+  - Ultra-compact IoT form factor (52x40mm)
+  - 100Mbps Ethernet only, slower than Gigabit variants
+  - 26-pin GPIO header (non-standard layout)
+  - Single USB-A port plus USB-C for power/data
+  - MIPI CSI camera interface for camera modules
+  - Low power consumption ideal for always-on applications 

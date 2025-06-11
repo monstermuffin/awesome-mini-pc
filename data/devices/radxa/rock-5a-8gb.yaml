@@ -31,7 +31,7 @@ storage:
     form_factor: "eMMC"
     interface: "eMMC"
   - type: "M.2"
-    form_factor: "M.2 M-Key"
+    form_factor: "2280"
     interface: "PCIe 3.0"
 
 networking:
@@ -58,9 +58,9 @@ ports:
       type: "USB-C"
       features: "Power, data, and DisplayPort Alt Mode"
   hdmi:
-    count: 1
+    count: 2
     version: "2.1"
-    form_factor: "HDMI"
+    form_factor: "Micro HDMI"
     max_resolution: "8K@60Hz"
   audio_jack: 1
 
@@ -68,10 +68,6 @@ expansion:
   pcie_slots:
     - version: "PCIe 3.0 x4"
       form_factor: "M.2 M-Key"
-      note: "For NVMe SSD"
-    - version: "PCIe 2.0 x1"
-      form_factor: "M.2 E-Key"
-      note: "For WiFi modules"
 
 dimensions:
   width: 85
@@ -84,13 +80,9 @@ power:
   dc_input: "5V/5A"
 
 notes: |-
-  - Quad-core Cortex-A76 (2.4GHz) + Quad-core Cortex-A55 (1.8GHz)
-  - Mali-G610 MP4 GPU with OpenGL ES 3.2, Vulkan 1.2
-  - 6 TOPS NPU for AI acceleration
-  - H.265/VP9/AV1 8K@60fps hardware decode
-  - H.265 4K@60fps hardware encode
-  - 40-pin GPIO header
-  - Dual display output (HDMI + USB-C DP)
-  - Quad 4-lane MIPI CSI camera support
-  - MIPI DSI display interface
-  - Compact form factor alternative to Rock 5B 
+  - M.2 slot supports 2230/2242/2260/2280 form factors via extension board
+  - Supports SATA SSD/HDD via Radxa Penta SATA HAT
+  - No onboard M.2 E-Key slot, WiFi module is soldered
+  - 40-pin GPIO header compatible with Raspberry Pi HATs
+  - Dual Micro HDMI outputs (8K@60fps + 4K@60fps)
+  - 6 TOPS NPU requires compatible AI frameworks 
