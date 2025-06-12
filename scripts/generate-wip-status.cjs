@@ -52,10 +52,10 @@ function generateWIPStatus() {
   }
   
   if (wipDevices.length === 0) {
-    return '## 🔧 Work In Progress Devices\n\n*No devices currently pending verification.*\n';
+    return '## WIP Devices\n\n*No devices currently pending verification.*\n';
   }
   
-  let markdown = '## 🔧 Work In Progress Devices\n\n';
+  let markdown = '## Work In Progress / Need Help\n\n';
   markdown += `*${wipDevices.length} device${wipDevices.length === 1 ? '' : 's'} pending verification. Contributions welcome!*\n\n`;
   
   markdown += '| Device | CPU | File | Missing Information |\n';
