@@ -74,7 +74,8 @@ dimensions:
   height: 57
 
 power:
-  dc_input: "12V/3-5A"
+  adapter_wattage: 60
+  dc_input: "12V/5A"
 
 notes: |-
   - 5.5*2.5mm DC power connector

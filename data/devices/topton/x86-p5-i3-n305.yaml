@@ -1,0 +1,69 @@
+id: topton-x86-p5-i3-n305
+brand: Topton
+model: X86 P5 Mini Router
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i3-N305"
+  cores: 8
+  threads: 8
+  base_clock: 1.8
+  boost_clock: 3.8
+  tdp: 15
+  architecture: "Alder Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 1
+  max_capacity: 16
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+      speed: "5Gbps"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4" 
+    max_resolution: "4K@60Hz"
+
+dimensions:
+  width: 120
+  depth: 100
+  height: 40
+
+power:
+  adapter_wattage: 24
+  dc_input: "12V/2A"
+
+notes: |-
+  - Fanless design with enhanced cooling fins
+  - Supports pfSense, OPNsense, OpenWrt, ESXi, Proxmox
+  - Single channel DDR5 memory architecture
+  - Compact form factor for network appliance applications

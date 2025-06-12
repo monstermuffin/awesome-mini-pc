@@ -1,0 +1,94 @@
+id: topton-magic-i3-n305
+brand: Topton
+model: Magic Firewall Mini PC
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i3-N305"
+  cores: 8
+  threads: 8
+  base_clock: 1.8
+  boost_clock: 3.8
+  tdp: 15
+  architecture: "Alder Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 32
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x1"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "10GbE"
+      chipset: "Intel 82599ES"
+      interface: "SFP+"
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX200"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 3.2"
+      speed: "5Gbps"
+    - count: 4
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "5Gbps"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+
+expansion:
+  pcie_slots:
+    - type: "x8"
+      version: "3.0"
+      form_factor: "Half-height"
+
+dimensions:
+  width: 250
+  depth: 180
+  height: 60
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V/3.42A"
+
+notes: |-
+  - Supports dual 10G SFP+ optical connections
+  - PCIe x8 slot for expansion cards
+  - Optimized for pfSense, Proxmox, and ESXi deployments
+  - AES-NI hardware acceleration support
+  - Flexible cooling with optional fan operation
