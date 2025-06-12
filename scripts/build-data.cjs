@@ -330,7 +330,7 @@ async function main() {
     const vendorDir = path.join(dataDir, vendor);
     if (!vendorDir.includes('.') && fs.statSync(vendorDir).isDirectory()) {
       for (const file of fs.readdirSync(vendorDir)) {
-        if (file.endsWith('.yaml') || file.endsWith('.yml')) {
+        if ((file.endsWith('.yaml') || file.endsWith('.yml')) && !file.endsWith('.WIP.yaml')) {
           console.log(`Processing ${vendor}/${file}...`);
           const filePath = path.join(vendorDir, file);
           const content = fs.readFileSync(filePath, 'utf-8');

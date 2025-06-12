@@ -29,6 +29,24 @@ Each device is stored as a YAML file in its manufacturer's directory with compre
 - Physical dimensions.
 - Power requirements.
 
+<!-- WIP_DEVICES_START -->
+## Work In Progress / Need Help
+
+*3 devices pending verification. Contributions welcome!*
+
+| Device | CPU | File | Missing Information |
+|--------|-----|------|--------------------|
+| Topton D14 Gaming Mini PC | Core i5-13500H | `topton/d14-i5-13500h.WIP.yaml` | • Ethernet chipsets: Need exact chipset models for 1GbE port and 2.5GbE port<br>• WiFi chipset: Need exact chipset model for WiFi 6E + BT 5.3 |
+| Topton D14 Gaming Mini PC | Core i7-13700H | `topton/d14-i7-13700h.WIP.yaml` | • Ethernet chipsets: Need exact chipset models for 1GbE port and 2.5GbE port<br>• WiFi chipset: Need exact chipset model for WiFi 6E + BT 5.3 |
+| Topton D14 Gaming Mini PC | Core i9-13900H | `topton/d14-i9-13900h.WIP.yaml` | • Ethernet chipsets: Need exact chipset models for 1GbE port and 2.5GbE port<br>• WiFi chipset: Need exact chipset model for WiFi 6E + BT 5.3 |
+
+**How to contribute:** If you have detailed specs for any of these devices:
+1. Find the exact chipset models from official sources
+2. Update the device file with confirmed specifications  
+3. Rename from `.WIP.yaml` to `.yaml` to include in the database
+
+<!-- WIP_DEVICES_END -->
+
 ## Contributing
 Anyone can contribute new device information, I am counting on it for this to be a definitive resource. I've attempted to make the process as simple as possible:
 

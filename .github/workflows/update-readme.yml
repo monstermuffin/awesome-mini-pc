@@ -1,0 +1,53 @@
+name: Update README WIP Status
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'data/devices/**/*.WIP.yaml'
+      - 'scripts/generate-wip-status.cjs'
+      - 'scripts/update-readme-wip.cjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      
+      - name: Install dependencies
+        run: |
+          npm install js-yaml
+      
+      - name: Update README with WIP status
+        run: npm run update:readme
+      
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet HEAD -- README.md; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit changes
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "Update README WIP devices status [skip ci]"
+          git push

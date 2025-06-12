@@ -883,7 +883,7 @@ async function validateAllDevices() {
     const brandPath = path.join(deviceRootPath, brand);
     
     const files = fs.readdirSync(brandPath)
-      .filter(file => file.endsWith('.yaml') || file.endsWith('.yml'));
+      .filter(file => (file.endsWith('.yaml') || file.endsWith('.yml')) && !file.endsWith('.WIP.yaml'));
       
     for (const file of files) {
       const filePath = path.join(brandPath, file);

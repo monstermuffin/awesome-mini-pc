@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run validate-data && npm run build:data && npm run build:seo && tsc && vite build && npm run copy:seo",
+    "build": "npm run validate-data && npm run build:data && npm run build:seo && npm run update:readme && tsc && vite build && npm run copy:seo",
     "build:data": "node scripts/build-data.cjs",
     "build:seo": "npm run build:sitemap && npm run build:stats",
+    "update:readme": "node scripts/update-readme-wip.cjs",
     "build:sitemap": "node scripts/generate-sitemap.cjs",
     "build:stats": "node scripts/generate-stats.cjs",
     "copy:seo": "cp data/stats.json data/sitemap.xml data/robots.txt dist/",
