@@ -29,3 +29,4 @@ device-contribution-guide.md
 *.md
 !README.md
 !CONTRIBUTING.md
+/.*au*
