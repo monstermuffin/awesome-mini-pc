@@ -1,0 +1,91 @@
+id: topton-s600-i9-13900h
+brand: Topton
+model: S600 Gaming Mini PC
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i9-13900H"
+  cores: 14
+  threads: 20
+  base_clock: 2.6
+  boost_clock: 5.4
+  tdp: 45
+  architecture: "Raptor Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 6
+        boost_clock: 5.4
+      - type: "E-core"
+        count: 8
+        boost_clock: 4.1
+
+gpu:
+  - model: "Intel Iris Xe Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 96
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX211"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 3
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "8K@30Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 149
+  depth: 145
+  height: 55
+
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A"
+
+notes: |-
+  - VESA mount compatible
+  - Metal case construction
+  - Dual channel memory required for optimal GPU performance

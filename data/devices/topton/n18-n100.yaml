@@ -1,0 +1,96 @@
+id: topton-n18-n100
+brand: Topton
+model: N18 NAS Motherboard
+release_date: "2024"
+
+cpu:
+  brand: "Intel"
+  model: "N100"
+  cores: 4
+  threads: 4
+  base_clock: 1.8
+  boost_clock: 3.4
+  tdp: 6
+  architecture: "Alder Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 1
+  max_capacity: 16
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+    - ports: 1
+      speed: "10GbE"
+      chipset: "Marvell AQC113C"
+      interface: "RJ45"
+
+ports:
+  usb_a:
+    - count: 1
+      type: "USB 3.0"
+      speed: "5Gbps"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB 3.0"
+      speed: "5Gbps"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+
+dimensions:
+  width: 170
+  depth: 170
+  height: 30
+
+power:
+  adapter_wattage: 60
+  dc_input: "12V/5A"
+
+notes: |-
+  - Mini-ITX form factor motherboard
+  - Support for Auto power on, Wake-on-LAN, PXE boot

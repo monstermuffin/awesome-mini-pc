@@ -1,0 +1,91 @@
+id: topton-f12-ultra-7-155h
+brand: Topton
+model: F12 AI Gaming Mini PC
+release_date: "2024"
+
+cpu:
+  brand: "Intel"
+  model: "Core Ultra 7 155H"
+  cores: 16
+  threads: 22
+  base_clock: 1.4
+  boost_clock: 4.8
+  tdp: 28
+  architecture: "Meteor Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 6
+        boost_clock: 4.8
+      - type: "E-core"
+        count: 8
+        boost_clock: 3.8
+      - type: "LP E-core"
+        count: 2
+        boost_clock: 2.5
+
+gpu:
+  - model: "Intel Arc Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 5600
+  slots: 2
+  max_capacity: 96
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX201"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 2"
+  usb_c:
+    - count: 1
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Thunderbolt 4", "Power Delivery", "DisplayPort Alt Mode"]
+      thunderbolt_compatible: true
+      thunderbolt_version: "4"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "8K@30Hz"
+  displayport:
+    count: 1
+    version: "2.1"
+    max_resolution: "8K@30Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 60
+  depth: 140
+  height: 220
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V/3.42A"
+
+notes: |-
+  - Vertical tower design form factor
+  - RGB lighting support
+  - AI acceleration with integrated NPU

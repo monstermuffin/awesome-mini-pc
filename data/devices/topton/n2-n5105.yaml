@@ -1,0 +1,89 @@
+id: topton-n2-n5105
+brand: Topton
+model: N2 NAS Motherboard
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Celeron N5105"
+  cores: 4
+  threads: 4
+  base_clock: 2.0
+  boost_clock: 2.9
+  tdp: 10
+  architecture: "Jasper Lake"
+
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 2933
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x2"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x2"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+
+networking:
+  ethernet:
+    - ports: 4
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.0"
+      speed: "5Gbps"
+    - count: 6
+      type: "USB 2.0"
+      speed: "480Mbps"
+  hdmi:
+    count: 1
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+
+dimensions:
+  width: 170
+  depth: 170
+  height: 30
+
+power:
+  adapter_wattage: 60
+  dc_input: "12V/5A"
+
+notes: |-
+  - Mini-ITX form factor motherboard
+  - Supports up to 64GB RAM unofficially
+  - Auto power on, Wake-on-LAN, PXE boot support

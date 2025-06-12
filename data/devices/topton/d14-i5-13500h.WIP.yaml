@@ -1,0 +1,88 @@
+# WIP: NEEDS VERIFICATION
+# - Ethernet chipsets: Need exact chipset models for 1GbE port and 2.5GbE port
+# - WiFi chipset: Need exact chipset model for WiFi 6E + BT 5.3
+
+id: topton-d14-i5-13500h
+brand: Topton
+model: D14 Gaming Mini PC
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i5-13500H"
+  cores: 12
+  threads: 16
+  base_clock: 2.6
+  boost_clock: 4.7
+  tdp: 45
+  architecture: "Raptor Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 4
+        boost_clock: 4.7
+      - type: "E-core"
+        count: 8
+        boost_clock: 3.5
+
+gpu:
+  - model: "Intel Iris Xe Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Realtek RTL8111H"
+      interface: "RJ45"
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX211"
+    bluetooth: "5.3"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 140
+  depth: 140
+  height: 50
+
+power:
+  adapter_wattage: 90
+  dc_input: "19V/4.74A"
+

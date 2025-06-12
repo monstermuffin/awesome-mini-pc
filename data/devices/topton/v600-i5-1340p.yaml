@@ -1,0 +1,93 @@
+id: topton-v600-i5-1340p
+brand: Topton
+model: V600 Gaming Mini PC
+release_date: "2023"
+
+cpu:
+  brand: "Intel"
+  model: "Core i5-1340P"
+  cores: 12
+  threads: 16
+  base_clock: 1.9
+  boost_clock: 4.6
+  tdp: 28
+  architecture: "Raptor Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 4
+        boost_clock: 4.6
+      - type: "E-core"
+        count: 8
+        boost_clock: 3.4
+
+gpu:
+  - model: "Intel Iris Xe Graphics"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel i226-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX211"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+      speed: "480Mbps"
+  usb_c:
+    - count: 1
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Thunderbolt 4", "Power Delivery", "DisplayPort Alt Mode"]
+      thunderbolt_compatible: true
+      thunderbolt_version: "4"
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 2
+
+dimensions:
+  width: 167
+  depth: 127
+  height: 47
+
+power:
+  adapter_wattage: 65
+  dc_input: "19V/3.42A"
+
+notes: |-
+  - Plastic shell design
+  - Supports external GPU via Thunderbolt 4
