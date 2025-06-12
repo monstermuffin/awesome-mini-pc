@@ -30,7 +30,7 @@ Each device is stored as a YAML file in its manufacturer's directory with compre
 - Power requirements.
 
 <!-- WIP_DEVICES_START -->
-## Work In Progress / Need Help
+## 🔧 Work In Progress Devices
 
 *3 devices pending verification. Contributions welcome!*
 
