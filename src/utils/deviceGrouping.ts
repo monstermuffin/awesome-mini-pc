@@ -24,6 +24,7 @@ function extractBaseModel(deviceId: string): string {
     // Feature variants
     /^w$/i,                        // wireless
     /^plus$/i,                     // plus
+    /^diy$/i,                      // diy
     
     // CPU variants (Intel)
     /^i[3579]$/i,                  // Intel: i3, i5, i7, i9
