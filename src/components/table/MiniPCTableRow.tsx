@@ -391,7 +391,7 @@ export function MiniPCTableRow({
          </Box>
        </TableCell>
 
-             {/* Memory Type */}
+             {/* Memory */}
        <TableCell>
          <Typography variant="body2" component="div" sx={{ 
            fontWeight: 500,
@@ -406,27 +406,31 @@ export function MiniPCTableRow({
            whiteSpace: 'normal',
            overflow: 'visible',
            lineHeight: 1.3,
+           mb: 0.2
          }}>
            {displayDevice.memory.module_type === 'Soldered' || displayDevice.memory.module_type === 'Embedded'
              ? formatMemoryCapacity(displayDevice.memory.max_capacity)
              : `${displayDevice.memory.slots}x slots, Max ${formatMemoryCapacity(displayDevice.memory.max_capacity)}`
            }
          </Typography>
-       </TableCell>
-
-       {/* Memory Module */}
-       <TableCell sx={{ whiteSpace: 'normal' }}>
-         {displayDevice.memory.module_type}
-       </TableCell>
-
-       {/* Memory Speed */}
-       <TableCell align="right">
-         <Box sx={{ 
-           fontWeight: 'medium', 
-           color: (theme: any) => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2' 
+         <Typography variant="caption" color="text.secondary" sx={{
+           whiteSpace: 'normal',
+           overflow: 'visible',
+           lineHeight: 1.3,
+           display: 'flex',
+           alignItems: 'center',
+           gap: 1
          }}>
-           {displayDevice.memory.speed}MT/s
-         </Box>
+           <Box component="span">
+             {displayDevice.memory.module_type}
+           </Box>
+           <Box component="span" sx={{ 
+             fontWeight: 'medium', 
+             color: (theme: any) => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2'
+           }}>
+             {displayDevice.memory.speed}MT/s
+           </Box>
+         </Typography>
        </TableCell>
 
              {/* Storage */}

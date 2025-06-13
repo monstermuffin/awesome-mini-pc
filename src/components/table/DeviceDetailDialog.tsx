@@ -157,7 +157,10 @@ export function DeviceDetailDialog({ device, open, onClose }: DeviceDetailDialog
               }
             }}>Memory</Typography>
             <Typography variant="body2" sx={{ mb: 0.5 }}>
-              Type: {device.memory.type} ({device.memory.module_type})
+              Type: {device.memory.type}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 0.5 }}>
+              Module: {device.memory.module_type}
             </Typography>
             <Typography variant="body2" sx={{ mb: 0.5 }}>
               Speed: {device.memory.speed}MT/s

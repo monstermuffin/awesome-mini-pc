@@ -97,25 +97,10 @@ export function MiniPCTableHeader({ sortConfig, onSort }: MiniPCTableHeaderProps
         <TableCell
           sx={{ 
             ...headerCellStyle,
-            width: 120,
-            minWidth: 100,
+            width: 150,
+            minWidth: 130,
           }}
         >{renderSortLabel('Memory', 'memory.type')}</TableCell>
-        <TableCell
-          sx={{ 
-            ...headerCellStyle,
-            width: 90,
-            minWidth: 90,
-          }}
-        >{renderSortLabel('Module', 'memory.module_type')}</TableCell>
-        <TableCell 
-          align="right"
-          sx={{ 
-            ...headerCellStyle,
-            width: 90,
-            minWidth: 90,
-          }}
-        >{renderSortLabel('Speed', 'memory.speed')}</TableCell>
         <TableCell
           align="left"
           sx={{ 
