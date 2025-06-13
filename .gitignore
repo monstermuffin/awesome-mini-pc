@@ -30,3 +30,4 @@ device-contribution-guide.md
 !README.md
 !CONTRIBUTING.md
 /.*au*
+*.csv
