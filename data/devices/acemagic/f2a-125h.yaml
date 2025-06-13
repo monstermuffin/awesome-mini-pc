@@ -1,0 +1,84 @@
+id: acemagic-f2a-125h
+brand: Acemagic
+model: F2A 125H
+release_date: "2024"
+
+cpu:
+  brand: Intel
+  model: 125H
+  cores: 14
+  threads: 18
+  base_clock: 2.2
+  boost_clock: 4.5
+  tdp: 45
+  architecture: "Meteor Lake"
+  core_config:
+    types:
+      - type: "P-core"
+        count: 4
+        boost_clock: 4.5
+      - type: "E-core"
+        count: 10
+        boost_clock: 3.6
+
+gpu:
+  - model: "Intel Arc 7 Xe"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 7"
+    chipset: "Intel BE200"
+    bluetooth: "5.4"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 1"
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+      features: ["Power Delivery", "DisplayPort Alt Mode"]
+      alt_mode: "DisplayPort"
+      max_resolution: "4K@60Hz"
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 147
+  depth: 147
+  height: 52
+
+power:
+  adapter_wattage: 100
+  dc_input: "19V/5.26A"
+
+notes: |-
+  - One of the first mini PCs to integrate WiFi 7 support
+  - Ships with 4800MT/s RAM instead of 5600MT/s
+  - AI mini PC with Intel NPU for machine learning acceleration
