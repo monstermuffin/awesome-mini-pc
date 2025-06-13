@@ -1,0 +1,76 @@
+id: beelink-gtr7-pro-7940hs
+brand: Beelink
+model: GTR7 Pro 7940HS
+release_date: "2023"
+
+cpu:
+  brand: AMD
+  model: 7940HS
+  cores: 8
+  threads: 16
+  base_clock: 4.0
+  boost_clock: 5.2
+  tdp: 65
+  architecture: "Zen 4"
+
+gpu:
+  - model: "Radeon 780M"
+    type: "Integrated"
+
+memory:
+  type: "DDR5"
+  speed: 5600
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX200"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 2"
+  usb_c:
+    - count: 2
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Power Delivery", "DisplayPort Alt Mode"]
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 168
+  depth: 120
+  height: 49
+
+power:
+  adapter_wattage: 100
+  dc_input: "19V/5.26A"
+
+notes: |-
+  - Fingerprint sensor

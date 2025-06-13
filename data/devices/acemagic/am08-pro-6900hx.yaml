@@ -1,0 +1,74 @@
+id: acemagic-am08-pro-6900hx
+brand: Acemagic
+model: AM08 Pro 6900HX
+release_date: "2023"
+
+cpu:
+  brand: AMD
+  model: 6900HX
+  cores: 8
+  threads: 16
+  base_clock: 3.3
+  boost_clock: 4.9
+  tdp: 45
+  architecture: "Zen 3+"
+
+gpu:
+  - model: "Radeon 680M"
+    type: "Integrated"
+
+memory:
+  type: "DDR4"
+  speed: 4800
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0"
+  - type: "SATA"
+    form_factor: "2.5\""
+    interface: "SATA3"
+
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX210"
+    bluetooth: "5.2"
+
+ports:
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 2"
+  usb_c:
+    - count: 1
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Power Delivery", "DisplayPort Alt Mode"]
+      alt_mode: "DisplayPort"
+      max_resolution: "8K@60Hz"
+  hdmi:
+    count: 2
+    version: "2.0"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+
+dimensions:
+  width: 189
+  depth: 149
+  height: 78
+
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A"
+
+notes: |-
+  - TDP toggle knob for performance modes
