@@ -75,7 +75,4 @@ power:
   dc_input: "19V/5.26A"
 
 notes: |-
-  - Excellent cooling system maintains sub-70°C temps under sustained 65W TDP loads
-  - Practically silent operation regardless of workload
-  - Triple 4K display output support
   - Includes NPU for AI acceleration tasks

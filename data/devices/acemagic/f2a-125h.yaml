@@ -79,6 +79,5 @@ power:
   dc_input: "19V/5.26A"
 
 notes: |-
-  - One of the first mini PCs to integrate WiFi 7 support
   - Ships with 4800MT/s RAM instead of 5600MT/s
   - AI mini PC with Intel NPU for machine learning acceleration
