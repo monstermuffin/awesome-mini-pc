@@ -20,7 +20,7 @@ memory:
   slots: 2
   type: DDR5
   speed: 5200
-  module_type: "SO-DIMM"
+  module_type: "SODIMM"
   max_capacity: 96
 
 storage:

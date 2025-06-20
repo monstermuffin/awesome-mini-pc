@@ -21,7 +21,7 @@ memory:
   slots: 2
   type: DDR3L
   speed: 1866
-  module_type: "SO-DIMM"
+  module_type: "SODIMM"
   max_capacity: 16
 
 storage:

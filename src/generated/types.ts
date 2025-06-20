@@ -2,7 +2,7 @@
 export const BRANDS = ["ASUS","Acemagic","Beelink","Dell","FriendlyElec","GEEKOM","GMKTec","HP","Intel","Lenovo","MINISFORUM","Minisforum","NVIDIA","NiPoGi","Protectli","Radxa","Raspberry Pi Foundation","Topton"] as const;
 export const CPU_BRANDS = ["AMD","ARM","Allwinner","Broadcom","Intel","Raspberry Pi","Rockchip"] as const;
 export const MEMORY_TYPES = ["DDR2","DDR3","DDR3L","DDR4","DDR5","LPDDR2","LPDDR4","LPDDR4X","LPDDR5","SRAM"] as const;
-export const MEMORY_MODULE_TYPES = ["DIMM","Embedded","SO-DIMM","SODIMM","Soldered"] as const;
+export const MEMORY_MODULE_TYPES = ["DIMM","Embedded","SODIMM","Soldered"] as const;
 export const WIFI_STANDARDS = ["None","WiFi","WiFi 4","WiFi 5","WiFi 6","WiFi 6E","WiFi 7"] as const;
 export const ETHERNET_SPEEDS = ["100Mbps","10GbE","1GbE","2.5GbE"] as const;
 export const STORAGE_TYPES = ["Flash","M.2","MicroSD Card","SATA","SD Card","eMMC","mSATA"] as const;

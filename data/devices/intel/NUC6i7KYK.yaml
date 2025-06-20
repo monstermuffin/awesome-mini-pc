@@ -21,7 +21,7 @@ memory:
   slots: 2
   type: DDR4
   speed: 2133
-  module_type: "SO-DIMM"
+  module_type: "SODIMM"
   max_capacity: 32
 
 storage:
