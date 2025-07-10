@@ -1,0 +1,87 @@
+id: ugreen-nasync-dxp4800-plus
+brand: "UGREEN"
+model: "NASync DXP4800 Plus"
+release_date: "2024"
+cpu:
+  brand: "Intel"
+  model: "Pentium Gold 8505"
+  cores: 5
+  threads: 6
+  base_clock: 1.2
+  boost_clock: 4.4
+  tdp: 15
+  architecture: "Alder Lake-U"
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+storage:
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "eMMC"
+    interface: "eMMC"
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Realtek RTL8125BG"
+      interface: "RJ45"
+    - ports: 1
+      speed: "10GbE"
+      chipset: "Marvell AQC113"
+      interface: "RJ45"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 2.0"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@60Hz"
+  audio_jack: 0
+  micro_sd_card_reader: true
+dimensions:
+  width: 230
+  depth: 173
+  height: 160
+power:
+  adapter_wattage: 120
+  dc_input: "External PSU"
+notes: |-
+  - 4-bay NAS with RAID 0/1/5/6/10 support and JBOD configuration
+  - Maximum storage capacity: 136TB (4x 30TB + 2x 8TB M.2)
+  - Hybrid networking: 2.5GbE + 10GbE ports for flexible connectivity
+  - Third-party OS installation supported (TrueNAS, UnRAID) without voiding hardware warranty
+  - UGOS Pro operating system based on Debian Linux
+  - Tool-free drive installation with push/pull trays
+  - SSD caching support via M.2 slots for improved performance
+  - Virtual machine and Docker container support
+  - Enhanced CPU over standard DXP4800 with Pentium Gold 8505

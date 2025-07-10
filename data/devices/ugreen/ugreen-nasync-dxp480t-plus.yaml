@@ -1,0 +1,92 @@
+id: ugreen-nasync-dxp480t-plus
+brand: "UGREEN"
+model: "NASync DXP480T Plus"
+release_date: "2024"
+cpu:
+  brand: "Intel"
+  model: "i5-1235U"
+  cores: 10
+  threads: 12
+  base_clock: 1.3
+  boost_clock: 4.4
+  tdp: 15
+  architecture: "Alder Lake-U"
+gpu:
+  - model: "Intel Iris Xe Graphics"
+    type: "Integrated"
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "eMMC"
+    interface: "eMMC"
+networking:
+  ethernet:
+    - ports: 1
+      speed: "10GbE"
+      chipset: "Marvell AQC113"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX201"
+    bluetooth: "5.2"
+ports:
+  usb_c:
+    - count: 2
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Thunderbolt 4", "Power Delivery"]
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 2.0"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "8K@30Hz"
+  audio_jack: 0
+  micro_sd_card_reader: true
+dimensions:
+  width: 230
+  depth: 173
+  height: 120
+power:
+  adapter_wattage: 120
+  dc_input: "External PSU"
+expansion:
+  pcie_slots:
+    - type: "x4"
+      version: "4.0"
+      form_factor: "Low-profile"
+      additional_info: "For expansion cards or additional storage"
+notes: |-
+  - All-flash 4x M.2 NVMe SSD storage solution for creative professionals
+  - Maximum storage capacity: 32TB (4x 8TB M.2 NVMe)
+  - Single 10GbE port for ultra-high-speed networking
+  - Only NASync model with built-in WiFi 6 and Bluetooth
+  - Third-party OS installation supported (TrueNAS, UnRAID) without voiding hardware warranty
+  - UGOS Pro operating system based on Debian Linux
+  - Thunderbolt 4 support for high-speed external storage expansion
+  - SSD-only design optimized for speed and silent operation
+  - Designed for media professionals and content creators
+  - Most compact high-performance model in the lineup

@@ -1,0 +1,99 @@
+id: ugreen-nasync-dxp6800-pro
+brand: "UGREEN"
+model: "NASync DXP6800 Pro"
+release_date: "2024"
+cpu:
+  brand: "Intel"
+  model: "i5-1235U"
+  cores: 10
+  threads: 12
+  base_clock: 1.3
+  boost_clock: 4.4
+  tdp: 15
+  architecture: "Alder Lake-U"
+gpu:
+  - model: "Intel Iris Xe Graphics"
+    type: "Integrated"
+memory:
+  type: "DDR5"
+  speed: 4800
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+storage:
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "eMMC"
+    interface: "eMMC"
+networking:
+  ethernet:
+    - ports: 2
+      speed: "10GbE"
+      chipset: "Marvell AQC113"
+      interface: "RJ45"
+ports:
+  usb_c:
+    - count: 2
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Thunderbolt 4", "Power Delivery"]
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+  usb_a:
+    - count: 3
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 2.0"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "8K@30Hz"
+  audio_jack: 0
+  micro_sd_card_reader: true
+dimensions:
+  width: 265
+  depth: 173
+  height: 230
+power:
+  adapter_wattage: 180
+  dc_input: "External PSU"
+expansion:
+  pcie_slots:
+    - type: "x4"
+      version: "4.0"
+      form_factor: "Low-profile"
+      additional_info: "For expansion cards or additional storage"
+notes: |-
+  - 6-bay NAS with RAID 0/1/5/6/10 support and JBOD configuration
+  - Maximum storage capacity: 196TB (6x 30TB + 2x 8TB M.2)
+  - Dual 10GbE ports can be aggregated for 20Gbps bandwidth
+  - Third-party OS installation supported (TrueNAS, UnRAID) without voiding hardware warranty
+  - UGOS Pro operating system based on Debian Linux
+  - Tool-free drive installation with push/pull trays
+  - SSD caching support via M.2 slots for improved performance
+  - Virtual machine and Docker container support
+  - Can function as desktop computer with 8K HDMI output
