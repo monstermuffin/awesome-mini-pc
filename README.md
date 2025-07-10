@@ -8,7 +8,7 @@
 This repository contains the data and code for [Awesome Mini PC](https://awesomeminipc.com), an attempt to catalog all the mini PCs, SBCs and egnerally useful homelab/self-hosting machines.
 
 ## Why?
-I am so fucking fed up of having to search the entire fucking internet just to find out what fucking network controller a manufacturer have used in their own fucking machine. 
+I am so fed up of having to search the entire internet just to find out what network controller a manufacturer have used in their own machine.
 
 Most of the time I end up having to scour Reddit to find this information from people that already have the machine. There has to be a better way, so here we are.
 
