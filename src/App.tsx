@@ -862,7 +862,7 @@ function App() {
         </DialogTitle>
         <DialogContent dividers sx={{ px: 3, py: 2 }}>
           <Typography variant="body1" paragraph>
-            Welcome to Awesome Mini PC - An attempt to become the defacto resource for finding the best mini PCs.
+            Welcome to Awesome Mini PC - An attempt to become the defacto resource for finding the best mini PCs and adjecent devices.
           </Typography>
           <Typography variant="body1" paragraph>
             This project aims to catalog and compare various SFF and similar devices available on the market, making it easier to compare specifications and features across different brands and models.
