@@ -1,0 +1,84 @@
+id: asrock-deskmeet-x600-DIY
+brand: "ASRock"
+model: "DeskMeet X600 Series"
+release_date: "2024"
+cpu:
+  brand: "AMD"
+  model: "DIY"
+  architecture: "AM5"
+  socket:
+    type: "AM5"
+    supports_cpu_swap: true
+memory:
+  type: "DDR5"
+  speed: 7200
+  slots: 4
+  max_capacity: 256
+  module_type: "DIMM"
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 5.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Dragon RTL8125BG"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX210"
+    bluetooth: "5.3"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 1"
+  usb_a:
+    - count: 6
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 2.0"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@120Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@120Hz"
+  audio_jack: 2
+dimensions:
+  width: 168
+  depth: 219
+  height: 218
+power:
+  adapter_wattage: 500
+  dc_input: "Internal PSU"
+expansion:
+  pcie_slots:
+    - type: "x16"
+      version: "5.0"
+      form_factor: "Dual-slot"
+      additional_info: "Supports graphics cards up to 20cm long, 200W max"
+  mpcie_slots:
+    - count: 1
+      type: "mPCIe wireless slot"
+      note: "For WiFi/BT modules, Type 2230"
+notes: |-
+  - Supports AMD AM5 CPUs: Ryzen 9000/8000/7000 Series up to 65W TDP
+  - Max CPU cooler height: 54mm
+  - Internal 500W 80+ Bronze PSU (peak 550W)
+  - M.2 slot for Wi-Fi + Bluetooth module (Key E, Type 2230)
+  - Supports discrete graphics cards up to 200W with 8-pin PCIe power
+  - 4x larger volume than DeskMini series at 8 liters

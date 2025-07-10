@@ -1,0 +1,78 @@
+id: asrock-deskmini-x600usb4-DIY
+brand: "ASRock"
+model: "DeskMini X600/USB4 Series"
+release_date: "2025"
+cpu:
+  brand: "AMD"
+  model: "DIY"
+  architecture: "AM5"
+  socket:
+    type: "AM5"
+    supports_cpu_swap: true
+memory:
+  type: "DDR5"
+  speed: 6400
+  slots: 2
+  max_capacity: 128
+  module_type: "SODIMM"
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 5.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Dragon RTL8125BG"
+      interface: "RJ45"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 1"
+  usb4:
+    - count: 1
+      type: "USB4"
+      speed: "40Gbps"
+      features: ["Power Delivery", "DisplayPort Alt Mode"]
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 1"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@120Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@120Hz"
+  audio_jack: 2
+dimensions:
+  width: 155
+  depth: 155
+  height: 80
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A"
+expansion:
+  mpcie_slots:
+    - count: 1
+      type: "mPCIe wireless slot"
+      note: "For WiFi/BT modules, Type 2230"
+notes: |-
+  - Supports AMD AM5 CPUs: Ryzen 9000/8000/7000 Series up to 65W TDP
+  - Max CPU cooler height: 47mm
+  - USB4 connectivity only available on Ryzen 8000G APUs
+  - M.2 slot for Wi-Fi + Bluetooth module (Key E, Type 2230)
+  - RAID 0/1 support for M.2 NVMe devices
+  - Enhanced connectivity with USB4 for external GPU support
