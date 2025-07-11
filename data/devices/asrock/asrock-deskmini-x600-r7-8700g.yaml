@@ -1,0 +1,79 @@
+id: asrock-deskmini-x600-r7-8700g
+brand: "ASRock"
+model: "DeskMini X600 8700G"
+release_date: "2024"
+cpu:
+  brand: "AMD"
+  model: "Ryzen 7 8700G"
+  cores: 8
+  threads: 16
+  base_clock: 4.2
+  boost_clock: 5.1
+  tdp: 65
+  architecture: "Phoenix"
+  socket:
+    type: "AM5"
+    supports_cpu_swap: true
+gpu:
+  - model: "Radeon 780M"
+    type: "Integrated"
+memory:
+  type: "DDR5"
+  speed: 6400
+  slots: 2
+  max_capacity: 96
+  module_type: "SODIMM"
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 5.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Dragon RTL8125BG"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX210"
+    bluetooth: "5.3"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 1"
+  usb_a:
+    - count: 4
+      type: "USB 3.2"
+      speed: "Gen 1"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@120Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@120Hz"
+  audio_jack: 2
+dimensions:
+  width: 155
+  depth: 155
+  height: 80
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A"
+expansion:
+  mpcie_slots:
+    - count: 1
+      type: "mPCIe wireless slot"
+      note: "For WiFi/BT modules, Type 2230"
+notes: |-
+  - Pre-configured with AMD Ryzen 7 8700G APU (8-core, 16-thread)
+  - Powerful Radeon 780M integrated graphics with 12 compute units
+  - Max CPU cooler height: 47mm
+  - M.2 slot for Wi-Fi + Bluetooth module (Key E, Type 2230)
+  - RAID 0/1 support for M.2 NVMe devices
+  - Upper M.2 slot supports PCIe Gen5 for blazing fast SSD performance

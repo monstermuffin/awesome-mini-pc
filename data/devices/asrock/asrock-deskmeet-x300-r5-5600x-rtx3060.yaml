@@ -1,0 +1,95 @@
+id: asrock-deskmeet-x300-r5-5600x-rtx3060
+brand: "ASRock"
+model: "DeskMeet X300 5600X RTX3060"
+release_date: "2021"
+cpu:
+  brand: "AMD"
+  model: "Ryzen 5 5600X"
+  cores: 6
+  threads: 12
+  base_clock: 3.7
+  boost_clock: 4.6
+  tdp: 65
+  architecture: "Zen 3"
+  socket:
+    type: "AM4"
+    supports_cpu_swap: true
+gpu:
+  - model: "Radeon Graphics"
+    type: "Integrated"
+  - model: "GeForce RTX 3060"
+    type: "Discrete"
+    vram: "12GB"
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 4
+  max_capacity: 128
+  module_type: "DIMM"
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Dragon RTL8111H"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX200"
+    bluetooth: "5.0"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 1"
+  usb_a:
+    - count: 6
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 2.0"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 2
+dimensions:
+  width: 168
+  depth: 219
+  height: 218
+power:
+  adapter_wattage: 500
+  dc_input: "Internal PSU"
+expansion:
+  pcie_slots:
+    - type: "x16"
+      version: "4.0"
+      form_factor: "Dual-slot"
+      additional_info: "Supports graphics cards up to 20cm long, 200W max"
+  mpcie_slots:
+    - count: 1
+      type: "mPCIe wireless slot"
+      note: "For WiFi/BT modules, Type 2230"
+notes: |-
+  - Pre-configured with AMD Ryzen 5 5600X CPU and NVIDIA RTX 3060 GPU
+  - Excellent 1440p gaming performance with Zen 3 architecture
+  - Internal 500W 80+ Bronze PSU (peak 550W)
+  - M.2 slot for Wi-Fi + Bluetooth module (Key E, Type 2230)
+  - Supports discrete graphics cards up to 200W with 8-pin PCIe power
+  - 4x larger volume than DeskMini series at 8 liters

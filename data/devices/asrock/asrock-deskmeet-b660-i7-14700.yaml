@@ -1,0 +1,103 @@
+id: asrock-deskmeet-b660-i7-14700
+brand: "ASRock"
+model: "DeskMeet B660 14700"
+release_date: "2022"
+cpu:
+  brand: "Intel"
+  model: "i7-14700"
+  cores: 20
+  threads: 28
+  base_clock: 2.1
+  boost_clock: 5.4
+  tdp: 65
+  architecture: "Raptor Lake"
+  socket:
+    type: "LGA1700"
+    supports_cpu_swap: true
+  core_config:
+    types:
+      - type: "P-core"
+        count: 8
+        boost_clock: 5.4
+      - type: "E-core"
+        count: 12
+        boost_clock: 4.2
+gpu:
+  - model: "Intel UHD Graphics 770"
+    type: "Integrated"
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 4
+  max_capacity: 128
+  module_type: "DIMM"
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "2.5"
+    interface: "SATA3"
+networking:
+  ethernet:
+    - ports: 1
+      speed: "1GbE"
+      chipset: "Intel I219V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX210"
+    bluetooth: "5.3"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 1"
+  usb_a:
+    - count: 6
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 2.0"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@120Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@120Hz"
+  audio_jack: 2
+dimensions:
+  width: 168
+  depth: 219
+  height: 218
+power:
+  adapter_wattage: 500
+  dc_input: "Internal PSU"
+expansion:
+  pcie_slots:
+    - type: "x16"
+      version: "4.0"
+      form_factor: "Dual-slot"
+      additional_info: "Supports graphics cards up to 20cm long, 200W max"
+  mpcie_slots:
+    - count: 1
+      type: "mPCIe wireless slot"
+      note: "For WiFi/BT modules, Type 2230"
+notes: |-
+  - Pre-configured with Intel Core i7-14700 (20-core, 28-thread)
+  - Max CPU cooler height: 54mm
+  - Internal 500W 80+ Bronze PSU (peak 550W)
+  - M.2 slot for Wi-Fi + Bluetooth module (Key E, Type 2230)
+  - Supports discrete graphics cards up to 200W with 8-pin PCIe power
+  - 3x SATA ports for maximum storage flexibility

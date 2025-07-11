@@ -1,0 +1,97 @@
+id: asrock-deskmini-b760-i5-13500
+brand: "ASRock"
+model: "DeskMini B760 13500"
+release_date: "2023"
+cpu:
+  brand: "Intel"
+  model: "i5-13500"
+  cores: 14
+  threads: 20
+  base_clock: 2.5
+  boost_clock: 4.8
+  tdp: 65
+  architecture: "Raptor Lake"
+  socket:
+    type: "LGA1700"
+    supports_cpu_swap: true
+  core_config:
+    types:
+      - type: "P-core"
+        count: 6
+        boost_clock: 4.8
+      - type: "E-core"
+        count: 8
+        boost_clock: 3.5
+gpu:
+  - model: "Intel UHD Graphics 770"
+    type: "Integrated"
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+storage:
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 5.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 4.0 x4"
+networking:
+  ethernet:
+    - ports: 1
+      speed: "2.5GbE"
+      chipset: "Dragon RTL8125BG"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6E"
+    chipset: "Intel AX210"
+    bluetooth: "5.3"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2x2"
+      features: ["Alt Mode"]
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+      features: ["Alt Mode"]
+  usb_a:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 1"
+    - count: 2
+      type: "USB 2.0"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@120Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@120Hz"
+  audio_jack: 2
+dimensions:
+  width: 155
+  depth: 155
+  height: 80
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A"
+expansion:
+  mpcie_slots:
+    - count: 1
+      type: "mPCIe wireless slot"
+      note: "For WiFi/BT modules, Type 2230"
+notes: |-
+  - Pre-configured with Intel Core i5-13500 (14-core, 20-thread)
+  - Max CPU cooler height: 47mm
+  - Intelligent 2.5Gb/s LAN platform for maximum networking performance
+  - M.2 slot for Wi-Fi + Bluetooth module (Key E, Type 2230)
+  - RAID 0/1 support for M.2 NVMe devices
+  - Enhanced PCIe 5.0 support for next-gen SSDs

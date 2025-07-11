@@ -20,7 +20,7 @@ export type StorageInterface = typeof STORAGE_INTERFACES[number];
 export const RANGES = {
   "tdp": {
     "min": 0.1,
-    "max": 105
+    "max": 120
   },
   "cores": {
     "min": 1,
