@@ -1,0 +1,80 @@
+id: aoostar-r1-n100
+brand: "AOOSTAR"
+model: "R1 NAS N100"
+release_date: "2023"
+cpu:
+  brand: "Intel"
+  model: "N100"
+  cores: 4
+  threads: 4
+  base_clock: 1.0
+  boost_clock: 3.4
+  tdp: 6
+  architecture: "Alder Lake-N"
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 1
+  max_capacity: 32
+  module_type: "SODIMM"
+storage:
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel I226-V"
+      interface: "RJ45"
+  wifi:
+    standard: "WiFi 6"
+    chipset: "Intel AX200"
+    bluetooth: "5.2"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.2"
+      speed: "Gen 2"
+      features: ["Power Delivery"]
+  usb_a:
+    - count: 2
+      type: "USB 3.2"
+      speed: "Gen 2"
+    - count: 2
+      type: "USB 2.0"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 1
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  audio_jack: 1
+  micro_sd_card_reader: true
+dimensions:
+  width: 200
+  depth: 200
+  height: 100
+power:
+  adapter_wattage: 90
+  dc_input: "19V/4.74A"
+notes: |-
+  - 2-bay NAS supporting both 2.5" and 3.5" SATA drives
+  - Maximum storage capacity: 40TB (2x 20TB drives)
+  - Tool-free drive installation with magnetic front panel
+  - Dual 2.5GbE ports for network aggregation and failover
+  - Triple 4K display support (HDMI + DisplayPort + USB-C)
+  - Pre-installed Windows 11 Pro with support for TrueNAS, OpenMediaVault
+  - 3-in-1 functionality: NAS, Mini PC, and router capabilities
+  - WiFi 6 support for wireless connectivity

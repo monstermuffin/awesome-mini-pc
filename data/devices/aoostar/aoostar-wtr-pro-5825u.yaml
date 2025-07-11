@@ -1,0 +1,86 @@
+id: aoostar-wtr-pro-5825u
+brand: "AOOSTAR"
+model: "WTR Pro 5825U"
+release_date: "2024"
+cpu:
+  brand: "AMD"
+  model: "Ryzen 7 5825U"
+  cores: 8
+  threads: 16
+  base_clock: 2.0
+  boost_clock: 4.5
+  tdp: 15
+  architecture: "Zen 3"
+gpu:
+  - model: "AMD Radeon RX Vega 8"
+    type: "Integrated"
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 2
+  max_capacity: 64
+  module_type: "SODIMM"
+storage:
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel I226-V"
+      interface: "RJ45"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.0"
+      speed: "Gen 1"
+  usb_a:
+    - count: 2
+      type: "USB 2.0"
+    - count: 3
+      type: "USB 3.0"
+      speed: "Gen 1"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 2
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  micro_sd_card_reader: true
+dimensions:
+  width: 185
+  depth: 180
+  height: 228
+  weight: 4593
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A"
+notes: |-
+  - 4-bay NAS with high-performance AMD Ryzen 7 processor
+  - Maximum storage capacity: 88TB (4x 22TB drives)
+  - Dual M.2 slots for NVMe SSD caching and system storage
+  - All-metal chassis with superior build quality and ventilation
+  - Dual 2.5GbE Intel ports for network aggregation
+  - 8-core CPU ideal for transcoding, virtualization, and compute workloads
+  - Side-mounted ports for efficient space utilization
+  - Magnetic panel covering drive bays, requires shutdown for drive changes
+  - Pre-installed Windows 11 Pro with support for TrueNAS, OpenMediaVault
+  - Professional-grade NAS solution for demanding home lab environments

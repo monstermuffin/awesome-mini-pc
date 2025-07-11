@@ -1,0 +1,83 @@
+id: aoostar-wtr-pro-n150
+brand: "AOOSTAR"
+model: "WTR Pro N150"
+release_date: "2024"
+cpu:
+  brand: "Intel"
+  model: "N150"
+  cores: 4
+  threads: 4
+  base_clock: 1.0
+  boost_clock: 3.6
+  tdp: 6
+  architecture: "Alder Lake-N"
+gpu:
+  - model: "Intel UHD Graphics"
+    type: "Integrated"
+memory:
+  type: "DDR4"
+  speed: 3200
+  slots: 1
+  max_capacity: 32
+  module_type: "SODIMM"
+storage:
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "SATA"
+    form_factor: "3.5"
+    interface: "SATA3"
+  - type: "M.2"
+    form_factor: "2280"
+    interface: "PCIe 3.0 x4"
+networking:
+  ethernet:
+    - ports: 2
+      speed: "2.5GbE"
+      chipset: "Intel I226-V"
+      interface: "RJ45"
+ports:
+  usb_c:
+    - count: 1
+      type: "USB 3.0"
+      speed: "Gen 1"
+  usb_a:
+    - count: 2
+      type: "USB 2.0"
+    - count: 3
+      type: "USB 3.0"
+      speed: "Gen 1"
+  hdmi:
+    count: 1
+    version: "2.1"
+    max_resolution: "4K@60Hz"
+  displayport:
+    count: 2
+    version: "1.4"
+    max_resolution: "4K@60Hz"
+  micro_sd_card_reader: true
+dimensions:
+  width: 185
+  depth: 180
+  height: 228
+  weight: 3833
+power:
+  adapter_wattage: 120
+  dc_input: "19V/6.32A"
+notes: |-
+  - 4-bay NAS supporting both 2.5" and 3.5" SATA drives
+  - Maximum storage capacity: 88TB (4x 22TB drives)
+  - Single M.2 slot for NVMe SSD system storage
+  - All-metal chassis with thoughtful ventilation design
+  - Dual 2.5GbE Intel ports for high-speed networking
+  - Side-mounted ports for space efficiency
+  - Magnetic panel covering drive bays, not hot-swappable
+  - Pre-installed Windows 11 Pro with NAS software support
+  - Energy-efficient Intel N150 processor
+  - Cost-effective 4-bay solution for small office/home use
