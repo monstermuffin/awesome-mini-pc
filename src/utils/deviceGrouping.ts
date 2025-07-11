@@ -32,6 +32,7 @@ function extractBaseModel(deviceId: string): string {
     /^[nr]\d+[a-z]*$/i,            // Intel N-series
     
     // CPU variants (AMD)
+    /^r[3579]$/i,                  // AMD: r3, r5, r7, r9 (shorthand)
     /^ryzen.*$/i,                  // AMD Ryzen
     /^athlon.*$/i,                 // AMD Athlon
     /^\d+[ghe]$/i,                 // AMD
@@ -44,12 +45,19 @@ function extractBaseModel(deviceId: string): string {
   
   let splitIndex = parts.length;
   
-  // Special handling for Intel compound CPU names
+  // Special handling for compound CPU names (Intel and AMD)
   for (let i = 0; i < parts.length - 1; i++) {
     const currentPart = parts[i];
     const nextPart = parts[i + 1];
     
+    // Intel compound: i5-12400, i7-14700, etc.
     if (/^i[3579]$/i.test(currentPart) && /^\d{4,5}[a-z]*$/i.test(nextPart)) {
+      splitIndex = i;
+      break;
+    }
+    
+    // AMD compound: r5-5600x, r7-9700x, etc.
+    if (/^r[3579]$/i.test(currentPart) && /^\d{4}[a-z]*$/i.test(nextPart)) {
       splitIndex = i;
       break;
     }
