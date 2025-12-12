@@ -39,7 +39,7 @@ jobs:
 
       - name: Parse Issue and Save to File
         id: save_issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const issue = await github.rest.issues.get({
@@ -105,7 +105,7 @@ jobs:
 
       - name: Create Branch and PR
         id: create_pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
           script: |

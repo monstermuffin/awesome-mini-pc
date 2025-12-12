@@ -28,7 +28,7 @@ jobs:
 
       - name: Close linked issue
         if: github.event.pull_request.merged == true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
           script: |
@@ -55,7 +55,7 @@ jobs:
 
       - name: Delete source branch
         if: github.event.pull_request.merged == true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
           script: |
