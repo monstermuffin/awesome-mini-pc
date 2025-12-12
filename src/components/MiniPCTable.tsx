@@ -275,6 +275,24 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
           }}>
             {devices.length} {devices.length === 1 ? 'result' : 'results'}
           </Typography>
+          <Button
+            startIcon={<ViewColumnIcon />}
+            onClick={handleColumnDialogOpen}
+            size="small"
+            variant="outlined"
+            sx={{
+              fontSize: '0.75rem',
+              minHeight: 32,
+              borderColor: theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.5)' : 'rgba(25,118,210,0.5)',
+              color: theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+              '&:hover': {
+                borderColor: theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+                backgroundColor: theme.palette.mode === 'dark' ? 'rgba(144,202,249,0.08)' : 'rgba(25,118,210,0.08)',
+              },
+            }}
+          >
+            Columns
+          </Button>
         </Box>
 
         {isMobile ? (
@@ -315,43 +333,23 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
             }}>
               <TableHead>
                 <TableRow>
-                  <TableCell
-                    sx={{
-                      width: '35%',
-                      minWidth: '35%',
-                      ...headerCellStyle,
-                    }}
-                  >
-                    Device
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: '25%',
-                      minWidth: '25%',
-                      ...headerCellStyle,
-                    }}
-                  >
-                    CPU
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: '25%',
-                      minWidth: '25%',
-                      ...headerCellStyle,
-                    }}
-                  >
-                    Memory
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: '15%',
-                      minWidth: '15%',
-                      ...headerCellStyle,
-                      padding: '6px 4px',
-                    }}
-                  >
-                    Details
-                  </TableCell>
+                  {MOBILE_COLUMN_OPTIONS.filter(col => visibleColumns.has(col.key)).map(column => (
+                    <TableCell
+                      key={column.key}
+                      sx={{
+                        ...headerCellStyle,
+                        padding: '6px 4px',
+                        fontSize: '0.7rem',
+                        fontWeight: 600,
+                        minWidth: column.key === 'device' ? '120px' :
+                                 column.key === 'details' ? '60px' : '80px',
+                        width: column.key === 'device' ? '35%' :
+                               column.key === 'details' ? '15%' : 'auto',
+                      }}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -371,6 +369,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     isExpanded={row.isExpanded}
                     isVariant={row.isVariant}
                     mobile={isMobile}
+                    visibleColumns={visibleColumns}
                     onDeviceSelect={onDeviceSelect}
                     onOpenDetails={handleOpenDetails}
                     onToggleExpand={handleToggleExpand}
@@ -413,6 +412,7 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
                     isExpanded={row.isExpanded}
                     isVariant={row.isVariant}
                     mobile={isMobile}
+                    visibleColumns={visibleColumns}
                     onDeviceSelect={onDeviceSelect}
                     onOpenDetails={handleOpenDetails}
                     onToggleExpand={handleToggleExpand}
@@ -423,6 +423,90 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
           </TableContainer>
         )}
       </Box>
+
+      {/* Column Customization Dialog */}
+      <Dialog
+        open={columnDialogOpen}
+        onClose={handleColumnDialogClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            backgroundImage: theme.palette.mode === 'dark'
+              ? 'linear-gradient(180deg, rgba(24,24,24,1) 0%, rgba(33,33,33,1) 100%)'
+              : 'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(250,250,250,1) 100%)',
+            boxShadow: theme.palette.mode === 'dark'
+              ? '0 8px 32px rgba(0,0,0,0.4)'
+              : '0 8px 32px rgba(0,0,0,0.1)',
+          }
+        }}
+      >
+        <DialogTitle sx={{
+          borderBottom: theme.palette.divider,
+          background: theme.palette.mode === 'dark'
+            ? 'linear-gradient(90deg, rgba(21,101,192,0.1) 0%, rgba(30,136,229,0.1) 100%)'
+            : 'linear-gradient(90deg, rgba(33,150,243,0.05) 0%, rgba(66,165,245,0.05) 100%)',
+          px: 3,
+          py: 2,
+        }}>
+          <Typography variant="h6" component="div" sx={{
+            fontWeight: 600,
+            color: theme.palette.mode === 'dark' ? '#90caf9' : '#1565c0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }}>
+            <ViewColumnIcon fontSize="small" />
+            Customize Columns
+          </Typography>
+        </DialogTitle>
+        <DialogContent sx={{ px: 3, py: 2 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Choose which columns to display in the mobile table view:
+          </Typography>
+          <FormGroup>
+            {MOBILE_COLUMN_OPTIONS.map(column => (
+              <FormControlLabel
+                key={column.key}
+                control={
+                  <Checkbox
+                    checked={visibleColumns.has(column.key)}
+                    onChange={(e) => handleColumnToggle(column.key, e.target.checked)}
+                    disabled={column.always}
+                    size="small"
+                  />
+                }
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="body2">{column.label}</Typography>
+                    {column.always && (
+                      <Chip
+                        label="Required"
+                        size="small"
+                        variant="outlined"
+                        sx={{ fontSize: '0.6rem', height: 16 }}
+                      />
+                    )}
+                  </Box>
+                }
+                sx={{
+                  py: 0.5,
+                  '&:hover': {
+                    backgroundColor: theme.palette.action.hover,
+                    borderRadius: 1,
+                  },
+                }}
+              />
+            ))}
+          </FormGroup>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={handleColumnDialogClose} variant="outlined">
+            Done
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <DeviceDetailDialog
         device={detailDevice}

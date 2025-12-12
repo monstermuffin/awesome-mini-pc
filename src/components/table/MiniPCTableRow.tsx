@@ -27,6 +27,7 @@ interface MiniPCTableRowProps {
   isExpanded?: boolean;
   isVariant?: boolean; // true if this is a sub-row variant
   mobile?: boolean; // true if rendering in mobile compact mode
+  visibleColumns?: Set<string>; // visible column keys for mobile
   onDeviceSelect: (deviceId: string) => void;
   onOpenDetails: (device: MiniPC, event: React.MouseEvent) => void;
   onToggleExpand?: (familyId: string) => void;
@@ -40,6 +41,7 @@ export function MiniPCTableRow({
   isExpanded = false,
   isVariant = false,
   mobile = false,
+  visibleColumns = new Set(['device', 'cpu', 'memory', 'details']),
   onDeviceSelect,
   onOpenDetails,
   onToggleExpand
@@ -180,73 +182,144 @@ export function MiniPCTableRow({
         }
       }}
     >
-      {/* Mobile layout - compact 4 columns */}
+      {/* Mobile layout - dynamic columns */}
       {mobile ? (
         <>
-          {/* Device column */}
-          <TableCell sx={{ pl: isVariant ? 4 : 2, pr: 1 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="body2" sx={{ fontWeight: 'medium', fontSize: '0.8rem' }}>
-                  {isVariant ? `↳ ${displayDevice.model}` : `${displayDevice.brand} ${displayDevice.model}`}
-                </Typography>
-                {isFamily && !isVariant && (
-                  <Chip
-                    label={`${family.variantCount}`}
-                    size="small"
-                    sx={{ ...variantCountChipStyles, fontSize: '0.6rem', height: 16 }}
-                  />
-                )}
-              </Box>
-              {isCompareMode && (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  {isSelected ? (
-                    <CheckCircleIcon sx={{ fontSize: '1rem', color: 'primary.main' }} />
-                  ) : (
-                    <RadioButtonUncheckedIcon sx={{ fontSize: '1rem', color: 'action.disabled' }} />
-                  )}
-                </Box>
-              )}
-            </Box>
-          </TableCell>
+          {Array.from(visibleColumns).map(columnKey => {
+            switch (columnKey) {
+              case 'device':
+                return (
+                  <TableCell key={columnKey} sx={{ pl: isVariant ? 4 : 2, pr: 1 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 'medium', fontSize: '0.8rem' }}>
+                          {isVariant ? `↳ ${displayDevice.model}` : `${displayDevice.brand} ${displayDevice.model}`}
+                        </Typography>
+                        {isFamily && !isVariant && (
+                          <Chip
+                            label={`${family.variantCount}`}
+                            size="small"
+                            sx={{ ...variantCountChipStyles, fontSize: '0.6rem', height: 16 }}
+                          />
+                        )}
+                      </Box>
+                      {isCompareMode && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          {isSelected ? (
+                            <CheckCircleIcon sx={{ fontSize: '1rem', color: 'primary.main' }} />
+                          ) : (
+                            <RadioButtonUncheckedIcon sx={{ fontSize: '1rem', color: 'action.disabled' }} />
+                          )}
+                        </Box>
+                      )}
+                    </Box>
+                  </TableCell>
+                );
 
-          {/* CPU column */}
-          <TableCell sx={{ px: 1 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
-              <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem', lineHeight: 1.2 }}>
-                {displayDevice.cpu.brand} {displayDevice.cpu.model}
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
-                {displayDevice.cpu.cores} cores
-              </Typography>
-            </Box>
-          </TableCell>
+              case 'cpu':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+                      <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem', lineHeight: 1.2 }}>
+                        {displayDevice.cpu.brand} {displayDevice.cpu.model}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                        {displayDevice.cpu.cores} cores
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                );
 
-          {/* Memory column */}
-          <TableCell sx={{ px: 1 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
-              <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem', lineHeight: 1.2 }}>
-                {displayDevice.memory.type}
-              </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
-                {formatMemoryCapacity(displayDevice.memory.max_capacity)}
-              </Typography>
-            </Box>
-          </TableCell>
+              case 'memory':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+                      <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem', lineHeight: 1.2 }}>
+                        {displayDevice.memory.type}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                        {formatMemoryCapacity(displayDevice.memory.max_capacity)}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                );
 
-          {/* Details column */}
-          <TableCell sx={{ px: 0.5, textAlign: 'center' }}>
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenDetails(displayDevice, e);
-              }}
-              sx={{ p: 0.5 }}
-            >
-              <InfoIcon sx={{ fontSize: '1rem' }} />
-            </IconButton>
-          </TableCell>
+              case 'gpu':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                    <Typography variant="caption" sx={{ fontSize: '0.7rem', lineHeight: 1.2 }}>
+                      {displayDevice.gpu && displayDevice.gpu.length > 0
+                        ? displayDevice.gpu.map(gpu => `${gpu.type === 'Integrated' ? 'Int.' : 'Disc.'} ${gpu.model}`).join(', ')
+                        : 'None'}
+                    </Typography>
+                  </TableCell>
+                );
+
+              case 'cores':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                    <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem' }}>
+                      {displayDevice.cpu.cores}
+                    </Typography>
+                  </TableCell>
+                );
+
+              case 'storage':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                    <StorageCell device={displayDevice} compact />
+                  </TableCell>
+                );
+
+              case 'ethernet':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                    <Typography variant="caption" sx={{ fontSize: '0.7rem', lineHeight: 1.2 }}>
+                      {displayDevice.networking?.ethernet && displayDevice.networking.ethernet.length > 0
+                        ? displayDevice.networking.ethernet.map(eth => `${eth.speed}`).join(', ')
+                        : 'None'}
+                    </Typography>
+                  </TableCell>
+                );
+
+              case 'wifi':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                    <Typography variant="caption" sx={{ fontSize: '0.7rem', lineHeight: 1.2 }}>
+                      {displayDevice.networking?.wifi?.standard || 'None'}
+                    </Typography>
+                  </TableCell>
+                );
+
+              case 'volume':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                    <Typography variant="caption" sx={{ fontSize: '0.7rem' }}>
+                      {displayDevice.dimensions?.volume ? `${displayDevice.dimensions.volume}L` : 'N/A'}
+                    </Typography>
+                  </TableCell>
+                );
+
+              case 'details':
+                return (
+                  <TableCell key={columnKey} sx={{ px: 0.5, textAlign: 'center' }}>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenDetails(displayDevice, e);
+                      }}
+                      sx={{ p: 0.5 }}
+                    >
+                      <InfoIcon sx={{ fontSize: '1rem' }} />
+                    </IconButton>
+                  </TableCell>
+                );
+
+              default:
+                return null;
+            }
+          })}
         </>
       ) : (
         <>
