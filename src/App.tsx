@@ -12,8 +12,6 @@ import {
   Drawer,
   Link,
   Tooltip,
-  TextField,
-  InputAdornment,
   Button,
   Dialog,
   DialogTitle,
@@ -34,6 +32,8 @@ import type { MiniPC } from './types/minipc';
 import type { FilterOptions } from './utils/dataLoader';
 import { FilterPanel } from './components/FilterPanel';
 import { MiniPCTable } from './components/MiniPCTable';
+import { SkeletonLoader } from './components/SkeletonLoader';
+import { EnhancedSearch } from './components/EnhancedSearch';
 import { SEO } from './components/SEO';
 
 type FilterState = {
@@ -309,17 +309,26 @@ function App() {
     });
   };
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
 
   const filteredDevices = devices.filter((device) => {
+    // Skip invalid devices
+    if (!device || !device.brand || !device.model) return false;
+
     if (searchQuery) {
       const searchLower = searchQuery.toLowerCase();
-      const matchesSearch = 
+      const matchesSearch =
         device.brand.toLowerCase().includes(searchLower) ||
-        device.model.toLowerCase().includes(searchLower);
-      
+        device.model.toLowerCase().includes(searchLower) ||
+        (device.cpu?.brand && device.cpu.brand.toLowerCase().includes(searchLower)) ||
+        (device.cpu?.model && device.cpu.model.toLowerCase().includes(searchLower)) ||
+        (device.cpu?.architecture && device.cpu.architecture.toLowerCase().includes(searchLower)) ||
+        (device.gpu && device.gpu.some(gpu => gpu.model && gpu.model.toLowerCase().includes(searchLower))) ||
+        (device.gpu && device.gpu.some(gpu => gpu.type && gpu.type.toLowerCase().includes(searchLower))) ||
+        (device.memory?.type && device.memory.type.toLowerCase().includes(searchLower)) ||
+        (device.networking?.wifi?.standard && device.networking.wifi.standard.toLowerCase().includes(searchLower)) ||
+        (device.storage && device.storage.some(storage => storage.type && storage.type.toLowerCase().includes(searchLower))) ||
+        (device.storage && device.storage.some(storage => storage.interface && storage.interface.toLowerCase().includes(searchLower)));
+
       if (!matchesSearch) return false;
     }
 
@@ -330,28 +339,28 @@ function App() {
     if (selectedFilters.brands.size > 0 && !selectedFilters.brands.has(device.brand)) {
       return false;
     }
-    if (selectedFilters.cpuBrands.size > 0 && !selectedFilters.cpuBrands.has(device.cpu.brand)) {
+    if (selectedFilters.cpuBrands.size > 0 && (!device.cpu?.brand || !selectedFilters.cpuBrands.has(device.cpu.brand))) {
       return false;
     }
-    if (selectedFilters.cpuArchitectures.size > 0 && 
-        (!device.cpu.architecture || !selectedFilters.cpuArchitectures.has(device.cpu.architecture))) {
+    if (selectedFilters.cpuArchitectures.size > 0 &&
+        (!device.cpu?.architecture || !selectedFilters.cpuArchitectures.has(device.cpu.architecture))) {
       return false;
     }
-    if (selectedFilters.cpuChipsets.size > 0 && 
-        (!device.cpu.chipset || !selectedFilters.cpuChipsets.has(device.cpu.chipset))) {
+    if (selectedFilters.cpuChipsets.size > 0 &&
+        (!device.cpu?.chipset || !selectedFilters.cpuChipsets.has(device.cpu.chipset))) {
       return false;
     }
-    if (selectedFilters.cpuSockets.size > 0 && 
-        (!device.cpu.socket?.type || !selectedFilters.cpuSockets.has(device.cpu.socket.type))) {
+    if (selectedFilters.cpuSockets.size > 0 &&
+        (!device.cpu?.socket?.type || !selectedFilters.cpuSockets.has(device.cpu.socket.type))) {
       return false;
     }
-    if (selectedFilters.memoryTypes.size > 0 && !selectedFilters.memoryTypes.has(device.memory.type)) {
+    if (selectedFilters.memoryTypes.size > 0 && (!device.memory?.type || !selectedFilters.memoryTypes.has(device.memory.type))) {
       return false;
     }
-    if (selectedFilters.memoryModuleTypes.size > 0 && !selectedFilters.memoryModuleTypes.has(device.memory.module_type)) {
+    if (selectedFilters.memoryModuleTypes.size > 0 && (!device.memory?.module_type || !selectedFilters.memoryModuleTypes.has(device.memory.module_type))) {
       return false;
     }
-    if (selectedFilters.memorySlotsCount.size > 0 && !selectedFilters.memorySlotsCount.has(device.memory.slots.toString())) {
+    if (selectedFilters.memorySlotsCount.size > 0 && (!device.memory?.slots || !selectedFilters.memorySlotsCount.has(device.memory.slots.toString()))) {
       return false;
     }
     if (selectedFilters.wifiStandards.size > 0 && (!device.networking?.wifi?.standard || !selectedFilters.wifiStandards.has(device.networking.wifi.standard))) {
@@ -366,10 +375,10 @@ function App() {
     if (selectedFilters.ethernetChipsets.size > 0 && (!device.networking?.ethernet || !device.networking.ethernet.some(eth => selectedFilters.ethernetChipsets.has(eth.chipset)))) {
       return false;
     }
-    if (selectedFilters.storageTypes.size > 0 && !device.storage.some(s => selectedFilters.storageTypes.has(s.type))) {
+    if (selectedFilters.storageTypes.size > 0 && (!device.storage || !device.storage.some(s => selectedFilters.storageTypes.has(s.type)))) {
       return false;
     }
-    if (selectedFilters.storageInterfaces.size > 0 && !device.storage.some(s => selectedFilters.storageInterfaces.has(s.interface))) {
+    if (selectedFilters.storageInterfaces.size > 0 && (!device.storage || !device.storage.some(s => selectedFilters.storageInterfaces.has(s.interface)))) {
       return false;
     }
     if (selectedFilters.releaseYears.size > 0 && !selectedFilters.releaseYears.has(device.release_date)) {
@@ -529,13 +538,14 @@ function App() {
           borderRight: `1px solid ${darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'}`,
           height: '100%',
           transition: theme.transitions.create(['width', 'transform'], {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            duration: 300,
           }),
-          boxShadow: drawerOpen ? (darkMode 
-            ? '4px 0 10px rgba(0,0,0,0.15)' 
-            : '4px 0 10px rgba(0,0,0,0.08)') : 'none',
+          boxShadow: drawerOpen ? (darkMode
+            ? '4px 0 20px rgba(0,0,0,0.3), 0 0 40px rgba(33, 150, 243, 0.1)'
+            : '4px 0 20px rgba(0,0,0,0.12), 0 0 40px rgba(33, 150, 243, 0.06)') : 'none',
           overflowX: 'hidden',
+          backdropFilter: 'blur(8px)',
         },
       }}
     >
@@ -592,7 +602,7 @@ function App() {
         <AppBar position="fixed" color="default" elevation={0}>
           <Toolbar>
             {mobileSearchOpen ? (
-              <Box sx={{ 
+              <Box sx={{
                 display: { xs: 'flex', md: 'none' },
                 flex: 1,
                 alignItems: 'center',
@@ -604,45 +614,14 @@ function App() {
                 >
                   <ChevronLeftIcon />
                 </IconButton>
-                <TextField
-                  size="small"
-                  fullWidth
-                  autoFocus
-                  placeholder="Search mini PCs..."
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon sx={{ color: 'text.secondary' }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: theme => theme.palette.mode === 'dark' 
-                        ? 'rgba(255, 255, 255, 0.05)'
-                        : 'rgba(0, 0, 0, 0.04)',
-                      '&:hover': {
-                        backgroundColor: theme => theme.palette.mode === 'dark'
-                          ? 'rgba(255, 255, 255, 0.08)'
-                          : 'rgba(0, 0, 0, 0.06)',
-                      },
-                      '& fieldset': {
-                        borderColor: 'transparent',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'transparent',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: theme => theme.palette.primary.main,
-                      },
-                    },
-                    '& .MuiInputBase-input': {
-                      color: theme => theme.palette.text.primary,
-                    },
-                  }}
-                />
+                <Box sx={{ flex: 1 }}>
+                  <EnhancedSearch
+                    devices={devices}
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    placeholder="Search mini PCs..."
+                  />
+                </Box>
               </Box>
             ) : (
               <>
@@ -699,27 +678,12 @@ function App() {
 
                 <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
                   {!isMobile && (
-                    <Box sx={{ position: 'relative', mr: 2 }}>
-                      <TextField
-                        placeholder="Search..."
-                        size="small"
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        sx={{
-                          '& .MuiOutlinedInput-root': {
-                            borderRadius: 2,
-                            backgroundColor: theme => theme.palette.mode === 'dark' 
-                              ? 'rgba(255, 255, 255, 0.05)' 
-                              : 'rgba(0, 0, 0, 0.04)',
-                          },
-                        }}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
+                    <Box sx={{ position: 'relative', mr: 2, width: 280 }}>
+                      <EnhancedSearch
+                        devices={devices}
+                        searchQuery={searchQuery}
+                        onSearchChange={setSearchQuery}
+                        placeholder="Search mini PCs..."
                       />
                     </Box>
                   )}
@@ -732,7 +696,16 @@ function App() {
                       <SearchIcon />
                     </IconButton>
                   )}
-                  <IconButton onClick={handleThemeToggle} color="inherit">
+                  <IconButton
+                    onClick={handleThemeToggle}
+                    color="inherit"
+                    sx={{
+                      transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&:hover': {
+                        transform: 'rotate(180deg)',
+                      },
+                    }}
+                  >
                     {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
                   </IconButton>
                   <IconButton
@@ -801,14 +774,7 @@ function App() {
             height: 'calc(100vh - 64px)',
           }}>
             {loading ? (
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center',
-                height: '100%'
-              }}>
-                <Typography variant="h6">Loading...</Typography>
-              </Box>
+              <SkeletonLoader count={15} />
             ) : (
               <Box sx={{ height: '100%' }}>
                 <MiniPCTable 

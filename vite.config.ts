@@ -12,6 +12,7 @@ export default defineConfig({
   server: {
     fs: {
       allow: [
+        '.',
         'data',
         'src',
       ],

@@ -4,11 +4,14 @@ import {
   TableContainer,
   Typography,
   Box,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import React, { useState } from 'react';
 import type { MiniPC } from '../types/minipc';
 import { MiniPCTableHeader } from './table/MiniPCTableHeader';
 import { MiniPCTableRow } from './table/MiniPCTableRow';
+import { MobileDeviceCard } from './table/MobileDeviceCard';
 import { DeviceDetailDialog } from './table/DeviceDetailDialog';
 import { getSortValue, type SortKey, type SortConfig } from './table/tableUtils';
 import { groupDevicesByFamily, type DeviceFamily } from '../utils/deviceGrouping';
@@ -21,6 +24,9 @@ interface MiniPCTableProps {
 }
 
 export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompareMode }: MiniPCTableProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: 'brand',
     direction: 'asc',
@@ -170,59 +176,124 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
     },
   }), []);
 
+  // Flatten devices for mobile view (no family grouping)
+  const flattenedDevices = React.useMemo(() => {
+    if (isCompareMode) {
+      return sortedSelectedDevices;
+    }
+    return devices.sort((a, b) => {
+      const aValue = getSortValue(a, sortConfig.key);
+      const bValue = getSortValue(b, sortConfig.key);
+      if (aValue === bValue) return 0;
+      const modifier = sortConfig.direction === 'asc' ? 1 : -1;
+      return aValue > bValue ? modifier : -modifier;
+    });
+  }, [devices, sortedSelectedDevices, sortConfig, isCompareMode]);
+
   return (
     <>
       <Box sx={paperStyles}>
         <Box sx={headerStyles}>
-          <Typography variant="h6" sx={{ 
+          <Typography variant="h6" sx={{
             fontWeight: 600,
-            color: theme => theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
+            color: theme.palette.mode === 'dark' ? '#90caf9' : '#1976d2',
           }}>
             {devices.length} {devices.length === 1 ? 'result' : 'results'}
           </Typography>
         </Box>
-        
-        <TableContainer 
-          sx={tableContainerStyles}
-        >
-          <Table stickyHeader size="small" sx={{ 
-            tableLayout: 'fixed',
-            '& .MuiTableCell-head': {
-              py: 1.5,
-              verticalAlign: 'bottom',
-              lineHeight: 1.3
-            }
+
+        {isMobile ? (
+          // Mobile card view
+          <Box sx={{
+            flexGrow: 1,
+            overflow: 'auto',
+            p: 2,
+            scrollbarWidth: 'thin',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: theme.palette.mode === 'dark' ? '#2c2c2c' : '#f5f5f5',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: theme.palette.mode === 'dark' ? '#555' : '#bbb',
+              borderRadius: '4px',
+            },
           }}>
-            <MiniPCTableHeader
-              sortConfig={sortConfig}
-              onSort={handleSort}
-            />
-            <TableBody>
-              {displayRows.map((row, index) => (
-                <MiniPCTableRow
-                  key={row.device?.id || row.family?.id || index}
-                  device={row.device}
-                  family={row.family}
-                  isSelected={
-                    row.device 
-                      ? selectedDevices.has(row.device.id)
-                      : row.family 
-                        ? selectedDevices.has(row.family.representative.id)
-                        : false
-                  }
+            {flattenedDevices
+              .filter(device => device && device.id) // Filter out undefined or invalid devices
+              .map((device, index) => (
+              <Box
+                key={device.id}
+                sx={{
+                  animation: `fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.05}s both`,
+                  '@keyframes fadeInUp': {
+                    '0%': {
+                      opacity: 0,
+                      transform: 'translateY(20px)',
+                    },
+                    '100%': {
+                      opacity: 1,
+                      transform: 'translateY(0)',
+                    },
+                  },
+                }}
+              >
+                <MobileDeviceCard
+                  device={device}
+                  isSelected={selectedDevices.has(device.id)}
                   isCompareMode={isCompareMode}
-                  isExpanded={row.isExpanded}
-                  isVariant={row.isVariant}
                   onDeviceSelect={onDeviceSelect}
                   onOpenDetails={handleOpenDetails}
-                  onToggleExpand={handleToggleExpand}
                 />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </Box>
+            ))}
+          </Box>
+        ) : (
+          // Desktop table view
+          <TableContainer
+            sx={tableContainerStyles}
+          >
+            <Table stickyHeader size="small" sx={{
+              tableLayout: 'fixed',
+              '& .MuiTableCell-head': {
+                py: 1.5,
+                verticalAlign: 'bottom',
+                lineHeight: 1.3
+              }
+            }}>
+              <MiniPCTableHeader
+                sortConfig={sortConfig}
+                onSort={handleSort}
+              />
+              <TableBody>
+                {displayRows.map((row, index) => (
+                  <MiniPCTableRow
+                    key={row.device?.id || row.family?.id || index}
+                    device={row.device}
+                    family={row.family}
+                    isSelected={
+                      row.device
+                        ? selectedDevices.has(row.device.id)
+                        : row.family
+                          ? selectedDevices.has(row.family.representative.id)
+                          : false
+                    }
+                    isCompareMode={isCompareMode}
+                    isExpanded={row.isExpanded}
+                    isVariant={row.isVariant}
+                    onDeviceSelect={onDeviceSelect}
+                    onOpenDetails={handleOpenDetails}
+                    onToggleExpand={handleToggleExpand}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Box>
-      
+
       <DeviceDetailDialog
         device={detailDevice}
         open={!!detailDevice}
