@@ -12,6 +12,8 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import type { MiniPC } from '../../types/minipc';
 import type { DeviceFamily } from '../../utils/deviceGrouping';
 import { StorageCell } from './StorageCell';
@@ -24,19 +26,21 @@ interface MiniPCTableRowProps {
   isCompareMode: boolean;
   isExpanded?: boolean;
   isVariant?: boolean; // true if this is a sub-row variant
+  mobile?: boolean; // true if rendering in mobile compact mode
   onDeviceSelect: (deviceId: string) => void;
   onOpenDetails: (device: MiniPC, event: React.MouseEvent) => void;
   onToggleExpand?: (familyId: string) => void;
 }
 
-export function MiniPCTableRow({ 
-  device, 
+export function MiniPCTableRow({
+  device,
   family,
-  isSelected, 
-  isCompareMode, 
+  isSelected,
+  isCompareMode,
   isExpanded = false,
   isVariant = false,
-  onDeviceSelect, 
+  mobile = false,
+  onDeviceSelect,
   onOpenDetails,
   onToggleExpand
 }: MiniPCTableRowProps) {
@@ -176,35 +180,106 @@ export function MiniPCTableRow({
         }
       }}
     >
-             <TableCell sx={{ pl: isVariant ? 6 : 2 }}>
-         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-           {/* Hide brand for variant rows since they're the same brand */}
-           {!isVariant && displayDevice.brand}
-           
-           {/* Variant count badge for family rows - moved here */}
-           {isFamily && !isVariant && (
-             <Chip 
-               label={`${family.variantCount}`}
-               size="small" 
-               sx={variantCountChipStyles} 
-             />
-           )}
-           
-           {/* Add a subtle variant indicator for variant rows */}
-           {isVariant && (
-             <Box sx={{ 
-               display: 'flex', 
-               alignItems: 'center',
-               color: (theme: any) => theme.palette.mode === 'dark' ? '#ce93d8' : '#7b1fa2',
-               fontSize: '0.75rem',
-               fontWeight: 500,
-               opacity: 0.8
-             }}>
-               ↳ variant
-             </Box>
-           )}
-         </Box>
-       </TableCell>
+      {/* Mobile layout - compact 4 columns */}
+      {mobile ? (
+        <>
+          {/* Device column */}
+          <TableCell sx={{ pl: isVariant ? 4 : 2, pr: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'medium', fontSize: '0.8rem' }}>
+                  {isVariant ? `↳ ${displayDevice.model}` : `${displayDevice.brand} ${displayDevice.model}`}
+                </Typography>
+                {isFamily && !isVariant && (
+                  <Chip
+                    label={`${family.variantCount}`}
+                    size="small"
+                    sx={{ ...variantCountChipStyles, fontSize: '0.6rem', height: 16 }}
+                  />
+                )}
+              </Box>
+              {isCompareMode && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  {isSelected ? (
+                    <CheckCircleIcon sx={{ fontSize: '1rem', color: 'primary.main' }} />
+                  ) : (
+                    <RadioButtonUncheckedIcon sx={{ fontSize: '1rem', color: 'action.disabled' }} />
+                  )}
+                </Box>
+              )}
+            </Box>
+          </TableCell>
+
+          {/* CPU column */}
+          <TableCell sx={{ px: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+              <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem', lineHeight: 1.2 }}>
+                {displayDevice.cpu.brand} {displayDevice.cpu.model}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                {displayDevice.cpu.cores} cores
+              </Typography>
+            </Box>
+          </TableCell>
+
+          {/* Memory column */}
+          <TableCell sx={{ px: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
+              <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem', lineHeight: 1.2 }}>
+                {displayDevice.memory.type}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                {formatMemoryCapacity(displayDevice.memory.max_capacity)}
+              </Typography>
+            </Box>
+          </TableCell>
+
+          {/* Details column */}
+          <TableCell sx={{ px: 0.5, textAlign: 'center' }}>
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenDetails(displayDevice, e);
+              }}
+              sx={{ p: 0.5 }}
+            >
+              <InfoIcon sx={{ fontSize: '1rem' }} />
+            </IconButton>
+          </TableCell>
+        </>
+      ) : (
+        <>
+          {/* Desktop layout - all columns */}
+          <TableCell sx={{ pl: isVariant ? 6 : 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {/* Hide brand for variant rows since they're the same brand */}
+              {!isVariant && displayDevice.brand}
+
+              {/* Variant count badge for family rows - moved here */}
+              {isFamily && !isVariant && (
+                <Chip
+                  label={`${family.variantCount}`}
+                  size="small"
+                  sx={variantCountChipStyles}
+                />
+              )}
+
+              {/* Add a subtle variant indicator for variant rows */}
+              {isVariant && (
+                <Box sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: (theme: any) => theme.palette.mode === 'dark' ? '#ce93d8' : '#7b1fa2',
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  opacity: 0.8
+                }}>
+                  ↳ variant
+                </Box>
+              )}
+            </Box>
+          </TableCell>
       
              <TableCell sx={{ pl: isVariant ? 4 : 2 }}>
          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -586,6 +661,8 @@ export function MiniPCTableRow({
            </Badge>
          </Box>
        </TableCell>
+        </>
+      )}
     </TableRow>
   );
 } 
