@@ -17,6 +17,8 @@ export default defineConfig({
       ],
     },
   },
-  assetsInclude: ['**/*.yaml'],
+  build: {
+    assetsInclude: ['**/*.yaml'],
+  },
   base: './',
 }) 
