@@ -18,6 +18,7 @@ import type { MiniPC } from '../../types/minipc';
 import type { DeviceFamily } from '../../utils/deviceGrouping';
 import { StorageCell } from './StorageCell';
 import { getDeviceAge, formatMemoryCapacity, formatVolume } from './tableUtils';
+import { MOBILE_COLUMN_OPTIONS } from '../MiniPCTable';
 
 interface MiniPCTableRowProps {
   device?: MiniPC;
@@ -185,11 +186,24 @@ export function MiniPCTableRow({
       {/* Mobile layout - dynamic columns */}
       {mobile ? (
         <>
-          {Array.from(visibleColumns).map(columnKey => {
-            switch (columnKey) {
+          {(() => {
+            const visibleColumnList = MOBILE_COLUMN_OPTIONS.filter(col => visibleColumns.has(col.key));
+            const totalColumns = visibleColumnList.length;
+            return visibleColumnList.map(column => {
+              const cellWidth = `${100 / totalColumns}%`;
+              const columnKey = column.key;
+              switch (columnKey) {
               case 'device':
                 return (
-                  <TableCell key={columnKey} sx={{ pl: isVariant ? 4 : 2, pr: 1 }}>
+                  <TableCell
+                    key={columnKey}
+                    sx={{
+                      pl: isVariant ? 4 : 2,
+                      pr: 1,
+                      width: cellWidth,
+                      minWidth: '120px',
+                    }}
+                  >
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Typography variant="body2" sx={{ fontWeight: 'medium', fontSize: '0.8rem' }}>
@@ -218,7 +232,7 @@ export function MiniPCTableRow({
 
               case 'cpu':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                  <TableCell key={columnKey} sx={{ px: 1, width: cellWidth, minWidth: '80px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
                       <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem', lineHeight: 1.2 }}>
                         {displayDevice.cpu.brand} {displayDevice.cpu.model}
@@ -232,7 +246,7 @@ export function MiniPCTableRow({
 
               case 'memory':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                  <TableCell key={columnKey} sx={{ px: 1, width: cellWidth, minWidth: '80px' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25 }}>
                       <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem', lineHeight: 1.2 }}>
                         {displayDevice.memory.type}
@@ -246,7 +260,7 @@ export function MiniPCTableRow({
 
               case 'gpu':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                  <TableCell key={columnKey} sx={{ px: 1, width: cellWidth, minWidth: '80px' }}>
                     <Typography variant="caption" sx={{ fontSize: '0.7rem', lineHeight: 1.2 }}>
                       {displayDevice.gpu && displayDevice.gpu.length > 0
                         ? displayDevice.gpu.map(gpu => `${gpu.type === 'Integrated' ? 'Int.' : 'Disc.'} ${gpu.model}`).join(', ')
@@ -257,7 +271,7 @@ export function MiniPCTableRow({
 
               case 'cores':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                  <TableCell key={columnKey} sx={{ px: 1, width: cellWidth, minWidth: '80px' }}>
                     <Typography variant="caption" sx={{ fontWeight: 'medium', fontSize: '0.7rem' }}>
                       {displayDevice.cpu.cores}
                     </Typography>
@@ -266,14 +280,14 @@ export function MiniPCTableRow({
 
               case 'storage':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                  <TableCell key={columnKey} sx={{ px: 1, width: cellWidth, minWidth: '80px' }}>
                     <StorageCell device={displayDevice} compact />
                   </TableCell>
                 );
 
               case 'ethernet':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                  <TableCell key={columnKey} sx={{ px: 1, width: cellWidth, minWidth: '80px' }}>
                     <Typography variant="caption" sx={{ fontSize: '0.7rem', lineHeight: 1.2 }}>
                       {displayDevice.networking?.ethernet && displayDevice.networking.ethernet.length > 0
                         ? displayDevice.networking.ethernet.map(eth => `${eth.speed}`).join(', ')
@@ -284,7 +298,7 @@ export function MiniPCTableRow({
 
               case 'wifi':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                  <TableCell key={columnKey} sx={{ px: 1, width: cellWidth, minWidth: '80px' }}>
                     <Typography variant="caption" sx={{ fontSize: '0.7rem', lineHeight: 1.2 }}>
                       {displayDevice.networking?.wifi?.standard || 'None'}
                     </Typography>
@@ -293,7 +307,7 @@ export function MiniPCTableRow({
 
               case 'volume':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 1 }}>
+                  <TableCell key={columnKey} sx={{ px: 1, width: cellWidth, minWidth: '80px' }}>
                     <Typography variant="caption" sx={{ fontSize: '0.7rem' }}>
                       {displayDevice.dimensions?.volume ? `${displayDevice.dimensions.volume}L` : 'N/A'}
                     </Typography>
@@ -302,7 +316,7 @@ export function MiniPCTableRow({
 
               case 'details':
                 return (
-                  <TableCell key={columnKey} sx={{ px: 0.5, textAlign: 'center' }}>
+                  <TableCell key={columnKey} sx={{ px: 0.5, textAlign: 'center', width: cellWidth, minWidth: '60px' }}>
                     <IconButton
                       size="small"
                       onClick={(e) => {
@@ -319,7 +333,8 @@ export function MiniPCTableRow({
               default:
                 return null;
             }
-          })}
+          });
+          })()}
         </>
       ) : (
         <>

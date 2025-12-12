@@ -36,7 +36,7 @@ interface MiniPCTableProps {
 }
 
 // Mobile column definitions
-const MOBILE_COLUMN_OPTIONS = [
+export const MOBILE_COLUMN_OPTIONS = [
   { key: 'device', label: 'Device', default: true, always: true },
   { key: 'cpu', label: 'CPU', default: true, always: false },
   { key: 'memory', label: 'Memory', default: true, always: false },
@@ -49,7 +49,7 @@ const MOBILE_COLUMN_OPTIONS = [
   { key: 'details', label: 'Details', default: true, always: true },
 ] as const;
 
-type MobileColumnKey = typeof MOBILE_COLUMN_OPTIONS[number]['key'];
+export type MobileColumnKey = typeof MOBILE_COLUMN_OPTIONS[number]['key'];
 
 export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompareMode }: MiniPCTableProps) {
   const theme = useTheme();
@@ -318,38 +318,45 @@ export function MiniPCTable({ devices, selectedDevices, onDeviceSelect, isCompar
           >
             <Table size="small" sx={{
               tableLayout: 'fixed',
+              width: '100%',
               '& .MuiTableCell-head': {
                 py: 1,
                 px: 0.5,
                 fontSize: '0.75rem',
                 fontWeight: 600,
-                lineHeight: 1.2
+                lineHeight: 1.2,
+                whiteSpace: 'nowrap',
               },
               '& .MuiTableCell-body': {
                 py: 1,
                 px: 0.5,
                 fontSize: '0.75rem',
+                whiteSpace: 'normal',
+                overflow: 'visible',
               }
             }}>
               <TableHead>
                 <TableRow>
-                  {MOBILE_COLUMN_OPTIONS.filter(col => visibleColumns.has(col.key)).map(column => (
-                    <TableCell
-                      key={column.key}
-                      sx={{
-                        ...headerCellStyle,
-                        padding: '6px 4px',
-                        fontSize: '0.7rem',
-                        fontWeight: 600,
-                        minWidth: column.key === 'device' ? '120px' :
-                                 column.key === 'details' ? '60px' : '80px',
-                        width: column.key === 'device' ? '35%' :
-                               column.key === 'details' ? '15%' : 'auto',
-                      }}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
+                  {(() => {
+                    const visibleColumnList = MOBILE_COLUMN_OPTIONS.filter(col => visibleColumns.has(col.key));
+                    const totalColumns = visibleColumnList.length;
+                    return visibleColumnList.map(column => (
+                      <TableCell
+                        key={column.key}
+                        sx={{
+                          ...headerCellStyle,
+                          padding: '6px 4px',
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                          width: `${100 / totalColumns}%`,
+                          minWidth: column.key === 'device' ? '120px' :
+                                   column.key === 'details' ? '60px' : '80px',
+                        }}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ));
+                  })()}
                 </TableRow>
               </TableHead>
               <TableBody>
